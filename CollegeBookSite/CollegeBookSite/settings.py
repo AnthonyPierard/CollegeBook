@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #pour le test
+    'polls.apps.PollsConfig'
 ]
 
 MIDDLEWARE = [
@@ -72,7 +74,7 @@ WSGI_APPLICATION = 'CollegeBookSite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+#à changer pour une base de donnée mySQL ou autre.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
