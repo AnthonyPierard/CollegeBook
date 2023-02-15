@@ -3,6 +3,21 @@ from datetime import datetime
 
 # Create your models here.
 
+class Admin(models.Model):
+
+    admin_pseudo = models.CharField("Pseudo de l admin",max_length=50)
+    admin_password = models.CharField("Mot de passe de l admin",max_length=100)
+    admin_superadmin = models.BooleanField("Est un super admin ou non",default=False)
+
+class Salle(models.Model):
+
+    salle_nom = models.CharField("Nom de la salle",max_length=50)
+    salle_nbr_places_normal = models.IntegerField("Nombres de places normales")
+    salle_configuration = models.FileField("Sauvegarde de la configuration de la salle")#definir le type de fichier que l'on veut pour les configurations (.json  ?) - emile
+
+
+    createur = models.ForeignKey(Admin,on_delete=models.CASCADE)
+
 class Evenement(models.Model):
     #les id sont automatiquement créer par django
     even_nom = models.CharField("Nom de l'évènement",max_length=200, unique=True)
@@ -10,9 +25,12 @@ class Evenement(models.Model):
     even_description = models.CharField("Description de l'évènement", max_length=1000)
     even_illustration = models.ImageField("Image(s) de l'évènement(s)",upload_to="url mis dans MEDIA_ROOT dans settings", blank=True)
 
+    admin = models.ForeignKey(Admin,on_delete=models.CASCADE)
+    configuration = models.ForeignKey(Salle,on_delete=models.CASCADE)
+
     def __str__(self):
         return self.even_nom
-    
+
 class Reservation(models.Model):
     
     reserv_email = models.EmailField("Adresse mail de la reservation")
@@ -24,11 +42,19 @@ class Reservation(models.Model):
     reserv_numero = models.IntegerField("Numéro du ticket pour le spectatcle")
     #si il y a besoin de plus d'info : type de boisson, nombre de boisson, ...
     #alors on devrait créer une nouvelle table pour les boissons et la nourriture
-    reserv_boisson = models.BooleanField("Ticket boisson pris avec la réservation")
-    reserv_nourriture = models.BooleanField("Ticket nourriture pris avec la réservation")
+    reserv_boisson = models.BooleanField("Ticket boisson pris avec la réservation") # je metterai des Integer ici pour le nombre de tickets boissons et nourriture achetés - emile
+    reserv_nourriture = models.BooleanField("Ticket nourriture pris avec la réservation") # same
     
     #a mon avis plus de chose a faire pour la clé secondaire ()
     evenement = models.ForeignKey(Evenement, on_delete=models.CASCADE)
 
     def __str__(self):
         return "Ticket n°" + str(self.reserv_numero) + " pour le spectacle " + self.evenement
+
+class CodePromo(models.Model):
+
+    codepromo_code = models.CharField("Le code à introduire",max_length=20)
+    codepromo_montant = models.DecimalField("Montant fixe de réduction",null=True)
+    codepromo_pourcentage = models.FloatField("Pourcentage de reduction sur le prix total",null=True)#faut faire des triggers, jsp comment faire - emile
+
+    Evenement = models.ForeignKey(Evenement,on_delete=models.CASCADE)
