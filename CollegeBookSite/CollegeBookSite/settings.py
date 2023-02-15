@@ -77,8 +77,9 @@ WSGI_APPLICATION = 'CollegeBookSite.wsgi.application'
 #à changer pour une base de donnée mySQL ou autre.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3', #'django.db.backends.mysql' pour mySQL + rajouter d'autre clé
         'NAME': BASE_DIR / 'db.sqlite3',
+
     }
 }
 
@@ -125,3 +126,8 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# MEDIA_ROOT pour aller mettre les images des évènements 
+# MEDIA_URL pour que le site aille les chercher
+# https://docs.djangoproject.com/fr/3.2/ref/models/fields/ pour plus d'info
