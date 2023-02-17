@@ -42,8 +42,8 @@ class Reservation(models.Model):
     reserv_numero = models.IntegerField("Numéro du ticket pour le spectatcle")
     #si il y a besoin de plus d'info : type de boisson, nombre de boisson, ...
     #alors on devrait créer une nouvelle table pour les boissons et la nourriture
-    reserv_boisson = models.BooleanField("Ticket boisson pris avec la réservation") # je metterai des Integer ici pour le nombre de tickets boissons et nourriture achetés - emile
-    reserv_nourriture = models.BooleanField("Ticket nourriture pris avec la réservation") # same
+    reserv_boisson = models.IntegerField("Ticket boisson pris avec la réservation") # je metterai des Integer ici pour le nombre de tickets boissons et nourriture achetés - emile
+    reserv_nourriture = models.IntegerField("Ticket nourriture pris avec la réservation") # same
     
     #a mon avis plus de chose a faire pour la clé secondaire ()
     evenement = models.ForeignKey(Evenement, on_delete=models.CASCADE)
@@ -54,7 +54,7 @@ class Reservation(models.Model):
 class CodePromo(models.Model):
 
     codepromo_code = models.CharField("Le code à introduire",max_length=20)
-    codepromo_montant = models.DecimalField("Montant fixe de réduction",null=True)
-    codepromo_pourcentage = models.FloatField("Pourcentage de reduction sur le prix total",null=True)#faut faire des triggers, jsp comment faire - emile
+    codepromo_montant = models.FloatField("Montant fixe de réduction",blank=True)
+    codepromo_pourcentage = models.FloatField("Pourcentage de reduction sur le prix total",blank=True)#faut faire des triggers, jsp comment faire - emile
 
     Evenement = models.ForeignKey(Evenement,on_delete=models.CASCADE)
