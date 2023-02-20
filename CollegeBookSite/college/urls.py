@@ -6,4 +6,5 @@ urlpatterns = [
     path('visu/', views.visu_event, name='visu'),
     path('visu/<int:even_id>/', views.visu_detail, name='visu_detail'),
     path('creation_compte/', views.crea_compte),
+    path('modif_compte/<int:admin_id>/', views.modif_compte),
 ]

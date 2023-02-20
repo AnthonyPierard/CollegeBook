@@ -29,4 +29,3 @@ class AdminForm(forms.ModelForm):
 
     
 
-    

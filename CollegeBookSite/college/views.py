@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 
 from .models import Evenement
-
+from .models import Admin
 from .forms import AdminForm
 # Create your views here.
 
@@ -26,3 +26,7 @@ def crea_compte(request):
         form = AdminForm()
 
     return render(request, 'admin/crea_compte.html', {'form': form})
+
+def modif_compte(request,admin_id):
+    admin = get_object_or_404(Admin, pk = admin_id)
+    return render(request,'admin/modif_compte.html',{'admin' : admin})
