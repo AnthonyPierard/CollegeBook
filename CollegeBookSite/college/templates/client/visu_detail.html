@@ -1,0 +1,11 @@
+{% extends "../default.html" %}
+
+{% block body %}
+    {{event.even_nom}}
+    <br>
+    {{event.even_date}}
+    <br>
+    {{event.even_description}}
+    <br>
+    <img src="{{event.even_illustration.url}}" alt="{{event.even_nom}}">
+{% endblock %}
