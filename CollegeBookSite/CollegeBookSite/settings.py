@@ -128,7 +128,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-# MEDIA_ROOT pour aller mettre les images des évènements 
-# MEDIA_URL pour que le site aille les chercher
-# https://docs.djangoproject.com/fr/3.2/ref/models/fields/ pour plus d'info
+#url dans le navigateur
+MEDIA_URL  = "/Media/"
+#url pour les fichiers 
+MEDIA_ROOT = BASE_DIR / "Media"

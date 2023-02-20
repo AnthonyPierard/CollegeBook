@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 
 from .models import Evenement
@@ -11,6 +11,10 @@ def visu_event(request):
     all_event = Evenement.objects.all()
 
     return render(request, 'client/visu_event.html', {'all_event' : all_event})
+
+def visu_detail(request, even_id):
+    event = get_object_or_404(Evenement, pk = even_id)
+    return render(request, 'client/visu_detail.html', {"event" : event})
 
 def crea_compte(request):
     if request.method == 'POST':
