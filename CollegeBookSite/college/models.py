@@ -58,3 +58,8 @@ class CodePromo(models.Model):
     codepromo_pourcentage = models.FloatField("Pourcentage de reduction sur le prix total",blank=True)#faut faire des triggers, jsp comment faire - emile
 
     Evenement = models.ForeignKey(Evenement,on_delete=models.CASCADE)
+
+class Ticket(models.Model):
+    ticket_siege = models.CharField("Trigramme du siège",max_length=3)
+
+    Reservation = models.ForeignKey(Reservation,on_delete=models.CASCADE)
