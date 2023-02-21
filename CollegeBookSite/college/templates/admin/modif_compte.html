@@ -6,12 +6,12 @@
             <label for="pseudo">Pseudo :</label>
             <input type="texte" name="pseudo" value="{{admin.admin_pseudo}}" id="pseudo">
             <label for="password">Mot de passe :</label>
-            <input type="password" name="password" value="{{admin.admin_password}}" id="password">
+            <input type="texte" name="password" value="{{admin.admin_password}}" id="password">
             <label for="superAdmin">Super admin :</label>
             <input type="checkbox" name="superAdmin" id="superAdmin" {% if admin.admin_superadmin %}checked {% endif %}>
             <input type="submit" value="Modifier le compte">
         </form>
         Compte créé le : {{admin.admin_date_creation}}
-        <a href="{% url 'college:deleteuser' admin.admin_id %}">Supprimer le compte</a>
+        <a href="{% url 'college:delete_user' admin.id %}">Supprimer le compte</a>
     </div>>
 {% endblock %}

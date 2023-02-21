@@ -26,10 +26,13 @@ def crea_compte(request):
         form = AdminForm()
 
     return render(request, 'admin/crea_compte.html', {'form': form})
-    
-def supprimer_compte(admin_id):
-    Admin.objects.filter(id=admin_id).delete()
+
+
 
 def modif_compte(request,admin_id):
     admin = get_object_or_404(Admin, pk = admin_id)
     return render(request,'admin/modif_compte.html',{'admin' : admin})
+
+def supprimer_compte(request,admin_id):
+    Admin.objects.filter(id=admin_id).delete()
+    return visu_event(request) # l'url pue la merde en faisant ca 

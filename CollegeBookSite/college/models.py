@@ -8,7 +8,7 @@ class Admin(models.Model):
     admin_pseudo = models.CharField("Pseudo de l admin",max_length=50)
     admin_password = models.CharField("Mot de passe de l admin",max_length=100)
     admin_superadmin = models.BooleanField("Est un super admin ou non",default=False)
-    admin_date_creation = models.DateField("Date de création du compte",default = datetime.now())
+    admin_date_creation = models.DateTimeField("Date de création du compte",default = datetime.now())
 
     def __str__(self) -> str:
         return self.admin_pseudo
@@ -45,10 +45,7 @@ class Reservation(models.Model):
     reserv_date = models.DateTimeField("Date de la réservation", default=datetime.now())
     reserv_remarque = models.CharField("Remarque sur la réservation", max_length=1000)
     reserv_numero = models.IntegerField("Numéro du ticket pour le spectatcle")
-    #si il y a besoin de plus d'info : type de boisson, nombre de boisson, ...
-    #alors on devrait créer une nouvelle table pour les boissons et la nourriture
-    reserv_boisson = models.IntegerField("Ticket boisson pris avec la réservation") # je metterai des Integer ici pour le nombre de tickets boissons et nourriture achetés - emile
-    reserv_nourriture = models.IntegerField("Ticket nourriture pris avec la réservation") # same
+   
     
     #a mon avis plus de chose a faire pour la clé secondaire ()
     evenement = models.ForeignKey(Evenement, on_delete=models.CASCADE)
@@ -66,7 +63,10 @@ class CodePromo(models.Model):
 
 class Ticket(models.Model):
     ticket_siege = models.CharField("Trigramme du siège",max_length=3)
-
+    #si il y a besoin de plus d'info : type de boisson, nombre de boisson, ...
+    #alors on devrait créer une nouvelle table pour les boissons et la nourriture
+    reserv_boisson = models.IntegerField("Ticket boisson pris avec la réservation") # je metterai des Integer ici pour le nombre de tickets boissons et nourriture achetés - emile
+    reserv_nourriture = models.IntegerField("Ticket nourriture pris avec la réservation") # same
     Reservation = models.ForeignKey(Reservation,on_delete=models.CASCADE)
 
 # !!! bien faire une migration de la db à chaque fois qu'elle est modifiée !!!
