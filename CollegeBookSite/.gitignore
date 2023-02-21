@@ -4,3 +4,4 @@ CollegeBookSite/__pycache__/
 college/__pycache__/
 college/migrations/__pycache__/
 ../.idea/
+*.sqlite3
