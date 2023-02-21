@@ -11,6 +11,7 @@
             <input type="checkbox" name="superAdmin" id="superAdmin" {% if admin.admin_superadmin %}checked {% endif %}>
             <input type="submit" value="Modifier le compte">
         </form>
-        <button >Supprimer le compte</button>
+        Compte créé le : {{admin.admin_date_creation}}
+        <a href="{% url 'college:deleteuser' admin.admin_id %}">Supprimer le compte</a>
     </div>>
 {% endblock %}
