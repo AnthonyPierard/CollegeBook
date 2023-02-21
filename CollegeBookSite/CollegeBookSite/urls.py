@@ -20,8 +20,7 @@ from college.views import visu_event
 
 from CollegeBookSite import settings
 urlpatterns = [
-    path('', visu_event, name='index'),
     path('admin/', admin.site.urls),
     path('polls/', include('polls.urls')),
-    path('college/', include('college.urls')),
+    path('', include('college.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
