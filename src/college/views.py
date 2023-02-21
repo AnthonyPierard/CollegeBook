@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 from .models import Evenement
 from .models import Admin
-from .forms import AdminForm
+from .forms import AdminForm,UpdateAdminForm
 # Create your views here.
 
 
@@ -31,7 +31,14 @@ def crea_compte(request):
 
 def modif_compte(request,admin_id):
     admin = get_object_or_404(Admin, pk = admin_id)
-    return render(request,'admin/modif_compte.html',{'admin' : admin})
+    if request.method == 'POST':
+        form = UpdateAdminForm(request.POST,instance=admin)
+        if form.is_valid():
+            form.save()
+    else:
+
+        form = UpdateAdminForm(instance=admin)
+    return render(request,'admin/modif_compte.html',{'form':form,'admin' : admin})
 
 def archiver_compte(request,admin_id):
     admin = Admin.objects.filter(id=admin_id)[0]

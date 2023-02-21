@@ -1,6 +1,6 @@
 from django import forms
 from django.core import validators
-
+from .utils import check_password
 from .models import Admin
 
 class AdminForm(forms.ModelForm):
@@ -17,15 +17,18 @@ class AdminForm(forms.ModelForm):
     # password = forms.CharField(label='Password', max_length=50, required = True, widget = forms.PasswordInput)
     confirm_password = forms.CharField(label='Confirm Password', max_length=50, required = True, widget = forms.PasswordInput)
     # is_super = forms.BooleanField(label='Super Admin', required=False)
-
     def clean_confirm_password(self):
-        password = self.cleaned_data.get('password')
-        confirm_password = self.cleaned_data.get('confirm_password')
-        if password != confirm_password:
-            # (À définir) Choisir la forme d'erreur entre ces deux options : 
-            # - self.add_error('confirm_password', 'La confirmation du mot de passe n\'est pas correcte')
-            # - raise forms.ValidationError('La confirmation du mot de passe n\'est pas correcte')
-            pass
-
+        check_password(self)
     
+
+class UpdateAdminForm(forms.ModelForm):
+    class Meta:
+        model = Admin
+        fields = [
+            'admin_pseudo',
+            'admin_superadmin',
+            'admin_is_archived'
+        ]
+        labels = {'admin_pseudo': 'Pseudo','admin_superadmin':'Super Admin','admin_is_archived':'Compte archivé'}
+
 

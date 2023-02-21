@@ -62,6 +62,9 @@ class CodePromo(models.Model):
 
     Evenement = models.ForeignKey(Evenement,on_delete=models.CASCADE)
 
+    # def set_codepromo_montant(self,sender,**kwargs):
+        
+
 class Ticket(models.Model):
     ticket_siege = models.CharField("Trigramme du siège",max_length=3)
     #si il y a besoin de plus d'info : type de boisson, nombre de boisson, ...

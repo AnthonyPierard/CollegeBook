@@ -3,15 +3,23 @@
 {% block body %}
     <div>
         <form action="" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Modifier le compte">
+        </form>
+    </div>
+    <!-- <div>
+        <form action="" method="post">
             <label for="pseudo">Pseudo :</label>
             <input type="texte" name="pseudo" value="{{admin.admin_pseudo}}" id="pseudo">
             <label for="password">Mot de passe :</label>
             <input type="texte" name="password" value="{{admin.admin_password}}" id="password">
             <label for="superAdmin">Super admin :</label>
             <input type="checkbox" name="superAdmin" id="superAdmin" {% if admin.admin_superadmin %}checked {% endif %}>
+            <label for="archive"></label>
             <input type="submit" value="Modifier le compte">
         </form>
         Compte créé le : {{admin.admin_date_creation}}
         <a href="{% url 'college:archiver_user' admin.id %}">Archiver le compte</a>
-    </div>>
+    </div>> -->
 {% endblock %}
