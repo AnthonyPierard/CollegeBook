@@ -12,6 +12,6 @@
             <input type="submit" value="Modifier le compte">
         </form>
         Compte créé le : {{admin.admin_date_creation}}
-        <a href="{% url 'college:delete_user' admin.id %}">Supprimer le compte</a>
+        <a href="{% url 'college:archiver_user' admin.id %}">Archiver le compte</a>
     </div>>
 {% endblock %}

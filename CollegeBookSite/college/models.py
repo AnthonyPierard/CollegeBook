@@ -5,10 +5,11 @@ from datetime import datetime
 
 class Admin(models.Model):
 
-    admin_pseudo = models.CharField("Pseudo de l admin",max_length=50)
-    admin_password = models.CharField("Mot de passe de l admin",max_length=100)
+    admin_pseudo = models.CharField("Pseudo de l'admin",max_length=50)
+    admin_password = models.CharField("Mot de passe de l'admin",max_length=100)
     admin_superadmin = models.BooleanField("Est un super admin ou non",default=False)
     admin_date_creation = models.DateTimeField("Date de création du compte",default = datetime.now())
+    admin_is_archived = models.BooleanField("Admin archivé",default=False)
 
     def __str__(self) -> str:
         return self.admin_pseudo

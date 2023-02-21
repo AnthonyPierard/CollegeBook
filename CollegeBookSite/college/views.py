@@ -33,6 +33,8 @@ def modif_compte(request,admin_id):
     admin = get_object_or_404(Admin, pk = admin_id)
     return render(request,'admin/modif_compte.html',{'admin' : admin})
 
-def supprimer_compte(request,admin_id):
-    Admin.objects.filter(id=admin_id).delete()
+def archiver_compte(request,admin_id):
+    admin = Admin.objects.filter(id=admin_id)[0]
+    admin.admin_is_archived = True
+    admin.save()
     return visu_event(request) # l'url pue la merde en faisant ca 
