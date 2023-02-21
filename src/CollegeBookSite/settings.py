@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #pour le test
-    'polls.apps.PollsConfig',
     'college.apps.CollegeConfig'
 ]
 
