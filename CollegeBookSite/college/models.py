@@ -65,8 +65,8 @@ class Ticket(models.Model):
     ticket_siege = models.CharField("Trigramme du siège",max_length=3)
     #si il y a besoin de plus d'info : type de boisson, nombre de boisson, ...
     #alors on devrait créer une nouvelle table pour les boissons et la nourriture
-    reserv_boisson = models.IntegerField("Ticket boisson pris avec la réservation") # je metterai des Integer ici pour le nombre de tickets boissons et nourriture achetés - emile
-    reserv_nourriture = models.IntegerField("Ticket nourriture pris avec la réservation") # same
+    reserv_boisson = models.IntegerField("Ticket boisson pris avec la réservation",default=0) # je metterai des Integer ici pour le nombre de tickets boissons et nourriture achetés - emile
+    reserv_nourriture = models.IntegerField("Ticket nourriture pris avec la réservation",default=0) # same
     Reservation = models.ForeignKey(Reservation,on_delete=models.CASCADE)
 
 # !!! bien faire une migration de la db à chaque fois qu'elle est modifiée !!!
