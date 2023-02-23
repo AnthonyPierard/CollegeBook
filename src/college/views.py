@@ -44,4 +44,8 @@ def archiver_compte(request,admin_id):
     admin = Admin.objects.filter(id=admin_id)[0]
     admin.admin_is_archived = True
     admin.save()
-    return visu_event(request) # l'url pue la merde en faisant ca 
+    return visu_event(request) # l'url pue la merde en faisant ca
+
+def admin_display(request):
+    all_admins = Admin.objects.all()
+    return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins})
