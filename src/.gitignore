@@ -6,4 +6,3 @@ college/__pycache__/
 college/migrations/__pycache__/
 ../.idea/
 *.sqlite3
-../env/pyvenv.cfg
