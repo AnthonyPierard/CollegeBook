@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import datetime
+from django.db.models.signals import(pre_save)
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -57,13 +59,19 @@ class Reservation(models.Model):
 class CodePromo(models.Model):
 
     codepromo_code = models.CharField("Le code à introduire",max_length=20)
-    codepromo_montant = models.FloatField("Montant fixe de réduction",blank=True)
-    codepromo_pourcentage = models.FloatField("Pourcentage de reduction sur le prix total",blank=True)#faut faire des triggers, jsp comment faire - emile
+    codepromo_montant = models.FloatField("Montant fixe de réduction",blank=True,default=0)
+    codepromo_pourcentage = models.FloatField("Pourcentage de reduction sur le prix total",blank=True,default=0)#faut faire des triggers, jsp comment faire - emile
 
     Evenement = models.ForeignKey(Evenement,on_delete=models.CASCADE)
 
-    # def set_codepromo_montant(self,sender,**kwargs):
-        
+    def __str__(self) -> str:
+        return "{}___{}".format(self.codepromo_code , self.Evenement.even_nom)
+
+@receiver(pre_save,sender = CodePromo)
+def trigger_not_same_codepromo(sender,instance,*args,**kwargs):
+    others_codepromo = sender.objects.filter(codepromo_code=instance.codepromo_code).filter(Evenement=instance.Evenement)
+    if others_codepromo.count() > 0:
+        raise ValueError("Ce code existe déjà pour cet événement")
 
 class Ticket(models.Model):
     ticket_siege = models.CharField("Trigramme du siège",max_length=3)
