@@ -7,5 +7,6 @@ urlpatterns = [
     path('visu/<int:even_id>/', views.visu_detail, name='visu_detail'),
     path('creation_compte/', views.crea_compte),
     path('modif_compte/<int:admin_id>/', views.modif_compte),
-    path('archiveruser/<int:admin_id>',views.archiver_compte, name='archiver_user')
+    path('archiveruser/<int:admin_id>',views.archiver_compte, name='archiver_user'),
+    path('afficher_admins/',views.admin_display),
 ]
