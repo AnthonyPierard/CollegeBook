@@ -25,7 +25,7 @@ def crea_compte(request):
     else:
         form = AdminForm()
 
-    return render(request, 'admin/crea_compte.html', {'form': form, 'connected':True})
+    return render(request, 'admin/crea_compte.html', {'form': form, 'connected':True, 'super_admin':True})
 
 
 
