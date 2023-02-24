@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate
 
 from .models import Evenement
 from .models import Admin
-from .forms import AdminForm,UpdateAdminForm,LoginAdminForm
+from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm
 # Create your views here.
 
 
@@ -22,12 +22,22 @@ def crea_compte(request):
         form = AdminForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponse('<h1>Thanks</h1>')
+            return HttpResponseRedirect('/')
     else:
         form = AdminForm()
 
     return render(request, 'admin/crea_compte.html', {'form': form, 'connected':True, 'super_admin':True})
 
+def cre_event(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = EventForm()
+
+    return render (request, 'admin/crea_event.html',{'form':form, 'connected':True})
 
 
 def modif_compte(request,admin_id):
@@ -59,12 +69,13 @@ def login(request):
             id_form = form.cleaned_data['admin_pseudo']
             password_form = form.cleaned_data['admin_password']
             admin = get_object_or_404(Admin, admin_pseudo = id_form)
-            if admin.admin_password == password_form :   
+            if admin.admin_password == password_form :
+                all_event = Evenement.objects.all()   
             #user = authenticate(username= id_form, password= password_form)
             #if user is not None:
                 #admin = get_object_or_404(Admin, admin_pseudo = id_form)
                 if admin.admin_superadmin == True:
-                    return render(request, 'client/visu_event.html', {"connected" : True, 'super_admin' : True})
+                    return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : True})
                 else:
                     return render(request, 'client/visu_event.html', {"connected" : True, 'super_admin' : False})
     else:
