@@ -1,8 +1,4 @@
 /.idea/
-.idea/CollegeBook.iml
-.idea/misc.xml
-.idea/dataSources.xml
-/src/CollegeBookSite/
 /src/polls/__pycache__/
 /src/polls/migrations/__pycache__/
 /src/CollegeBookSite/__pycache__/
