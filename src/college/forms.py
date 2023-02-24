@@ -39,6 +39,7 @@ class LoginAdminForm(forms.ModelForm):
             'admin_password',         
         ]
         labels = {'admin_pseudo': 'Pseudo', 'admin_password':'Password'}
+        widgets = {'admin_password': forms.PasswordInput}
 
 class EventForm(forms.ModelForm):
     class Meta:

@@ -28,7 +28,8 @@
             <li><a href="/afficher_admins">Admins</a></li>
             {% endif %}
             <li><a href="/newEvent">Créer un événement</a></li>
-            <li><a href="{% url 'college:visu' all_event, True, True %}">Événements</a></li>
+{#            <li><a href="{% url 'college:visu' all_event.id, True, True %}">Événements</a></li>#}
+            <li><a href="/logout">Se déconnecter</a></li>
             <li><a href="#">Compte</a></li>
         </ul>
         {% else %}
@@ -47,18 +48,18 @@
     <footer class="footer">
         <ul>
             <li><p class="footer-title">Contact</p></li>
-            <li><a href="#">Test</a></li>
-            <li><a href="#">Test</a></li>
+            <li><a href="#">Lien</a></li>
+            <li><a href="#">Lien</a></li>
         </ul>
         <ul>
             <li><p class="footer-title">Plan du site</p></li>
-            <li><a href="#">Test</a></li>
-            <li><a href="#">Test</a></li>
+            <li><a href="#">Lien</a></li>
+            <li><a href="#">Lien</a></li>
         </ul>
         <ul>
             <li><p class="footer-title">À propos</p></li>
-            <li><a href="#">Test</a></li>
-            <li><a href="#">Test</a></li>
+            <li><a href="#">Lien</a></li>
+            <li><a href="#">Lien</a></li>
         </ul>
         
     </footer>

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from .models import Evenement
 from .models import Admin
@@ -10,12 +11,11 @@ from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm
 
 def visu_event(request):
     all_event = Evenement.objects.all()
-
-    return render(request, 'client/visu_event.html', {'all_event' : all_event, "connected" : False, "super_admin" : False})
+    return render(request, 'client/visu_event.html', {'all_event' : all_event, "connected" : request.user.is_authenticated, "super_admin" : False})
 
 def visu_detail(request, even_id):
     event = get_object_or_404(Evenement, pk = even_id)
-    return render(request, 'client/visu_detail.html', {"event" : event})
+    return render(request, 'client/visu_detail.html', {"event" : event, "connected" : request.user.is_authenticated})
 
 def crea_compte(request):
     if request.method == 'POST':
@@ -26,7 +26,7 @@ def crea_compte(request):
     else:
         form = AdminForm()
 
-    return render(request, 'admin/crea_compte.html', {'form': form, 'connected':True, 'super_admin':True})
+    return render(request, 'admin/crea_compte.html', {'form': form, "connected" : request.user.is_authenticated, 'super_admin':True})
 
 def cre_event(request):
     if request.method == 'POST':
@@ -37,7 +37,7 @@ def cre_event(request):
     else:
         form = EventForm()
 
-    return render (request, 'admin/crea_event.html',{'form':form, 'connected':True})
+    return render (request, 'admin/crea_event.html',{'form':form, "connected" : request.user.is_authenticated})
 
 
 def modif_compte(request,admin_id):
@@ -49,7 +49,7 @@ def modif_compte(request,admin_id):
     else:
 
         form = UpdateAdminForm(instance=admin)
-    return render(request,'admin/modif_compte.html',{'form':form,'admin' : admin})
+    return render(request,'admin/modif_compte.html',{'form':form,'admin' : admin, "connected" : request.user.is_authenticated})
 
 def archiver_compte(request,admin_id):
     admin = Admin.objects.filter(id=admin_id)[0]
@@ -57,27 +57,37 @@ def archiver_compte(request,admin_id):
     admin.save()
     return visu_event(request) # l'url pue la merde en faisant ca
 
+@login_required
 def admin_display(request):
     all_admins = Admin.objects.all()
-    return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins})
+    return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins, "connected" : request.user.is_authenticated})
 
 
-def login(request):
+def admin_login(request):
     if request.method == 'POST':
         form = LoginAdminForm(request.POST)
         if form.is_valid():
             id_form = form.cleaned_data['admin_pseudo']
             password_form = form.cleaned_data['admin_password']
-            admin = get_object_or_404(Admin, admin_pseudo = id_form)
-            if admin.admin_password == password_form :
-                all_event = Evenement.objects.all()   
-            #user = authenticate(username= id_form, password= password_form)
-            #if user is not None:
-                #admin = get_object_or_404(Admin, admin_pseudo = id_form)
-                if admin.admin_superadmin == True:
-                    return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : True})
-                else:
-                    return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : False})
+            user = authenticate(request, username=request.POST['admin_pseudo'], password=request.POST['admin_password'])
+            if user is not None and user.is_active:
+                login(request=request, user=user)
+                return HttpResponseRedirect('/')
+            # admin = get_object_or_404(Admin, admin_pseudo = id_form)
+            # if admin.admin_password == password_form :
+            #     all_event = Evenement.objects.all()
+            # #user = authenticate(username= id_form, password= password_form)
+            # #if user is not None:
+            #     #admin = get_object_or_404(Admin, admin_pseudo = id_form)
+            #     if admin.admin_superadmin == True:
+            #         return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : True})
+            #     else:
+            #         return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : False})
     else:
         form = LoginAdminForm()
-    return render(request, 'admin/connection.html', {'form': form, 'connected':False})
+    return render(request, 'admin/connection.html', {'form': form, "connected" : request.user.is_authenticated})
+
+@login_required
+def admin_logout(request):
+    logout(request)
+    return HttpResponseRedirect('/')
