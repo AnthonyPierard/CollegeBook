@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate
 
 from .models import Evenement
@@ -22,7 +22,7 @@ def crea_compte(request):
         form = AdminForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponse('<h1>Thanks</h1>')
+            return HttpResponseRedirect('/')
     else:
         form = AdminForm()
 
@@ -33,7 +33,7 @@ def cre_event(request):
         form = EventForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponse('<h1>Toast</h1>')
+            return HttpResponseRedirect('/')
     else:
         form = EventForm()
 
