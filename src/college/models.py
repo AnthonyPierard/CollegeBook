@@ -16,6 +16,7 @@ class Admin(models.Model):
 
     def __str__(self) -> str:
         return self.admin_pseudo
+   
     
 
 
