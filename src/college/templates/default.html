@@ -24,20 +24,43 @@
         <div class="space"></div>
         {% if connected %}
         <ul>
+            {% if super_admin %}
+            <li><a href="/afficher_admins">Admins</a></li>
+            {% endif %}
             <li><a href="/">Événements</a></li>
             <li><a href="#">Mes réservations</a></li>
             <li><a href="#">Compte</a></li>
         </ul>
         {% else %}
         <ul>
-            <li><a href="/">Événements</a></li>
-            <li><a href="#">Créer compte</a></li>
+            <li><a href="#">Événements</a></li>
+            <li><a href="/creation_compte">Créer compte</a></li>
             <li><a href="/login">Se connecter</a></li>
         </ul>
         {% endif %}
     </nav>
+    <div class="content">
+        {% block body %}
+        {% endblock %}
+    </div>
     
-    {% block body %}
-    {% endblock %}
+    <footer class="footer">
+        <ul>
+            <li><p class="footer-title">Contact</p></li>
+            <li><a href="#">Test</a></li>
+            <li><a href="#">Test</a></li>
+        </ul>
+        <ul>
+            <li><p class="footer-title">Plan du site</p></li>
+            <li><a href="#">Test</a></li>
+            <li><a href="#">Test</a></li>
+        </ul>
+        <ul>
+            <li><p class="footer-title">À propos</p></li>
+            <li><a href="#">Test</a></li>
+            <li><a href="#">Test</a></li>
+        </ul>
+        
+    </footer>
 </body>
 </html>
