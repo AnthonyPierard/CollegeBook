@@ -30,7 +30,7 @@ def crea_compte(request):
 
 def cre_event(request):
     if request.method == 'POST':
-        form = EventForm(request.POST)
+        form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/')

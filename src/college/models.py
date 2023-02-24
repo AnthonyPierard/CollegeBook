@@ -34,7 +34,7 @@ class Evenement(models.Model):
     even_nom = models.CharField("Nom de l'évènement",max_length=200, unique=True)
     even_date = models.DateTimeField("Date",default=date(1999,1,1))
     even_description = models.CharField("Description de l'évènement", max_length=1000)
-    even_illustration = models.ImageField("Image(s) de l'évènement(s)",upload_to="Images", blank=True, null=True)
+    even_illustration = models.ImageField("Image(s) de l'évènement(s)",upload_to="Images/", blank=True, null=True)
     #event_time = models.TimeField("Heure",default=datetime.now)
     configuration_salle = models.CharField("Configuration de la salle",choices=[("1","classique"),("2","espacée"),("3","proche")],max_length=2000,default="classique")
     #can_moderate = trouver comment faire l'espèce de double liste de la maquette
