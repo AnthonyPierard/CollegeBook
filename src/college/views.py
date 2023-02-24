@@ -59,12 +59,13 @@ def login(request):
             id_form = form.cleaned_data['admin_pseudo']
             password_form = form.cleaned_data['admin_password']
             admin = get_object_or_404(Admin, admin_pseudo = id_form)
-            if admin.admin_password == password_form :   
+            if admin.admin_password == password_form :
+                all_event = Evenement.objects.all()   
             #user = authenticate(username= id_form, password= password_form)
             #if user is not None:
                 #admin = get_object_or_404(Admin, admin_pseudo = id_form)
                 if admin.admin_superadmin == True:
-                    return render(request, 'client/visu_event.html', {"connected" : True, 'super_admin' : True})
+                    return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : True})
                 else:
                     return render(request, 'client/visu_event.html', {"connected" : True, 'super_admin' : False})
     else:
