@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.contrib.auth import authenticate
 
 from .models import Evenement
 from .models import Admin
-from .forms import AdminForm,UpdateAdminForm
+from .forms import AdminForm,UpdateAdminForm,LoginAdminForm
 # Create your views here.
 
 
@@ -49,3 +50,17 @@ def archiver_compte(request,admin_id):
 def admin_display(request):
     all_admins = Admin.objects.all()
     return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins})
+
+
+def login(request):
+    if request.method == 'POST':
+        form = LoginAdminForm(request.POST)
+        if form.is_valid():
+            id_form = form.cleaned_data['admin_pseudo']
+            password_form = form.cleaned_data['admin_password']
+            user = authenticate(username= id_form, password= password_form)
+            if user is not None:
+                return render(request, 'client/visu_event.html', {"connected" : True})
+    else:
+        form = LoginAdminForm()
+    return render(request, 'admin/connection.html', {'form': form, 'connected':False})

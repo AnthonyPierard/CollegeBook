@@ -6,3 +6,4 @@ def check_password(form):
             # - form.add_error('confirm_password', 'La confirmation du mot de passe n\'est pas correcte')
             # - raise forms.ValidationError('La confirmation du mot de passe n\'est pas correcte')
             pass
+

@@ -31,4 +31,13 @@ class UpdateAdminForm(forms.ModelForm):
         ]
         labels = {'admin_pseudo': 'Pseudo','admin_superadmin':'Super Admin','admin_is_archived':'Compte archivé'}
 
+class LoginAdminForm(forms.ModelForm):
+    class Meta:
+        model = Admin
+        fields = [
+            'admin_pseudo',
+            'admin_password',         
+        ]
+        labels = {'admin_pseudo': 'Pseudo', 'admin_password':'Password'}
+
 
