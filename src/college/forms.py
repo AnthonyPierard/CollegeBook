@@ -1,7 +1,7 @@
 from django import forms
 from django.core import validators
 from .utils import check_password
-from .models import Admin
+from .models import Admin,Evenement
 
 class AdminForm(forms.ModelForm):
     class Meta:
@@ -39,5 +39,23 @@ class LoginAdminForm(forms.ModelForm):
             'admin_password',         
         ]
         labels = {'admin_pseudo': 'Pseudo', 'admin_password':'Password'}
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Evenement
+        fields = [
+            'even_nom',
+            'even_illustration',
+            'even_description',
+            'even_date',
+            #'event_time',
+            'configuration_salle'
+
+            #'can_moderate',
+            #'promo_code'
+
+            
+        ]
+        lables = {'event_nom' : 'Nom','even_date':'date','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf'}
 
 

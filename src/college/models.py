@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from datetime import date
 from django.db.models.signals import(pre_save)
 from django.dispatch import receiver
 
@@ -30,9 +31,13 @@ class Salle(models.Model):
 class Evenement(models.Model):
     #les id sont automatiquement créer par django
     even_nom = models.CharField("Nom de l'évènement",max_length=200, unique=True)
-    even_date = models.DateTimeField("Date de l'évènement")
+    even_date = models.DateTimeField("Date",default=date(1999,1,1))
     even_description = models.CharField("Description de l'évènement", max_length=1000)
     even_illustration = models.ImageField("Image(s) de l'évènement(s)",upload_to="Images", blank=True, null=True)
+    #event_time = models.TimeField("Heure",default=datetime.now)
+    configuration_salle = models.CharField("Configuration de la salle",choices=[("1","classique"),("2","espacée"),("3","proche")],max_length=2000,default="classique")
+    #can_moderate = trouver comment faire l'espèce de double liste de la maquette
+    #promo_code
 
     admin = models.ForeignKey(Admin,on_delete=models.CASCADE, null= True)
     #pour tester un simple evenement je le met en commentaire

@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 
 from .models import Evenement
 from .models import Admin
-from .forms import AdminForm,UpdateAdminForm,LoginAdminForm
+from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm
 # Create your views here.
 
 
@@ -28,6 +28,16 @@ def crea_compte(request):
 
     return render(request, 'admin/crea_compte.html', {'form': form, 'connected':True, 'super_admin':True})
 
+def cre_event(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('<h1>Toast</h1>')
+    else:
+        form = EventForm()
+
+    return render (request, 'admin/crea_event.html',{'form':form, 'connected':True})
 
 
 def modif_compte(request,admin_id):
