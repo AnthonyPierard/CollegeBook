@@ -10,3 +10,4 @@ src/college/__pycache__/
 src/college/migrations/__pycache__/
 src/*.sqlite3
 src/db.sqlite3
+*.pyc
