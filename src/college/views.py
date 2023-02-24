@@ -11,7 +11,7 @@ from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm
 def visu_event(request):
     all_event = Evenement.objects.all()
 
-    return render(request, 'client/visu_event.html', {'all_event' : all_event})
+    return render(request, 'client/visu_event.html', {'all_event' : all_event, "connected" : False, "super_admin" : False})
 
 def visu_detail(request, even_id):
     event = get_object_or_404(Evenement, pk = even_id)
@@ -77,7 +77,7 @@ def login(request):
                 if admin.admin_superadmin == True:
                     return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : True})
                 else:
-                    return render(request, 'client/visu_event.html', {"connected" : True, 'super_admin' : False})
+                    return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : False})
     else:
         form = LoginAdminForm()
     return render(request, 'admin/connection.html', {'form': form, 'connected':False})
