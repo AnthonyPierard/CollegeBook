@@ -51,11 +51,11 @@ def modif_compte(request,admin_id):
         form = UpdateAdminForm(instance=admin)
     return render(request,'admin/modif_compte.html',{'form':form,'admin' : admin, "connected" : request.user.is_authenticated})
 
-def archiver_compte(request,admin_id):
-    admin = Admin.objects.filter(id=admin_id)[0]
-    admin.admin_is_archived = True
-    admin.save()
-    return visu_event(request) # l'url pue la merde en faisant ca
+# def archiver_compte(request,admin_id):
+#     admin = Admin.objects.filter(id=admin_id)[0]
+#     admin.admin_is_archived = True
+#     admin.save()
+#     return visu_event(request) # l'url pue la merde en faisant ca
 
 @login_required
 def admin_display(request):
@@ -67,9 +67,11 @@ def admin_login(request):
     if request.method == 'POST':
         form = LoginAdminForm(request.POST)
         if form.is_valid():
-            id_form = form.cleaned_data['admin_pseudo']
+            id_form = form.cleaned_data['admin_email']
             password_form = form.cleaned_data['admin_password']
-            user = authenticate(request, username=request.POST['admin_pseudo'], password=request.POST['admin_password'])
+            user = authenticate(request, username=request.POST['admin_email'], password=request.POST['admin_password'])
+            print(id_form)
+            print(password_form)
             if user is not None and user.is_active:
                 login(request=request, user=user)
                 return HttpResponseRedirect('/')

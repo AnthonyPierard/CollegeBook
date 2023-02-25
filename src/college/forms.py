@@ -7,11 +7,13 @@ class AdminForm(forms.ModelForm):
     class Meta:
         model = Admin
         fields = [
-            'admin_pseudo',
+            'admin_prenom',
+            'admin_nom',
+            'admin_email',
             'admin_password',
             'admin_superadmin',
         ]
-        labels = {'admin_pseudo': 'Pseudo', 'admin_password':'Password','admin_superadmin':'Super Admin'}
+        labels = {'admin_prenom': 'Prenom','admin_nom':'Nom','admin_email':'Email', 'admin_password':'Password','admin_superadmin':'Super Admin'}
         widgets = {'admin_password': forms.PasswordInput}
     # pseudo = forms.CharField(label='Pseudonyme',max_length=50, required = True)
     # password = forms.CharField(label='Password', max_length=50, required = True, widget = forms.PasswordInput)
@@ -25,20 +27,21 @@ class UpdateAdminForm(forms.ModelForm):
     class Meta:
         model = Admin
         fields = [
-            'admin_pseudo',
-            'admin_superadmin',
-            'admin_is_archived'
+            'admin_prenom',
+            'admin_nom',
+            'admin_email',
+
         ]
-        labels = {'admin_pseudo': 'Pseudo','admin_superadmin':'Super Admin','admin_is_archived':'Compte archivé'}
+        labels = {'admin_prenom': 'Prenom','admin_nom':'Nom','admin_email':'Email'}
 
 class LoginAdminForm(forms.ModelForm):
     class Meta:
         model = Admin
         fields = [
-            'admin_pseudo',
+            'admin_email',
             'admin_password',         
         ]
-        labels = {'admin_pseudo': 'Pseudo', 'admin_password':'Password'}
+        labels = {'admin_email': 'Email', 'admin_password':'Password'}
         widgets = {'admin_password': forms.PasswordInput}
 
 class EventForm(forms.ModelForm):
@@ -49,6 +52,7 @@ class EventForm(forms.ModelForm):
             'even_illustration',
             'even_description',
             'even_date',
+            'even_duree',
             #'event_time',
             'configuration_salle'
 
@@ -57,6 +61,6 @@ class EventForm(forms.ModelForm):
 
             
         ]
-        lables = {'event_nom' : 'Nom','even_date':'date','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf'}
+        lables = {'event_nom' : 'Nom','even_date':'date','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf'}
 
 
