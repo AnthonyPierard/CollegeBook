@@ -11,7 +11,7 @@ from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm
 
 def visu_event(request):
     all_event = Evenement.objects.all()
-    return render(request, 'client/visu_event.html', {'all_event' : all_event, "connected" : request.user.is_authenticated, "super_admin" : False})
+    return render(request, 'client/visu_event.html', {'all_event' : all_event, "connected" : request.user.is_authenticated, "super_admin" : True})
 
 def visu_detail(request, even_id):
     event = get_object_or_404(Evenement, pk = even_id)
