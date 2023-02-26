@@ -70,8 +70,6 @@ def admin_login(request):
             id_form = form.cleaned_data['admin_email']
             password_form = form.cleaned_data['admin_password']
             user = authenticate(request, username=request.POST['admin_email'], password=request.POST['admin_password'])
-            print(id_form)
-            print(password_form)
             if user is not None and user.is_active:
                 login(request=request, user=user)
                 return HttpResponseRedirect('/')
