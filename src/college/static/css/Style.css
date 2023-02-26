@@ -83,12 +83,14 @@ footer ul li a{
 }
 
 table{
-  border-collapse: collapse
+  border-collapse: collapse;
+  margin: auto;
 }
 
 td{
   border: 1px solid black;
   padding: 10px;
+  text-align: center;
 }
 
 h1 {
