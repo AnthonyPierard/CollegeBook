@@ -1,0 +1,10 @@
+{% extends "../default.html" %}
+
+{% block body %}
+    <h1> Tout les évènement de l'admin {{ admin.username }} </h1>
+    <ul>
+        {% for event in all_event_admin %}
+        <li>{{event.even_nom}}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

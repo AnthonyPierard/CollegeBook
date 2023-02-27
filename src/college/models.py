@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import date
 from django.db.models.signals import(pre_save)
 from django.dispatch import receiver
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -59,7 +60,7 @@ class Evenement(models.Model):
     #can_moderate = trouver comment faire l'espèce de double liste de la maquette
     #promo_code
     even_duree = models.TimeField("Durée de l'événement")
-    admin = models.ForeignKey(Admin,on_delete=models.CASCADE, null= True)
+    admin = models.ForeignKey(User,on_delete=models.CASCADE, null= True)
     #pour tester un simple evenement je le met en commentaire
     #configuration = models.ForeignKey(Salle,on_delete=models.CASCADE)
 
@@ -68,7 +69,7 @@ class Evenement(models.Model):
 
 @receiver(pre_save,sender=Evenement)
 def trigger_not_events_same_time(sender,instance,*args,**kwargs):
-    others_events = Evenement.objects.filter(even_date.date == instance.even_date.date)
+    others_events = Evenement.objects.filter(even_date = instance.even_date)
     for event in others_events:
         if event.even_date + event.even_duree >= instance.even_date or instance.even_date + instance.even_duree >= event.even_date:
             raise ValueError("Un event est déja prévu sur ce créneau horaire")

@@ -11,11 +11,11 @@ from .forms import *
 
 def visu_event(request):
     all_event = Evenement.objects.all()
-    return render(request, 'client/visu_event.html', {'all_event' : all_event, "connected" : request.user.is_authenticated, "super_admin" : True})
+    return render(request, 'client/visu_event.html', {'all_event' : all_event, "connected" : request.user.is_authenticated, "super_admin" : True, "admin" : request.user})
 
 def visu_detail(request, even_id):
     event = get_object_or_404(Evenement, pk = even_id)
-    return render(request, 'client/visu_detail.html', {"event" : event, "connected" : request.user.is_authenticated})
+    return render(request, 'client/visu_detail.html', {"event" : event, "connected" : request.user.is_authenticated, "admin" : request.user})
 
 def crea_compte(request):
     if request.method == 'POST':
@@ -26,7 +26,7 @@ def crea_compte(request):
     else:
         form = AdminForm()
 
-    return render(request, 'admin/crea_compte.html', {'form': form, "connected" : request.user.is_authenticated, 'super_admin':True})
+    return render(request, 'admin/crea_compte.html', {'form': form, "connected" : request.user.is_authenticated, 'super_admin':True, "admin" : request.user})
 
 def cre_event(request):
     if request.method == 'POST':
@@ -37,7 +37,7 @@ def cre_event(request):
     else:
         form = EventForm()
 
-    return render (request, 'admin/crea_event.html',{'form':form, "connected" : request.user.is_authenticated})
+    return render (request, 'admin/crea_event.html',{'form':form, "connected" : request.user.is_authenticated, "admin" : request.user})
 
 
 def modif_compte(request,admin_id):
@@ -49,7 +49,7 @@ def modif_compte(request,admin_id):
     else:
 
         form = UpdateAdminForm(instance=admin)
-    return render(request,'admin/modif_compte.html',{'form':form,'admin' : admin, "connected" : request.user.is_authenticated})
+    return render(request,'admin/modif_compte.html',{'form':form,'admin' : admin, "connected" : request.user.is_authenticated, "admin" : request.user})
 
 # def archiver_compte(request,admin_id):
 #     admin = Admin.objects.filter(id=admin_id)[0]
@@ -60,8 +60,12 @@ def modif_compte(request,admin_id):
 @login_required
 def admin_display(request):
     all_admins = Admin.objects.all()
-    return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins, "connected" : request.user.is_authenticated})
+    return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins, "connected" : request.user.is_authenticated, "admin" : request.user})
 
+@login_required
+def admin_event(request, admin_id):
+    all_event_for_admin = Evenement.objects.filter(admin=admin_id)
+    return render(request, 'admin/event_admin.html', {'all_event_admin' : all_event_for_admin, "admin" : request.user})
 
 def admin_login(request):
     if request.method == 'POST':
@@ -87,7 +91,7 @@ def admin_login(request):
             #         return render(request, 'client/visu_event.html', {"all_event" : all_event, "connected" : True, 'super_admin' : False})
     else:
         form = LoginAdminForm()
-    return render(request, 'admin/connection.html', {'form': form, "connected" : request.user.is_authenticated})
+    return render(request, 'admin/connection.html', {'form': form, "connected" : request.user.is_authenticated, "admin" : request.user})
 
 @login_required
 def admin_logout(request):
