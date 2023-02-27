@@ -18,6 +18,11 @@ class Admin(models.Model):
 
     def __str__(self) -> str:
         return self.admin_email
+    def super_admin_update(self):
+        self.admin_superadmin = not self.admin_superadmin
+
+    def archive_admin(self):
+        self.admin_is_archived = not self.admin_is_archived
    
 @receiver(pre_save,sender=Admin)
 def trigger_not_same_email(sender,instance,*args,**kwargs):

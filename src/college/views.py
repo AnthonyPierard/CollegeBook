@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Evenement
 from .models import Admin
-from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm,RightsForm
+from .forms import *
 # Create your views here.
 
 
@@ -60,15 +60,7 @@ def modif_compte(request,admin_id):
 @login_required
 def admin_display(request):
     all_admins = Admin.objects.all()
-    if request.method == 'POST':
-        form = RightsForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # return HttpResponseRedirect('/')
-    else:
-        form = RightsForm()
-        print(form)
-    return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins, "connected" : request.user.is_authenticated, "form":form})
+    return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins, "connected" : request.user.is_authenticated})
 
 
 def admin_login(request):
@@ -101,3 +93,15 @@ def admin_login(request):
 def admin_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+def admin_change_super(request, admin_id):
+    admin = Admin.objects.filter(id=admin_id)[0]
+    admin.super_admin_update()
+    admin.save()
+    return HttpResponseRedirect(Status=200)
+
+def admin_change_archived(request, admin_id):
+    admin = Admin.objects.filter(id=admin_id)[0]
+    admin.archive_admin()
+    admin.save()
+    return HttpResponseRedirect(Status=200)

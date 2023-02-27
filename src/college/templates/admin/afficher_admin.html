@@ -15,21 +15,21 @@
     <td>{{admin.admin_prenom}} {{admin.admin_nom}}</td>
     {% if admin.admin_superadmin %}
     <td>
-        <input type="checkbox" checked="checked">
+        <a href="/change_super_admin/{{admin.id}}">Oui</a>
     </td>
     {% else %}
     <td>
-        <input type="checkbox">
+        <a href="/change_super_admin/{{admin.id}}">Non</a>
     </td>
     {% endif %}
     <td>{{admin.admin_date_creation}}</td>
     {% if admin.admin_is_archived %}
     <td>
-        <input type="checkbox" checked="checked">
+        <a href="/change_archived/{{admin.id}}">Oui</a>
     </td>
     {% else %}
     <td>
-        <input type="checkbox">
+        <a href="/change_archived/{{admin.id}}">Non</a>
     </td>
     {% endif %}
   </tr>

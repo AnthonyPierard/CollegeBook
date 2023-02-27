@@ -63,4 +63,3 @@ class EventForm(forms.ModelForm):
         ]
         lables = {'event_nom' : 'Nom','even_date':'date','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf'}
 
-
