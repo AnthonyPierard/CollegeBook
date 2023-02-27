@@ -53,7 +53,7 @@ class Evenement(models.Model):
     configuration_salle = models.CharField("Configuration de la salle",choices=[("1","classique"),("2","espacée"),("3","proche")],max_length=2000,default="classique")# ici faut faire une foreignKey avec les Salles pour le choices. Je change pas encore pour pas casser la vue - emile
     #can_moderate = trouver comment faire l'espèce de double liste de la maquette
     #promo_code
-    even_duree = models.TimeField("Durée de l'événement")
+    even_duree = models.TimeField("Durée de l'événement",default='02:00')
     admin = models.ForeignKey(Admin,on_delete=models.CASCADE, null= True)
     #pour tester un simple evenement je le met en commentaire
     #configuration = models.ForeignKey(Salle,on_delete=models.CASCADE)
@@ -61,12 +61,12 @@ class Evenement(models.Model):
     def __str__(self):
         return self.even_nom
 
-@receiver(pre_save,sender=Evenement)
-def trigger_not_events_same_time(sender,instance,*args,**kwargs):
-    others_events = Evenement.objects.filter(even_date.date == instance.even_date.date)
-    for event in others_events:
-        if event.even_date + event.even_duree >= instance.even_date or instance.even_date + instance.even_duree >= event.even_date:
-            raise ValueError("Un event est déja prévu sur ce créneau horaire")
+# @receiver(pre_save,sender=Evenement)
+# def trigger_not_events_same_time(sender,instance,*args,**kwargs):
+#     others_events = Evenement.objects.filter(even_date.date == instance.even_date.date)
+#     for event in others_events:
+#         if event.even_date + event.even_duree >= instance.even_date or instance.even_date + instance.even_duree >= event.even_date:
+#             raise ValueError("Un event est déja prévu sur ce créneau horaire")
 
 class Reservation(models.Model):
     
