@@ -3,27 +3,27 @@ from datetime import datetime
 from datetime import date
 from django.db.models.signals import(pre_save)
 from django.dispatch import receiver
-
+from django.contrib.auth.models import User
 # Create your models here.
 
-class Admin(models.Model):
-
-    admin_email = models.CharField("Email de l'admin",max_length=100)
-    admin_nom = models.CharField("Nom de l'admin",max_length=50)
-    admin_prenom = models.CharField("Prenom de l'admin",max_length=50)
-    admin_password = models.CharField("Mot de passe de l'admin",max_length=100)
-    admin_superadmin = models.BooleanField("Est un super admin ou non",default=False)
-    admin_date_creation = models.DateTimeField("Date de création du compte",default = datetime.now())
-    admin_is_archived = models.BooleanField("Admin archivé",default=False)
-
-    def __str__(self) -> str:
-        return self.admin_email
+# class Admin(models.Model):
+#
+#     admin_email = models.CharField("Email de l'admin",max_length=100)
+#     admin_nom = models.CharField("Nom de l'admin",max_length=50)
+#     admin_prenom = models.CharField("Prenom de l'admin",max_length=50)
+#     admin_password = models.CharField("Mot de passe de l'admin",max_length=100)
+#     admin_superadmin = models.BooleanField("Est un super admin ou non",default=False)
+#     admin_date_creation = models.DateTimeField("Date de création du compte",default = datetime.now())
+#     admin_is_archived = models.BooleanField("Admin archivé",default=False)
+#
+#     def __str__(self) -> str:
+#         return self.admin_email
    
-@receiver(pre_save,sender=Admin)
-def trigger_not_same_email(sender,instance,*args,**kwargs):
-    others_admins = Admin.objects.filter(admin_email = instance.admin_email)
-    if others_admins.count() > 0 :
-        raise ValueError("Email déjà attribuée à un autre admin")
+# @receiver(pre_save,sender=Admin)
+# def trigger_not_same_email(sender,instance,*args,**kwargs):
+#     others_admins = Admin.objects.filter(admin_email = instance.admin_email)
+#     if others_admins.count() > 0 :
+#         raise ValueError("Email déjà attribuée à un autre admin")
 
 
 class Salle(models.Model):
@@ -32,7 +32,7 @@ class Salle(models.Model):
     salle_nbr_places_normal = models.IntegerField("Nombres de places normales")
     salle_configuration = models.FileField("Sauvegarde de la configuration de la salle")#definir le type de fichier que l'on veut pour les configurations (.json  ?) - emile
 
-    createur = models.ForeignKey(Admin,on_delete=models.CASCADE)
+    createur = models.ForeignKey(User,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.salle_nom
@@ -54,7 +54,7 @@ class Evenement(models.Model):
     #can_moderate = trouver comment faire l'espèce de double liste de la maquette
     #promo_code
     even_duree = models.TimeField("Durée de l'événement",default='02:00')
-    admin = models.ForeignKey(Admin,on_delete=models.CASCADE, null= True)
+    admin = models.ForeignKey(User,on_delete=models.CASCADE, null= True)
     #pour tester un simple evenement je le met en commentaire
     #configuration = models.ForeignKey(Salle,on_delete=models.CASCADE)
 

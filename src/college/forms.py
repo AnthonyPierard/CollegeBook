@@ -1,48 +1,55 @@
 from django import forms
 from django.core import validators
 from .utils import check_password
-from .models import Admin,Evenement
+from .models import Evenement, User
 
 class AdminForm(forms.ModelForm):
     class Meta:
-        model = Admin
+        model = User
         fields = [
-            'admin_prenom',
-            'admin_nom',
-            'admin_email',
-            'admin_password',
-            'admin_superadmin',
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'is_staff',
         ]
-        labels = {'admin_prenom': 'Prenom','admin_nom':'Nom','admin_email':'Email', 'admin_password':'Password','admin_superadmin':'Super Admin'}
-        widgets = {'admin_password': forms.PasswordInput}
+        labels = {'first_name': 'Prenom','last_name':'Nom','email':'Email', 'password':'Password','is_staff':'Super Admin'}
+        widgets = {'password': forms.PasswordInput}
     # pseudo = forms.CharField(label='Pseudonyme',max_length=50, required = True)
     # password = forms.CharField(label='Password', max_length=50, required = True, widget = forms.PasswordInput)
     confirm_password = forms.CharField(label='Confirm Password', max_length=50, required = True, widget = forms.PasswordInput)
     # is_super = forms.BooleanField(label='Super Admin', required=False)
     def clean_confirm_password(self):
         check_password(self)
-    
+
+    def save(self, commit=True):
+        user = super(AdminForm, self).save(commit=False)
+        user.set_password(self.cleaned_data['password'])
+        user.username = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
 
 class UpdateAdminForm(forms.ModelForm):
     class Meta:
-        model = Admin
+        model = User
         fields = [
-            'admin_prenom',
-            'admin_nom',
-            'admin_email',
+            'first_name',
+            'last_name',
+            'email',
 
         ]
-        labels = {'admin_prenom': 'Prenom','admin_nom':'Nom','admin_email':'Email'}
+        labels = {'first_name': 'Prenom','last_name':'Nom','email':'Email'}
 
 class LoginAdminForm(forms.ModelForm):
     class Meta:
-        model = Admin
+        model = User
         fields = [
-            'admin_email',
-            'admin_password',         
+            'email',
+            'password',
         ]
-        labels = {'admin_email': 'Email', 'admin_password':'Password'}
-        widgets = {'admin_password': forms.PasswordInput}
+        labels = {'email': 'Email', 'password':'Password'}
+        widgets = {'password': forms.PasswordInput}
 
 class EventForm(forms.ModelForm):
     class Meta:
