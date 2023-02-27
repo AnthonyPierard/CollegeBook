@@ -24,11 +24,11 @@ class Admin(models.Model):
     def archive_admin(self):
         self.admin_is_archived = not self.admin_is_archived
    
-@receiver(pre_save,sender=Admin)
-def trigger_not_same_email(sender,instance,*args,**kwargs):
-    others_admins = Admin.objects.filter(admin_email = instance.admin_email)
-    if others_admins.count() > 0 :
-        raise ValueError("Email déjà attribuée à un autre admin")
+# @receiver(pre_save,sender=Admin)
+# def trigger_not_same_email(sender,instance,*args,**kwargs):
+#     others_admins = Admin.objects.filter(admin_email = instance.admin_email)
+#     if others_admins.count() > 0 :
+#         raise ValueError("Email déjà attribuée à un autre admin")
 
 
 class Salle(models.Model):
