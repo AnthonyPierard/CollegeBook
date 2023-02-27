@@ -25,7 +25,7 @@
 </svg></a>
     </td>
     {% endif %}
-    <td>{{admin.admin_date_creation}}</td>
+    <td>{{ admin.admin_date_creation|date:"d F Y" }}</td>
     {% if admin.admin_is_archived %}
     <td>
         <a href="/change_archived/{{admin.id}}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
