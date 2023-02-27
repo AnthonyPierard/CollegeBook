@@ -9,5 +9,7 @@
     <br>
     {{event.even_description}}
     <br>
+    {% if event.even_illustration is not null %}
     <img src="{{event.even_illustration.url}}" alt="{{event.even_nom}}">
+    {% endif %}
 {% endblock %}
