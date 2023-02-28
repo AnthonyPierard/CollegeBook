@@ -41,15 +41,9 @@ class UpdateAdminForm(forms.ModelForm):
         ]
         labels = {'first_name': 'Prenom','last_name':'Nom','email':'Email'}
 
-class LoginAdminForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = [
-            'email',
-            'password',
-        ]
-        labels = {'email': 'Email', 'password':'Password'}
-        widgets = {'password': forms.PasswordInput}
+class LoginAdminForm(forms.Form):
+    email = forms.CharField(label='Email', max_length=50, required = True)
+    password = forms.CharField(label='Password', max_length=50, required = True, widget = forms.PasswordInput)
 
 class EventForm(forms.ModelForm):
     class Meta:

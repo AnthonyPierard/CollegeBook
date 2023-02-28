@@ -1,5 +1,4 @@
-from django.contrib.auth.models import User
-# from src.college.models import Admin
+from .models import User
 
 class EmailAuthBackend():
     def authenticate(self, request, username, password):

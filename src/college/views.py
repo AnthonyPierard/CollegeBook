@@ -3,8 +3,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .models import Evenement
-from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm,User
+from .models import Evenement, User
+from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm
 
 
 def visu_event(request):
