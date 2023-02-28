@@ -9,8 +9,8 @@
   </tr>
   {% for admin in all_admins%}
   <tr>
-    <td>{{admin.admin_prenom}} {{admin.admin_nom}}</td>
-    {% if admin.admin_superadmin %}
+    <td>{{admin.first_name}} {{admin.last_name}}</td>
+    {% if admin.is_staff %}
     <td>
         <a href="/change_super_admin/{{admin.id}}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -25,8 +25,8 @@
 </svg></a>
     </td>
     {% endif %}
-    <td>{{ admin.admin_date_creation|date:"d F Y" }}</td>
-    {% if admin.admin_is_archived %}
+    <td>{{ admin.date_joined|date:"d F Y" }}</td>
+    {% if admin.is_active %}
     <td>
         <a href="/change_archived/{{admin.id}}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>

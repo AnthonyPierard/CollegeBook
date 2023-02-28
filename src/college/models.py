@@ -80,10 +80,11 @@ class User(AbstractBaseUser,PermissionsMixin):
 
         return self.admin_email
     def super_admin_update(self):
-        self.admin_superadmin = not self.admin_superadmin
+        self.is_staff = not self.is_staff
+        self.is_superuser = not self.is_superuser
 
     def archive_admin(self):
-        self.admin_is_archived = not self.admin_is_archived
+        self.is_active = not self.is_active
    
 # @receiver(pre_save,sender=Admin)
 # def trigger_not_same_email(sender,instance,*args,**kwargs):

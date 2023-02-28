@@ -80,13 +80,13 @@ def admin_logout(request):
     return HttpResponseRedirect('/')
 
 def admin_change_super(request, admin_id):
-    admin = Admin.objects.filter(id=admin_id)[0]
+    admin = User.objects.filter(id=admin_id)[0]
     admin.super_admin_update()
     admin.save()
     return HttpResponseRedirect('/afficher_admins')
 
 def admin_change_archived(request, admin_id):
-    admin = Admin.objects.filter(id=admin_id)[0]
+    admin = User.objects.filter(id=admin_id)[0]
     admin.archive_admin()
     admin.save()
     return HttpResponseRedirect('/afficher_admins')
