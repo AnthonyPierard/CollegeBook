@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #pour le test
-    'college.apps.CollegeConfig'
+    'college.apps.CollegeConfig',
 ]
 
 MIDDLEWARE = [
@@ -100,6 +100,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+AUTH_USER_MODEL = 'college.User'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'college.EmailAuthBackend.EmailAuthBackend',
 ]
 
 LOGIN_URL = '/'

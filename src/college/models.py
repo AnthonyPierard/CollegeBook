@@ -3,20 +3,81 @@ from datetime import datetime
 from datetime import date
 from django.db.models.signals import(pre_save)
 from django.dispatch import receiver
-
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.core.mail import send_mail
+# from django.contrib.auth.models import User
 # Create your models here.
 
-class Admin(models.Model):
+class UserManager(BaseUserManager):
+    use_in_migrations = True
 
-    admin_email = models.CharField("Email de l'admin",max_length=100)
-    admin_nom = models.CharField("Nom de l'admin",max_length=50)
-    admin_prenom = models.CharField("Prenom de l'admin",max_length=50)
-    admin_password = models.CharField("Mot de passe de l'admin",max_length=100)
-    admin_superadmin = models.BooleanField("Est un super admin ou non",default=False)
-    admin_date_creation = models.DateTimeField("Date de création du compte",default = datetime.now())
-    admin_is_archived = models.BooleanField("Admin archivé",default=False)
+    def _create_user(self, email, password, **extra_fields):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_staff', True)
+
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
+class User(AbstractBaseUser,PermissionsMixin):
+    email = models.EmailField(('Adresse email'), unique=True)
+    first_name = models.CharField(('Prénom'), max_length=30, blank=True)
+    last_name = models.CharField(('Nom de famille'), max_length=30, blank=True)
+    date_joined = models.DateTimeField(('Date de création'), auto_now_add=True)
+    last_login = models.DateTimeField(('Dernier login'), auto_now_add=True, null=True)
+    is_active = models.BooleanField(('Actif'), default=True)
+    is_staff = models.BooleanField(('SuperAdmin'), default=False)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = 'user'
+        verbose_name_plural = 'users'
+
+    def get_full_name(self):
+        """
+        Returns the first_name plus the last_name, with a space in between.
+        """
+        full_name = '%s %s' % (self.first_name, self.last_name)
+        return full_name.strip()
+
+    def get_short_name(self):
+        """
+        Returns the short name for the user.
+        """
+        return self.first_name
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        """
+        Sends an email to this User.
+        """
+        send_mail(subject, message, from_email, [self.email], **kwargs)
     def __str__(self) -> str:
+        """
+        Show the email when printed
+        """
+        return self.email
+
         return self.admin_email
     def super_admin_update(self):
         self.admin_superadmin = not self.admin_superadmin
@@ -37,7 +98,7 @@ class Salle(models.Model):
     salle_nbr_places_normal = models.IntegerField("Nombres de places normales")
     salle_configuration = models.FileField("Sauvegarde de la configuration de la salle")#definir le type de fichier que l'on veut pour les configurations (.json  ?) - emile
 
-    createur = models.ForeignKey(Admin,on_delete=models.CASCADE)
+    createur = models.ForeignKey(User,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.salle_nom
@@ -58,20 +119,20 @@ class Evenement(models.Model):
     configuration_salle = models.CharField("Configuration de la salle",choices=[("1","classique"),("2","espacée"),("3","proche")],max_length=2000,default="classique")# ici faut faire une foreignKey avec les Salles pour le choices. Je change pas encore pour pas casser la vue - emile
     #can_moderate = trouver comment faire l'espèce de double liste de la maquette
     #promo_code
-    even_duree = models.TimeField("Durée de l'événement")
-    admin = models.ForeignKey(Admin,on_delete=models.CASCADE, null= True)
+    even_duree = models.TimeField("Durée de l'événement",default='02:00')
+    admin = models.ForeignKey(User,on_delete=models.CASCADE, null= True)
     #pour tester un simple evenement je le met en commentaire
     #configuration = models.ForeignKey(Salle,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.even_nom
 
-@receiver(pre_save,sender=Evenement)
-def trigger_not_events_same_time(sender,instance,*args,**kwargs):
-    others_events = Evenement.objects.filter(even_date.date == instance.even_date.date)
-    for event in others_events:
-        if event.even_date + event.even_duree >= instance.even_date or instance.even_date + instance.even_duree >= event.even_date:
-            raise ValueError("Un event est déja prévu sur ce créneau horaire")
+# @receiver(pre_save,sender=Evenement)
+# def trigger_not_events_same_time(sender,instance,*args,**kwargs):
+#     others_events = Evenement.objects.filter(even_date.date == instance.even_date.date)
+#     for event in others_events:
+#         if event.even_date + event.even_duree >= instance.even_date or instance.even_date + instance.even_duree >= event.even_date:
+#             raise ValueError("Un event est déja prévu sur ce créneau horaire")
 
 class Reservation(models.Model):
     

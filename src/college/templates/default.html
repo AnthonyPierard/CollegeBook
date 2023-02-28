@@ -22,15 +22,14 @@
     <nav class="nav-bar">
         
         <div class="space"></div>
-        {% if connected %}
+        {% if user.is_authenticated %}
         <ul>
-            {% if super_admin %}
+            {% if user.is_staff %}
             <li><a href="/afficher_admins">Admins</a></li>
             {% endif %}
             <li><a href="/newEvent">Créer un événement</a></li>
-{#            <li><a href="{% url 'college:visu' all_event.id, True, True %}">Événements</a></li>#}
             <li><a href="/logout">Se déconnecter</a></li>
-            <li><a href="#">Compte</a></li>
+            <li><a href="/modif_compte/{{ user.id }}">Compte</a></li>
         </ul>
         {% else %}
         <ul>
