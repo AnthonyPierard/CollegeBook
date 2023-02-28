@@ -63,3 +63,10 @@ class EventForm(forms.ModelForm):
         ]
         lables = {'event_nom' : 'Nom','even_date':'date','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf'}
 
+class UpdateDateEventForm(forms.ModelForm):
+    class Meta:
+        model = Evenement
+        fields = [
+            'even_date',
+        ]
+        lables = {'even_date' : ''}

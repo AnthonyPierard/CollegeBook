@@ -51,7 +51,7 @@ def trigger_not_same_salle(sender,instance,*args,**kwargs):
 
 class Evenement(models.Model):
     #les id sont automatiquement créer par django
-    even_nom = models.CharField("Nom de l'évènement",max_length=200, unique=True)
+    even_nom = models.CharField("Nom de l'événement",max_length=200, unique=True)
     even_date = models.DateTimeField("Date",default=datetime.now())
     even_description = models.CharField("Description de l'évènement", max_length=1000)
     even_illustration = models.ImageField("Image(s) de l'évènement(s)",upload_to="Images/", blank=True, null=True)
