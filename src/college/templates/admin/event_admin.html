@@ -1,0 +1,24 @@
+{% extends "../default.html" %}
+
+{% block body %}
+    {% if msg is not null %}
+        {{msg}}
+    {% endif %}
+    <h1> Tout les évènement de l'admin {{ admin.username }} </h1>
+    <table>
+        <tr>
+            <td>Nom événement</td>
+            <td>Date</td>
+            <td>Modifier Créneaux</td>
+            <td>Annuler</td>
+        </tr>
+        {% for event in all_event_admin %}
+        <tr>
+            <td><a href="{% url 'college:visu_detail' event.id %}">{{event.even_nom}}</a></td>
+            <td>{{event.even_date}}</td>
+            <td><a href="{% url 'college:change_date_event' event.id %}">Modifier</a></td>
+            <td><a href="#">X</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

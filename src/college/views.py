@@ -61,6 +61,10 @@ def admin_display(request):
     all_admins = User.objects.all()
     return render(request, 'admin/afficher_admin.html', {'all_admins': all_admins})
 
+@login_required
+def admin_event(request, admin_id):
+    all_event_for_admin = Evenement.objects.filter(admin=admin_id)
+    return render(request, 'admin/event_admin.html', {'all_event_admin' : all_event_for_admin, "admin" : request.user, "connected" : request.user.is_authenticated})
 
 def admin_login(request):
     if request.method == 'POST':
@@ -90,3 +94,19 @@ def admin_change_archived(request, admin_id):
     admin.archive_admin()
     admin.save()
     return HttpResponseRedirect('/afficher_admins')
+
+def admin_event_change_date(request, event_id):
+    if request.method== 'POST':
+        form = UpdateDateEventForm(request.POST)
+        if form.is_valid():
+            event = Evenement.objects.filter(pk = event_id)[0]
+            event.even_date = form.cleaned_data['even_date']
+            event.save()
+            ok_message = "La date à été correctement changée"
+            all_event_for_admin = Evenement.objects.filter(admin=request.user.id)
+            #ajouter ici un envois d'un mail a toutes les personnes qui ont réservé
+            return render(request, 'admin/event_admin.html', {'all_event_admin' : all_event_for_admin, "admin" : request.user, "msg" : ok_message, "connected" : request.user.is_authenticated, "form" : form})
+    else:
+        form = UpdateDateEventForm()
+        event = Evenement.objects.filter(pk = event_id)[0]
+        return render(request, 'admin/change_date_event.html', {"admin" : request.user, "form" : form, "connected" : request.user.is_authenticated, "event": event})
