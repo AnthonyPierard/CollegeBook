@@ -58,7 +58,6 @@ ul {
     position: absolute;
     top:25px;
     left:40px;
-    pointer-events: none;
 }
 
 .footer {
@@ -86,10 +85,47 @@ footer ul li a{
 }
 
 table{
-  border-collapse: collapse;
-  table-layout: fixed;
-  width: 100%;
-  font-family: 'Noto Sans', sans-serif;
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px 10px 0 0;
+    font-family: 'Noto Sans', sans-serif;
+    overflow: hidden;
+    box-shadow:  0 0 20px rgba(0,0,0,0.15);
+
+}
+
+table th, table td {
+    padding: 12px 15px;
+}
+
+table td {
+    text-align: center;
+}
+
+table thead tr {
+    background-color: #268085;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+table tbody tr:nth-of-type(even){
+    background-color: #f3f3f3;
+    color: #268085;
+}
+
+table tbody tr:last-of-type {
+    border-bottom: 2px solid #268085;
+}
+
+td{
+/*    border: 2px solid #268085;*/
+/*    padding: 10px 0;*/
+/*    text-align: center;*/
 }
 
 .ok {
@@ -100,11 +136,6 @@ table{
     color: #fc8c0f;
 }
 
-td{
-  border: 3px solid #268085;
-  padding: 10px 0;
-  text-align: center;
-}
 
 h1 {
     color: #268085;

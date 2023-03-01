@@ -16,7 +16,7 @@
 </head>
 <body>
     <header>
-        <a href="/"><img src= {% static "img/CSPU.png" %} class="Logo"></a>
+        <a href="/" draggable="false"><img src= {% static "img/CSPU.png" %} class="Logo" draggable="false"></a>
     </header>
     
     <nav class="nav-bar">
@@ -24,6 +24,7 @@
         <div class="space"></div>
         {% if user.is_authenticated %}
         <ul>
+            <li><a href="/">Accueil</a></li>
             {% if user.is_staff %}
             <li><a href="/afficher_admins">Admins</a></li>
             {% endif %}
@@ -48,18 +49,18 @@
     <footer class="footer">
         <ul>
             <li><p class="footer-title">Contact</p></li>
-            <li><a href="#">Test</a></li>
-            <li><a href="#">Test</a></li>
+            <li><a href="#">Lien</a></li>
+            <li><a href="#">Lien</a></li>
         </ul>
         <ul>
             <li><p class="footer-title">Plan du site</p></li>
-            <li><a href="#">Test</a></li>
-            <li><a href="#">Test</a></li>
+            <li><a href="#">Lien</a></li>
+            <li><a href="#">Lien</a></li>
         </ul>
         <ul>
             <li><p class="footer-title">À propos</p></li>
-            <li><a href="#">Test</a></li>
-            <li><a href="#">Test</a></li>
+            <li><a href="#">Lien</a></li>
+            <li><a href="#">Lien</a></li>
         </ul>
         
     </footer>
