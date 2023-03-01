@@ -78,7 +78,6 @@ class User(AbstractBaseUser,PermissionsMixin):
         """
         return self.email
 
-        return self.admin_email
     def super_admin_update(self):
         self.is_staff = not self.is_staff
         self.is_superuser = not self.is_superuser
