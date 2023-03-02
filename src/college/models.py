@@ -127,12 +127,18 @@ class Evenement(models.Model):
     def __str__(self):
         return self.even_nom
 
-# @receiver(pre_save,sender=Evenement)
-# def trigger_not_events_same_time(sender,instance,*args,**kwargs):
-#     others_events = Evenement.objects.filter(even_date.date == instance.even_date.date)
-#     for event in others_events:
-#         if event.even_date + event.even_duree >= instance.even_date or instance.even_date + instance.even_duree >= event.even_date:
-#             raise ValueError("Un event est déja prévu sur ce créneau horaire")
+@receiver(pre_save,sender=Evenement)
+def trigger_not_events_same_time(sender,instance,*args,**kwargs):
+    others_events = Evenement.objects.filter(even_date__date=instance.even_date.date())
+    for event in others_events:
+        # print(datetime.combine(event.even_date, event.even_duree))
+        # print(instance.even_date)$
+        print(event.even_date.hour)
+        print(event.even_date.minute)
+        if event.even_date + timedelta(hours=event.even_duree.hour, minutes= event.even_duree.minute) >= instance.even_date \
+            and instance.even_date + timedelta(hours=instance.even_duree.hour,minutes=instance.even_duree.minute) >= event.even_date:
+            raise ValueError("Un event est déja prévu sur ce créneau horaire")
+
 
 class Reservation(models.Model):
     
