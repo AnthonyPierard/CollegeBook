@@ -92,22 +92,18 @@ class User(AbstractBaseUser,PermissionsMixin):
 #         raise ValueError("Email déjà attribuée à un autre admin")
 
 
-class Salle(models.Model):
+class ConfigurationSalle(models.Model):
 
-    salle_nom = models.CharField("Nom de la salle",max_length=50)
-    salle_nbr_places_normal = models.IntegerField("Nombres de places normales")
-    salle_configuration = models.FileField("Sauvegarde de la configuration de la salle")#definir le type de fichier que l'on veut pour les configurations (.json  ?) - emile
+    config_nom = models.CharField("Nom de la configuration de salle",max_length=50,unique=True)
+    config_nbr_places_normal = models.IntegerField("Nombres de places normales")
+    config_configuration = models.JSONField("Sauvegarde de la configuration de la salle")#definir le type de fichier que l'on veut pour les configurations (.json  ?) - emile
 
     createur = models.ForeignKey(User,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.salle_nom
 
-@receiver(pre_save,sender=Salle)
-def trigger_not_same_salle(sender,instance,*args,**kwargs):
-    others_salles = Salle.objects.filtre(salle_nom = instance.salle_nom).filtre(createur = instance.createur)
-    if others_salles.count() > 0:
-        raise ValueError("Ce nom de configuration de salle existe deja")
+
 
 class Evenement(models.Model):
     #les id sont automatiquement créer par django
@@ -120,14 +116,14 @@ class Evenement(models.Model):
     #can_moderate = trouver comment faire l'espèce de double liste de la maquette
     #promo_code
     even_duree = models.TimeField("Durée de l'événement",default='02:00')
-    admin = models.ForeignKey(User,on_delete=models.CASCADE, null= True)
+    admin = models.ForeignKey(User,on_delete=models.CASCADE, null= True)# POURQUOI NULL = TRUE ICI ???
     #pour tester un simple evenement je le met en commentaire
     #configuration = models.ForeignKey(Salle,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.even_nom
 
-@receiver(pre_save,sender=Evenement)
+@receiver(pre_save,sender=Evenement) # a retravailler maintenant qu'il y a des Representation
 def trigger_not_events_same_time(sender,instance,*args,**kwargs):
     others_events = Evenement.objects.filter(even_date__date=instance.even_date.date())
     for event in others_events:
@@ -139,6 +135,15 @@ def trigger_not_events_same_time(sender,instance,*args,**kwargs):
             and instance.even_date + timedelta(hours=instance.even_duree.hour,minutes=instance.even_duree.minute) >= event.even_date:
             raise ValueError("Un event est déja prévu sur ce créneau horaire")
 
+class Salle(models.Model):
+    salle_siege_restant = models.IntegerField("Nombre de places assise encore disponible")
+    salle_debout_restant = models.IntegerField("Nombre de places debout encore disponible")
+    salle_etat_salle = models.JSONField("Sauvegarde de la salle en prenant compte les places déjà reservées")
+
+class Representation(models.Model):
+    rep_date = models.DateTimeField("Date",default=datetime.now())
+    rep_event = models.ForeignKey(Evenement,on_delete=models.CASCADE)
+    rep_salle = models.OneToOneField(Salle,on_delete=models.CASCADE)
 
 class Reservation(models.Model):
     
@@ -174,15 +179,34 @@ def trigger_not_same_codepromo(sender,instance,*args,**kwargs):
     if others_codepromo.count() > 0:
         raise ValueError("Ce code existe déjà pour cet événement")
 
+
+
+
 class Ticket(models.Model):
-    ticket_siege = models.CharField("Trigramme du siège",max_length=3)
-    ticket_debout = models.BooleanField("Place debout ou assise",default=False)
-    ticket_prix = models.FloatField("Prix de la place")
+    ticket_siege_numero = models.CharField("Trigramme du numéro de place ou DBT pour une place debout",max_length=3)
+    ticket_debout = models.BooleanField("Vrai si place debout sinon place assise",default=False)
+    ticket_prix_place = models.FloatField("Prix de la place")
     #si il y a besoin de plus d'info : type de boisson, nombre de boisson, ...
     #alors on devrait créer une nouvelle table pour les boissons et la nourriture
     ticket_boisson = models.IntegerField("Ticket boisson pris avec la réservation",default=0) # je metterai des Integer ici pour le nombre de tickets boissons et nourriture achetés - emile
     ticket_nourriture = models.IntegerField("Ticket nourriture pris avec la réservation",default=0) # same
     Reservation = models.ForeignKey(Reservation,on_delete=models.CASCADE)
+    Salle = models.ForeignKey(Salle,on_delete=models.CASCADE)
+
+@receiver(pre_save,sender=Ticket)
+def trigger_if_debout_no_siege(sender,instance,*args,**kwargs):
+    if(instance.ticket_debout == True and instance.ticket_siege_numero != 'DBT'):
+        raise ValueError("Une place debout n'a pas de numero de siege")
+    if(instance.ticket_debout == False and instance.ticket_siege_numero == 'DBT'):
+        raise ValueError("Le Siege doit avoir un numéro si il n'est pas debout")
+    
+class Prix(models.Model):
+    prix_type = models.CharField("Boisson ou nourriture",choices=[("1","boisson"),("2","nourriture")],max_length=10)
+    prix_prix = models.FloatField("Prix",default=1.0)
+
+    # class Meta:
+    #    default_permissions=['change','view']
+
 
 # !!! bien faire une migration de la db à chaque fois qu'elle est modifiée !!!
 # executer les commandes :
