@@ -64,6 +64,12 @@ class EventForm(forms.ModelForm):
         ]
         lables = {'event_nom' : 'Nom','even_date':'date','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf'}
 
+    def save(self, request, commit=True):
+        event = super(EventForm, self).save(commit=False)
+        event.admin_id = request.user.id
+        if commit:
+            event.save()
+        return event
 class UpdateDateEventForm(forms.ModelForm):
     class Meta:
         model = Evenement

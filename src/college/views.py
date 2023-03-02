@@ -30,7 +30,7 @@ def cre_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            form.save(request=request)
             return HttpResponseRedirect('/')
     else:
         form = EventForm()

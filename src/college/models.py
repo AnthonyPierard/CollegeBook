@@ -120,7 +120,7 @@ class Evenement(models.Model):
     #can_moderate = trouver comment faire l'espèce de double liste de la maquette
     #promo_code
     even_duree = models.TimeField("Durée de l'événement",default='02:00')
-    admin = models.ForeignKey(User,on_delete=models.CASCADE, null= True)
+    admin = models.ForeignKey(User,on_delete=models.CASCADE)
     #pour tester un simple evenement je le met en commentaire
     #configuration = models.ForeignKey(Salle,on_delete=models.CASCADE)
 
