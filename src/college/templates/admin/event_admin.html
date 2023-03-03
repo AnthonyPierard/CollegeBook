@@ -20,7 +20,7 @@
                 <td><a href="{% url 'college:visu_detail' event.id %}">{{event.even_nom}}</a></td>
                 <td>{{event.even_date}}</td>
                 <td><a href="{% url 'college:change_date_event' event.id %}">Modifier</a></td>
-                <td><a href="#">X</a></td>
+                <td><a href="/del_event/{{event.id}}">X</a></td>
             </tr>
         {% endfor %}
         </tbody>
