@@ -113,12 +113,11 @@ def admin_event_change_date(request, event_id):
 
 def admin_event_delete(request, event_id):
     if request.method=='POST':
-        form = ConfirmForm()
+        form = ConfirmForm(request.POST)
         if form.is_valid():
-            choice = form.cleaned_data('choice')[0]
-            if choice=="OUI":
-                event = Evenement.objects.filter(pk = event_id)[0]
-                event.delete
+            choice = form.cleaned_data['choix']
+            if choice=="1":
+                Evenement.objects.filter(pk = event_id).delete()
                 #avertir les personnes qui ont réserver via un mail.
         all_event_for_admin = Evenement.objects.filter(admin=request.user.id)
         return render(request,'admin/event_admin.html', {'all_event_admin' : all_event_for_admin})
