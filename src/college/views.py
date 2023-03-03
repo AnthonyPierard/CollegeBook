@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .models import Evenement, User
-from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm
+from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm, UpdateDateEventForm, ConfirmForm
 
 
 def visu_event(request):
@@ -105,8 +105,24 @@ def admin_event_change_date(request, event_id):
             ok_message = "La date à été correctement changée"
             all_event_for_admin = Evenement.objects.filter(admin=request.user.id)
             #ajouter ici un envois d'un mail a toutes les personnes qui ont réservé
-            return render(request, 'admin/event_admin.html', {'all_event_admin' : all_event_for_admin, "admin" : request.user, "msg" : ok_message, "connected" : request.user.is_authenticated, "form" : form})
+            return render(request, 'admin/event_admin.html', {'all_event_admin' : all_event_for_admin, "admin" : request.user, "msg" : ok_message, "connected" : request.user.is_authenticated})
     else:
         form = UpdateDateEventForm()
         event = Evenement.objects.filter(pk = event_id)[0]
         return render(request, 'admin/change_date_event.html', {"admin" : request.user, "form" : form, "connected" : request.user.is_authenticated, "event": event})
+
+def admin_event_delete(request, event_id):
+    if request.method=='POST':
+        form = ConfirmForm()
+        if form.is_valid():
+            choice = form.cleaned_data('choice')[0]
+            if choice=="OUI":
+                event = Evenement.objects.filter(pk = event_id)[0]
+                event.delete
+                #avertir les personnes qui ont réserver via un mail.
+        all_event_for_admin = Evenement.objects.filter(admin=request.user.id)
+        return render(request,'admin/event_admin.html', {'all_event_admin' : all_event_for_admin})
+    else:
+        form = ConfirmForm()
+        event = Evenement.objects.filter(pk = event_id)[0]
+        return render(request, 'admin/confirm_del.html', {"form" : form, "event" : event})

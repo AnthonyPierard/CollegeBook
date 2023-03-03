@@ -77,3 +77,10 @@ class UpdateDateEventForm(forms.ModelForm):
             'even_date',
         ]
         lables = {'even_date' : ''}
+
+class ConfirmForm(forms.Form):
+    CHOICES = [
+        ('1', 'OUI'),
+        ('2', 'NON'),
+    ]
+    choix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
