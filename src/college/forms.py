@@ -55,21 +55,22 @@ class EventForm(forms.ModelForm):
             'even_date',
             'even_duree',
             #'event_time',
-            'configuration_salle'
+            'configuration_salle',
+            'admin'
 
             #'can_moderate',
             #'promo_code'
 
             
         ]
-        lables = {'event_nom' : 'Nom','even_date':'date','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf'}
+        lables = {'event_nom' : 'Nom','even_date':'date','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf', 'admin':'Organisateurs'}
 
-    def save(self, request, commit=True):
-        event = super(EventForm, self).save(commit=False)
-        event.admin_id = request.user.id
-        if commit:
-            event.save()
-        return event
+    # def save(self, request, commit=True):
+    #     event = super(EventForm, self).save(commit=False)
+    #     event.admin_id = request.user.id
+    #     if commit:
+    #         event.save()
+    #     return event
 class UpdateDateEventForm(forms.ModelForm):
     class Meta:
         model = Evenement
