@@ -106,7 +106,7 @@ class Evenement(models.Model):
     configuration_salle = models.CharField("Configuration de la salle",choices=[("1","classique"),("2","espacée"),("3","proche")],max_length=2000,default="classique")# ici faut faire une foreignKey avec les Salles pour le choices. Je change pas encore pour pas casser la vue - emile
     #can_moderate = trouver comment faire l'espèce de double liste de la maquette
     even_duree = models.TimeField("Durée de l'événement",default='02:00')
-    config_salle = models.ForeignKey(Configuration,on_delete=models.CASCADE)
+    config_salle = models.ForeignKey(Configuration,on_delete=models.CASCADE, null=True) #todo Retirer le null=True
 
     admin = models.ManyToManyField(User)
     #pour tester un simple evenement je le met en commentaire
@@ -148,17 +148,17 @@ class Representation(models.Model):
 # Trigger permettant de ne pas pouvoir programmer des Representations sur 
 # les mêmes créneaux horaires et créer un conflit horaire.
 #
-@receiver(pre_save,sender=Representation)
-def trigger_not_repr_same_time(sender,instance,*args,**kwargs):
-    others_representations = sender.objects.filter(repr_date__date=instance.repr_date.date())
-    for repr in others_representations:
-        # print(datetime.combine(event.even_date, event.even_duree))
-        # print(instance.even_date)$
-        # print(event.even_date.hour)
-        # print(event.even_date.minute)
-        if repr.repr_date + timedelta(hours=repr.event.even_duree.hour, minutes= repr.event.even_duree.minute) >= instance.repr_date \
-            and instance.repr_date + timedelta(hours=instance.event.even_duree.hour,minutes=instance.event.even_duree.minute) >= repr.repr_date:
-            raise ValueError("Un event est déja prévu sur ce créneau horaire")
+# @receiver(pre_save,sender=Representation)
+# def trigger_not_repr_same_time(sender,instance,*args,**kwargs):
+#     others_representations = sender.objects.filter(repr_date__date=instance.repr_date.date())
+#     for repr in others_representations:
+#         # print(datetime.combine(event.even_date, event.even_duree))
+#         # print(instance.even_date)$
+#         # print(event.even_date.hour)
+#         # print(event.even_date.minute)
+#         if repr.repr_date + timedelta(hours=repr.event.even_duree.hour, minutes= repr.event.even_duree.minute) >= instance.repr_date \
+#             and instance.repr_date + timedelta(hours=instance.event.even_duree.hour,minutes=instance.event.even_duree.minute) >= repr.repr_date:
+#             raise ValueError("Un event est déja prévu sur ce créneau horaire")
 
 
 
