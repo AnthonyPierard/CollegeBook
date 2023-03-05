@@ -1,7 +1,7 @@
 from django import forms
 from django.core import validators
 from .utils import check_password
-from .models import Evenement, User
+from .models import Evenement, Representation, User
 
 class AdminForm(forms.ModelForm):
     class Meta:
@@ -52,7 +52,6 @@ class EventForm(forms.ModelForm):
             'even_nom',
             'even_illustration',
             'even_description',
-            'even_date',
             'even_duree',
             #'event_time',
             'configuration_salle',
@@ -63,7 +62,7 @@ class EventForm(forms.ModelForm):
 
             
         ]
-        lables = {'event_nom' : 'Nom','even_date':'date','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf', 'admin':'Organisateurs'}
+        lables = {'event_nom' : 'Nom','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf', 'admin':'Organisateurs'}
 
     # def save(self, request, commit=True):
     #     event = super(EventForm, self).save(commit=False)
@@ -73,11 +72,11 @@ class EventForm(forms.ModelForm):
     #     return event
 class UpdateDateEventForm(forms.ModelForm):
     class Meta:
-        model = Evenement
+        model = Representation
         fields = [
-            'even_date',
+            'repr_date',
         ]
-        lables = {'even_date' : ''}
+        lables = {'repr_date' : ''}
 
 class ConfirmForm(forms.Form):
     CHOICES = [
