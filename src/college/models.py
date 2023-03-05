@@ -9,11 +9,6 @@ from django.core.mail import send_mail
 from polymorphic.models import PolymorphicModel
 # Create your models here.
 
-class Configuration(models.Model):
-    config_nom = models.CharField(('Nom de configuration'), max_length=30, blank=True, unique=True)
-    config_disposition = models.JSONField("Disposition de la salle")
-
-    evenement = models.ForeignKey('Evenement',on_delete=models.CASCADE, null=True)
 
 
 class UserManager(BaseUserManager):
@@ -52,7 +47,6 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_active = models.BooleanField(('Actif'), default=True)
     is_staff = models.BooleanField(('SuperAdmin'), default=False)
 
-    config = models.ForeignKey(Configuration,on_delete=models.CASCADE, null=True)
 
     objects = UserManager()
 
@@ -93,13 +87,32 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     def archive_admin(self):
         self.is_active = not self.is_active
-   
-# @receiver(pre_save,sender=Admin)
-# def trigger_not_same_email(sender,instance,*args,**kwargs):
-#     others_admins = Admin.objects.filter(admin_email = instance.admin_email)
-#     if others_admins.count() > 0 :
-#         raise ValueError("Email déjà attribuée à un autre admin")
 
+
+
+class Configuration(models.Model):
+    config_nom = models.CharField(('Nom de configuration'), max_length=30, blank=True, unique=True)
+    config_disposition = models.JSONField("Disposition de la salle")
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE, null=True)
+
+
+
+class Evenement(models.Model):
+    #les id sont automatiquement créer par django
+    even_nom = models.CharField("Nom de l'événement",max_length=200, unique=True)
+    even_description = models.CharField("Description de l'évènement", max_length=1000)
+    even_illustration = models.ImageField("Image(s) de l'évènement(s)",upload_to="Images/", blank=True, null=True)
+    configuration_salle = models.CharField("Configuration de la salle",choices=[("1","classique"),("2","espacée"),("3","proche")],max_length=2000,default="classique")# ici faut faire une foreignKey avec les Salles pour le choices. Je change pas encore pour pas casser la vue - emile
+    #can_moderate = trouver comment faire l'espèce de double liste de la maquette
+    even_duree = models.TimeField("Durée de l'événement",default='02:00')
+    config_salle = models.ForeignKey(Configuration,on_delete=models.CASCADE)
+
+    admin = models.ManyToManyField(User)
+    #pour tester un simple evenement je le met en commentaire
+
+    def __str__(self):
+        return self.even_nom
 
 class CodePromo(models.Model):
 
@@ -107,86 +120,30 @@ class CodePromo(models.Model):
     codepromo_montant = models.FloatField("Montant fixe de réduction",blank=True,default=0)
     codepromo_pourcentage = models.FloatField("Pourcentage de reduction sur le prix total",blank=True,default=0)#faut faire des triggers, jsp comment faire - emile
 
+    event = models.ForeignKey(Evenement,on_delete=models.CASCADE)
+
+
     def __str__(self) -> str:
         return "{}___{}".format(self.codepromo_code , self.Evenement.even_nom)
 
+
+#
+# Trigger permettant d'empecher la création d'un meme code pour le meme evenement. 
+# Laisse la possibilité de créer le meme code promo si il est lié à un autre événement.
+#
 @receiver(pre_save,sender = CodePromo)
 def trigger_not_same_codepromo(sender,instance,*args,**kwargs):
     others_codepromo = sender.objects.filter(codepromo_code=instance.codepromo_code).filter(Evenement=instance.Evenement)
     if others_codepromo.count() > 0:
         raise ValueError("Ce code existe déjà pour cet événement")
 
-class Reservation(models.Model):
-    reserv_email = models.EmailField("Adresse mail de la reservation")
-    reserv_nom = models.CharField("Nom de la personne qui a réserver", max_length=50)
-    reserv_prenom = models.CharField("Prénom de la personne qui réserve", max_length=50)
-    reserv_tel = models.CharField("Numéro de tel de la personne qui réserve", max_length=10)
-    reserv_date = models.DateTimeField("Date de la réservation", default=datetime.now())
-    reserv_remarque = models.CharField("Remarque sur la réservation", max_length=1000)
-    reserv_numero = models.IntegerField("Numéro du ticket pour le spectatcle")
-
-    ticket = models.ForeignKey('Ticket',on_delete=models.CASCADE, null=True)
-
-
-    def __str__(self):
-        return "Ticket n°" + str(self.reserv_numero) + " pour le spectacle " + self.evenement
 
 class Representation(models.Model):
     repr_date = models.DateTimeField("Date",default=datetime.now())
+    repr_salle_places_restantes = models.JSONField("Informations de la salle")
 
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, null=True)
+    event = models.ForeignKey(Evenement,on_delete=models.CASCADE)
 
-class InfoSalle(models.Model):
-    representation = models.OneToOneField(Representation, on_delete=models.CASCADE, primary_key=True)
-
-    salle_places_restantes = models.JSONField("Informations de la salle")
-
-class Evenement(models.Model):
-    #les id sont automatiquement créer par django
-    even_nom = models.CharField("Nom de l'événement",max_length=200, unique=True)
-    even_description = models.CharField("Description de l'évènement", max_length=1000)
-    even_illustration = models.ImageField("Image(s) de l'évènement(s)",upload_to="Images/", blank=True, null=True)
-    #event_time = models.TimeField("Heure",default=datetime.now)
-    configuration_salle = models.CharField("Configuration de la salle",choices=[("1","classique"),("2","espacée"),("3","proche")],max_length=2000,default="classique")# ici faut faire une foreignKey avec les Salles pour le choices. Je change pas encore pour pas casser la vue - emile
-    #can_moderate = trouver comment faire l'espèce de double liste de la maquette
-    #promo_code
-    even_duree = models.TimeField("Durée de l'événement",default='02:00')
-
-    admin = models.ManyToManyField(User)
-
-    code_promo = models.ForeignKey(CodePromo,on_delete=models.CASCADE, null=True)
-
-    representation = models.ForeignKey(Representation,on_delete=models.CASCADE)
-
-    place = models.ForeignKey('Place',on_delete=models.CASCADE)
-
-    #pour tester un simple evenement je le met en commentaire
-    #configuration = models.ForeignKey(Salle,on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.even_nom
-
-class Ticket(PolymorphicModel):
-    # ticket_debout = models.BooleanField("Place debout ou assise",default=False)
-    # ticket_prix = models.FloatField("Prix de la place")
-    ticket_boisson = models.IntegerField("Ticket boisson pris avec la réservation",default=0)
-    ticket_nourriture = models.IntegerField("Ticket nourriture pris avec la réservation",default=0)
-
-class TicketDebout(Ticket):
-    pass
-
-class TicketAssis(Ticket):
-    ticket_siege = models.CharField("Trigramme du siège", max_length=3)
-
-class Place(models.Model):
-    place_nom = models.CharField("Nom de la place",max_length=50)
-    place_prix = models.DecimalField("Prix de la place", max_digits=5, decimal_places=2)
-
-    ticket = models.ForeignKey(Ticket,on_delete=models.CASCADE, null=True)
-
-class Prix(models.Model):
-    type = models.CharField("Nom de l'élément",max_length=50)
-    prix = models.DecimalField("Prix de l'élément'", max_digits=3, decimal_places=2)
 
 # @receiver(pre_save,sender=Evenement)
 # def trigger_not_events_same_time(sender,instance,*args,**kwargs):
@@ -199,6 +156,58 @@ class Prix(models.Model):
 #         if event.even_date + timedelta(hours=event.even_duree.hour, minutes= event.even_duree.minute) >= instance.even_date \
 #             and instance.even_date + timedelta(hours=instance.even_duree.hour,minutes=instance.even_duree.minute) >= event.even_date:
 #             raise ValueError("Un event est déja prévu sur ce créneau horaire")
+
+
+
+
+
+class Reservation(models.Model):
+    reserv_email = models.EmailField("Adresse mail de la reservation")
+    reserv_nom = models.CharField("Nom de la personne qui a réserver", max_length=50)
+    reserv_prenom = models.CharField("Prénom de la personne qui réserve", max_length=50)
+    reserv_tel = models.CharField("Numéro de tel de la personne qui réserve", max_length=10)
+    reserv_date = models.DateTimeField("Date de la réservation", default=datetime.now())
+    reserv_remarque = models.CharField("Remarque sur la réservation", max_length=1000)
+    reserv_numero = models.IntegerField("Numéro du ticket pour le spectatcle")
+
+    representation = models.ForeignKey(Representation, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return "Ticket n°" + str(self.reserv_numero) + " pour le spectacle " + self.evenement
+
+
+
+class Place(models.Model):
+    place_nom = models.CharField("Nom de la place",max_length=50)
+    place_prix = models.DecimalField("Prix de la place", max_digits=5, decimal_places=2)
+    
+    event = models.ForeignKey(Evenement,on_delete=models.CASCADE)
+
+
+class Ticket(PolymorphicModel):
+    # ticket_debout = models.BooleanField("Place debout ou assise",default=False)
+    # ticket_prix = models.FloatField("Prix de la place")
+    ticket_boisson = models.IntegerField("Ticket boisson pris avec la réservation",default=0)
+    ticket_nourriture = models.IntegerField("Ticket nourriture pris avec la réservation",default=0)
+    type_place = models.ForeignKey(Place,on_delete=models.CASCADE, null=True)
+
+    reservation = models.ForeignKey(Reservation,on_delete=models.CASCADE)
+
+
+class TicketDebout(Ticket):
+    pass
+
+class TicketAssis(Ticket):
+    ticket_siege = models.CharField("Trigramme du siège", max_length=3)
+
+
+
+class Prix(models.Model):
+    type = models.CharField("Nom de l'élément",max_length=50)
+    prix = models.DecimalField("Prix de l'élément'", max_digits=3, decimal_places=2)
+
+
 
 
 # !!! bien faire une migration de la db à chaque fois qu'elle est modifiée !!!
