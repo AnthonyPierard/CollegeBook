@@ -78,7 +78,7 @@ class EventForm(forms.ModelForm):
             if dates != '':
                 event = Evenement.objects.get(even_nom=self.cleaned_data['even_nom'])
                 for date in dates:
-                    test = datetime.strptime(date, '%Y-%m-%d').date()
+                    test = datetime.strptime(date, '%d-%m-%Y/%H:%M')
                     Representation(repr_date=test, repr_salle_places_restantes={}, event_id=event.id).save()
         return event
 class UpdateDateEventForm(forms.ModelForm):
