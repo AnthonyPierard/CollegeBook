@@ -6,4 +6,5 @@ src/college/__pycache__/
 src/college/migrations/
 src/*.sqlite3
 src/db.sqlite3
+src/Media/Images/
 *.pyc
