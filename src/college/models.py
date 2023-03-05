@@ -124,7 +124,7 @@ class CodePromo(models.Model):
 
 
     def __str__(self) -> str:
-        return "{}___{}".format(self.codepromo_code , self.Evenement.even_nom)
+        return "{}___{}".format(self.codepromo_code , self.event.even_nom)
 
 
 #
@@ -144,18 +144,21 @@ class Representation(models.Model):
 
     event = models.ForeignKey(Evenement,on_delete=models.CASCADE)
 
-
-# @receiver(pre_save,sender=Evenement)
-# def trigger_not_events_same_time(sender,instance,*args,**kwargs):
-#     others_events = Evenement.objects.filter(even_date__date=instance.even_date.date())
-#     for event in others_events:
-#         # print(datetime.combine(event.even_date, event.even_duree))
-#         # print(instance.even_date)$
-#         print(event.even_date.hour)
-#         print(event.even_date.minute)
-#         if event.even_date + timedelta(hours=event.even_duree.hour, minutes= event.even_duree.minute) >= instance.even_date \
-#             and instance.even_date + timedelta(hours=instance.even_duree.hour,minutes=instance.even_duree.minute) >= event.even_date:
-#             raise ValueError("Un event est déja prévu sur ce créneau horaire")
+#
+# Trigger permettant de ne pas pouvoir programmer des Representations sur 
+# les mêmes créneaux horaires et créer un conflit horaire.
+#
+@receiver(pre_save,sender=Representation)
+def trigger_not_repr_same_time(sender,instance,*args,**kwargs):
+    others_representations = sender.objects.filter(repr_date__date=instance.repr_date.date())
+    for repr in others_representations:
+        # print(datetime.combine(event.even_date, event.even_duree))
+        # print(instance.even_date)$
+        # print(event.even_date.hour)
+        # print(event.even_date.minute)
+        if repr.repr_date + timedelta(hours=repr.event.even_duree.hour, minutes= repr.event.even_duree.minute) >= instance.repr_date \
+            and instance.repr_date + timedelta(hours=instance.event.even_duree.hour,minutes=instance.event.even_duree.minute) >= repr.repr_date:
+            raise ValueError("Un event est déja prévu sur ce créneau horaire")
 
 
 
