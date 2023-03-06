@@ -3,7 +3,9 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .models import Evenement, User
+from datetime import datetime
+
+from .models import Evenement, User, Representation
 from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm, UpdateDateEventForm, ConfirmForm
 
 
@@ -65,8 +67,13 @@ def admin_display(request):
 
 @login_required
 def admin_event(request, admin_id):
-    all_event_for_admin = Evenement.objects.filter(admin=admin_id)
-    return render(request, 'admin/event_admin.html', {'all_event_admin' : all_event_for_admin, "admin" : request.user, "connected" : request.user.is_authenticated})
+    admin_events = Evenement.objects.filter(admin=admin_id)
+    admin_representations = list()
+    for event in admin_events:
+        representations = Representation.objects.filter(event=event.id)
+        for representation in representations:
+            admin_representations.append(representation)
+    return render(request, 'admin/event_admin.html', {'admin_representations' :admin_representations})
 
 def admin_login(request):
     if request.method == 'POST':
@@ -97,33 +104,35 @@ def admin_change_archived(request, admin_id):
     admin.save()
     return HttpResponseRedirect('/afficher_admins')
 
-def admin_event_change_date(request, event_id):
-    if request.method== 'POST':
+def admin_representation_change_date(request, representation_id):
+    if request.method == 'POST':
         form = UpdateDateEventForm(request.POST)
+        print(form)
         if form.is_valid():
-            event = Evenement.objects.filter(pk = event_id)[0]
-            event.even_date = form.cleaned_data['even_date']
-            event.save()
+            print("yes")
+            representation = Representation.objects.filter(pk = representation_id)[0]
+            representation.repr_date = datetime.strptime(form.cleaned_data['repr_date'], '%d-%m-%Y/%H:%M')
+            representation.save()
             ok_message = "La date à été correctement changée"
-            all_event_for_admin = Evenement.objects.filter(admin=request.user.id)
-            #ajouter ici un envois d'un mail a toutes les personnes qui ont réservé
-            return render(request, 'admin/event_admin.html', {'all_event_admin' : all_event_for_admin, "admin" : request.user, "msg" : ok_message, "connected" : request.user.is_authenticated})
+        return HttpResponseRedirect(f'/admin_event/{request.user.id}')
+            # all_event_for_admin = Evenement.objects.filter(admin=request.user.id)
+            # #ajouter ici un envois d'un mail a toutes les personnes qui ont réservé
+            # return render(request, 'admin/event_admin.html', {'all_event_admin' : all_event_for_admin, "msg" : ok_message})
     else:
         form = UpdateDateEventForm()
-        event = Evenement.objects.filter(pk = event_id)[0]
-        return render(request, 'admin/change_date_event.html', {"admin" : request.user, "form" : form, "connected" : request.user.is_authenticated, "event": event})
+        representation = Representation.objects.filter(pk = representation_id)[0]
+        return render(request, 'admin/change_date_representation.html', {"form" : form, "representation": representation})
 
-def admin_event_delete(request, event_id):
+def admin_representation_delete(request, representation_id):
     if request.method=='POST':
         form = ConfirmForm(request.POST)
         if form.is_valid():
             choice = form.cleaned_data['choix']
             if choice=="1":
-                Evenement.objects.filter(pk = event_id).delete()
+                Representation.objects.filter(pk = representation_id).delete()
                 #avertir les personnes qui ont réserver via un mail.
-        all_event_for_admin = Evenement.objects.filter(admin=request.user.id)
-        return render(request,'admin/event_admin.html', {'all_event_admin' : all_event_for_admin})
+        return HttpResponseRedirect(f'/admin_event/{request.user.id}')
     else:
         form = ConfirmForm()
-        event = Evenement.objects.filter(pk = event_id)[0]
+        event = Representation.objects.filter(pk = representation_id)[0]
         return render(request, 'admin/confirm_del.html', {"form" : form, "event" : event})

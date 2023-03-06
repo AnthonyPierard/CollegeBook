@@ -66,7 +66,7 @@ class EventForm(forms.ModelForm):
         ]
         lables = {'event_nom' : 'Nom','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf', 'admin':'Organisateurs'}
 
-    date = forms.CharField()
+    date = forms.CharField(widget=forms.TextInput(attrs={'class':'MultiDate'}))
     def save(self, commit=True):
         event = super(EventForm, self).save(commit=False)
 
@@ -81,13 +81,8 @@ class EventForm(forms.ModelForm):
                     test = datetime.strptime(date, '%d-%m-%Y/%H:%M')
                     Representation(repr_date=test, repr_salle_places_restantes={}, event_id=event.id).save()
         return event
-class UpdateDateEventForm(forms.ModelForm):
-    class Meta:
-        model = Representation
-        fields = [
-            'repr_date',
-        ]
-        lables = {'repr_date' : ''}
+class UpdateDateEventForm(forms.Form):
+    repr_date = forms.CharField(widget=forms.TextInput(attrs={'class':'SingleDate'}))
 
 class ConfirmForm(forms.Form):
     CHOICES = [
