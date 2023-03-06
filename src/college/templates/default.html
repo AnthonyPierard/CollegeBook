@@ -28,6 +28,7 @@
             <li><a href="/">Accueil</a></li>
             {% if user.is_staff %}
             <li><a href="/afficher_admins">Admins</a></li>
+            <li><a href="/creation_compte">Créer un compte</a></li>
             {% endif %}
             <li><a href="/newEvent">Créer un événement</a></li>
             <li><a href="/admin_event/{{ user.id }}">Vos événements</a></li>
