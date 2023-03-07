@@ -11,6 +11,11 @@ ul {
     margin: 0;
 }
 
+a {
+    user-select:none;
+    -webkit-user-drag: none;
+}
+
 .content {
     margin: 0 250px;
 }
@@ -91,7 +96,7 @@ table{
     border-radius: 10px 10px 0 0;
     font-family: 'Noto Sans', sans-serif;
     overflow: hidden;
-    box-shadow:  0 0 20px rgba(0,0,0,0.15);
+    box-shadow:  0 0 20px rgba(0,0,0,0.05);
 
 }
 
@@ -122,18 +127,21 @@ table tbody tr:last-of-type {
     border-bottom: 2px solid #268085;
 }
 
-td{
-/*    border: 2px solid #268085;*/
-/*    padding: 10px 0;*/
-/*    text-align: center;*/
-}
 
 .ok {
-    color:#268085;
+    color: white;
+    border: 2px solid #268085;
+    border-radius: 5px;
+    background-color: #268085;
+    padding: 4px 20px 0 20px;
 }
 
 .ko {
-    color: #fc8c0f;
+    color: white;
+    border: 2px solid #fc8c0f;
+    border-radius: 5px;
+    background-color: #fc8c0f;
+    padding: 4px 20px 0 20px;
 }
 
 
