@@ -17,7 +17,7 @@ def visu_detail(request, even_id):
     event = get_object_or_404(Evenement, pk = even_id)
     return render(request, 'client/visu_detail.html', {"event" : event})
 
-@login_required
+@user_passes_test(lambda u:u.is_active and u.is_staff)
 def crea_compte(request):
     if request.method == 'POST':
         form = AdminForm(request.POST)
@@ -29,7 +29,7 @@ def crea_compte(request):
 
     return render(request, 'admin/crea_compte.html', {'form': form})
 
-@user_passes_test(lambda u:u.is_active and u.is_staff,login_url='')
+@login_required
 def cre_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
