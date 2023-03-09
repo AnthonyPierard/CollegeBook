@@ -1,7 +1,11 @@
 from django import forms
 from django.core import validators
 from .utils import check_password
-from .models import Evenement, User, Reservation
+from .models import Evenement, Representation, User, Reservation
+from datetime import datetime
+import json
+
+
 
 class AdminForm(forms.ModelForm):
     class Meta:
@@ -52,7 +56,6 @@ class EventForm(forms.ModelForm):
             'even_nom',
             'even_illustration',
             'even_description',
-            'even_date',
             'even_duree',
             #'event_time',
             'configuration_salle',
@@ -63,21 +66,25 @@ class EventForm(forms.ModelForm):
 
             
         ]
-        lables = {'event_nom' : 'Nom','even_date':'date','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf', 'admin':'Organisateurs'}
+        lables = {'event_nom' : 'Nom','even_duree':'Durée','even_description': 'desc', 'even_illustration':'illus','configuration_salle':'conf', 'admin':'Organisateurs'}
 
-    # def save(self, request, commit=True):
-    #     event = super(EventForm, self).save(commit=False)
-    #     event.admin_id = request.user.id
-    #     if commit:
-    #         event.save()
-    #     return event
-class UpdateDateEventForm(forms.ModelForm):
-    class Meta:
-        model = Evenement
-        fields = [
-            'even_date',
-        ]
-        lables = {'even_date' : ''}
+    date = forms.CharField(widget=forms.TextInput(attrs={'class':'MultiDate'}))
+    def save(self, commit=True):
+        event = super(EventForm, self).save(commit=False)
+
+        if commit:
+            event.save()
+            for admin in self.cleaned_data["admin"]:
+                event.admin.add(admin)
+            dates = self.cleaned_data['date'].split(', ')
+            if dates != '':
+                event = Evenement.objects.get(even_nom=self.cleaned_data['even_nom'])
+                for date in dates:
+                    test = datetime.strptime(date, '%d-%m-%Y/%H:%M')
+                    Representation(repr_date=test, repr_salle_places_restantes={}, event_id=event.id).save()
+        return event
+class UpdateDateEventForm(forms.Form):
+    repr_date = forms.CharField(widget=forms.TextInput(attrs={'class':'SingleDate'}))
 
 class ConfirmForm(forms.Form):
     CHOICES = [
