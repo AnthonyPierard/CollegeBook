@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .models import Evenement, User
-from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm, UpdateDateEventForm, ConfirmForm
+from .forms import *
 
 
 def visu_event(request):
@@ -55,6 +55,31 @@ def modif_compte(request,admin_id):
 #     admin.admin_is_archived = True
 #     admin.save()
 #     return visu_event(request) # l'url pue la merde en faisant ca
+
+def reservation_event(request, even_id):
+    if request.method == 'POST':
+        
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            newform = Reservation()
+            newform.reserv_email = form.cleaned_data['reserv_email']
+            newform.reserv_nom = form.cleaned_data["reserv_nom"]
+            newform.reserv_prenom = form.cleaned_data["reserv_prenom"]
+            newform.reserv_tel = form.cleaned_data["reserv_tel"]
+            newform.reserv_numero = 1
+            newform.evenement = Evenement.objects.filter(pk = even_id)[0]
+        #request_copy = request.POST.copy()
+        #request_copy['reserv_numero'] = 1
+        #form = ReservationForm(request_copy)
+            
+            newform.save()
+            return HttpResponseRedirect('/')
+        
+    else:
+        form = ReservationForm()
+    return render(request, 'client/reservation_event.html',{'form':form})
+
+
 
 @login_required
 def admin_display(request):
@@ -125,3 +150,6 @@ def admin_event_delete(request, event_id):
         form = ConfirmForm()
         event = Evenement.objects.filter(pk = event_id)[0]
         return render(request, 'admin/confirm_del.html', {"form" : form, "event" : event})
+    
+
+

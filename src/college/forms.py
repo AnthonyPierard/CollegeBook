@@ -1,7 +1,7 @@
 from django import forms
 from django.core import validators
 from .utils import check_password
-from .models import Evenement, User
+from .models import Evenement, User, Reservation
 
 class AdminForm(forms.ModelForm):
     class Meta:
@@ -85,3 +85,19 @@ class ConfirmForm(forms.Form):
         ('2', 'NON'),
     ]
     choix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+
+class ReservationForm(forms.ModelForm):
+    class Meta: 
+        model =  Reservation
+        fields = [
+        'reserv_email', 
+        'reserv_nom',
+        'reserv_prenom', 
+        'reserv_tel'
+        ]
+        labels = {'reserv_email' : 'email', 'reserv_nom' : 'nom', 'reserv_prenom' : 'prenom', 'reserv_tel' : 'numéro de téléphone'}
+
+
+
+        
+
