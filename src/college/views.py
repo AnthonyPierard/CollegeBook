@@ -136,7 +136,7 @@ def admin_representation_delete(request, representation_id):
         return render(request, 'admin/confirm_del.html', {"form" : form, "event" : event})
     
 
-def reservation_event(request, even_id):
+def reservation_event(request, representation_id):
     if request.method == 'POST':
         
         form = ReservationForm(request.POST)
@@ -147,10 +147,7 @@ def reservation_event(request, even_id):
             newform.reserv_prenom = form.cleaned_data["reserv_prenom"]
             newform.reserv_tel = form.cleaned_data["reserv_tel"]
             newform.reserv_numero = 1
-            newform.representation = Representation.objects.filter(pk = even_id)[0]
-        #request_copy = request.POST.copy()
-        #request_copy['reserv_numero'] = 1
-        #form = ReservationForm(request_copy)
+            newform.representation = Representation.objects.filter(pk = representation_id)[0]
             
             newform.save()
             return HttpResponseRedirect('/')
