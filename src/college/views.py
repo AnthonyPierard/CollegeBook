@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 
 from datetime import datetime
 
-from .models import Evenement, User, Representation
-from .forms import AdminForm,UpdateAdminForm,LoginAdminForm,EventForm, UpdateDateEventForm, ConfirmForm
+from .models import Evenement, User, Representation, Reservation
+from .forms import *
 
 
 def visu_event(request):
@@ -134,3 +134,30 @@ def admin_representation_delete(request, representation_id):
         form = ConfirmForm()
         event = Representation.objects.filter(pk = representation_id)[0]
         return render(request, 'admin/confirm_del.html', {"form" : form, "event" : event})
+    
+
+def reservation_event(request, even_id):
+    if request.method == 'POST':
+        
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            newform = Reservation()
+            newform.reserv_email = form.cleaned_data['reserv_email']
+            newform.reserv_nom = form.cleaned_data["reserv_nom"]
+            newform.reserv_prenom = form.cleaned_data["reserv_prenom"]
+            newform.reserv_tel = form.cleaned_data["reserv_tel"]
+            newform.reserv_numero = 1
+            newform.evenement = Evenement.objects.filter(pk = even_id)[0]
+        #request_copy = request.POST.copy()
+        #request_copy['reserv_numero'] = 1
+        #form = ReservationForm(request_copy)
+            
+            newform.save()
+            return HttpResponseRedirect('/')
+        
+    else:
+        form = ReservationForm()
+    return render(request, 'client/reservation_event.html',{'form':form})
+    
+
+

@@ -12,9 +12,12 @@ urlpatterns = [
     path('login/', views.admin_login),
     path('logout/', views.admin_logout),
     path('newEvent/',views.cre_event),
+    path('visu/<int:even_id>/reservation_event/', views.reservation_event),
     path('change_super_admin/<int:admin_id>', views.admin_change_super),
     path('change_archived/<int:admin_id>', views.admin_change_archived),
     path('admin_event/<int:admin_id>/', views.admin_event, name="admin_event"),
     path('admin_event/change_date/<int:representation_id>/', views.admin_representation_change_date, name="change_date_representation"),
     path('admin_event/del_representation/<int:representation_id>/', views.admin_representation_delete, name="delete_representation")
+
+
 ]
