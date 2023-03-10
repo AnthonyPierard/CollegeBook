@@ -177,7 +177,7 @@ class Reservation(models.Model):
 
 
     def __str__(self):
-        return "Ticket n°" + str(self.reserv_numero) + " pour le spectacle " + self.evenement
+        return "Ticket n°" + str(self.reserv_numero) + " pour le spectacle " + str(self.representation.repr_date)
 
 
 
