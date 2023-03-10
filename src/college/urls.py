@@ -12,7 +12,7 @@ urlpatterns = [
     path('login/', views.admin_login),
     path('logout/', views.admin_logout),
     path('newEvent/',views.cre_event),
-    path('visu/<int:even_id>/reservation_event/', views.reservation_event),
+    path('reservation_event/<int:representation_id>/', views.reservation_event),
     path('change_super_admin/<int:admin_id>', views.admin_change_super),
     path('change_archived/<int:admin_id>', views.admin_change_archived),
     path('admin_event/<int:admin_id>/', views.admin_event, name="admin_event"),
