@@ -1,0 +1,10 @@
+{% extends "default.html" %}
+
+{% block body %}
+    <h1 class="titre"> Souhaitez vous vraiment supprimer l'event {{event.name}} ?</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form}}
+        <input type="submit" value="Confirmer">
+    </form>
+{% endblock %}

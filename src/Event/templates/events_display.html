@@ -1,0 +1,24 @@
+{% extends "default.html" %}
+
+{% block body %} 
+    <h1 class="titre"> Les événements</h1>
+    {% for event in all_event %}
+      <div class="card mb-3" style="max-width: 100%; height: auto;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            {% if event.image %}
+            <img class="event-image" src="{{ event.image.url }}" class="img-fluid rounded-start" alt="{{event.name}}">
+            {%  endif %}
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{event.name}}</h5>
+              <p class="card-text">{{event.description}}</p>
+              <p class="card-text"><small class="text-muted">Durée: {{event.duration}} heures</small></p>
+              <a href="{% url 'Event:details' event.id %}" class="btn btn-primary">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+{% endblock %}
