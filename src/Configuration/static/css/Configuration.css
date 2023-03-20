@@ -1,0 +1,68 @@
+/* .full-area {
+    display:flex;
+    justify-content: center;
+    border: 2px solid black;
+} */
+.theatre {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    width: 100%;
+    border-top: 5vh solid white;
+    border-bottom:5vh solid white;
+    border-left: 5vh solid black;
+    background-color: white;
+    margin: 30px 0;
+}
+
+.seat-area {
+    height: 100%;
+    width: 90%;
+    background-color: pink;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.seat-row {
+    width: 5%;
+    height: 100%;
+    background-color: lightblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.seat-row + .cheap {
+    background-color: red;
+}
+
+.seat {
+    background-color: grey;
+    border-bottom:5px double black;
+    border-top:5px double black;
+    border-right:5px double black;
+    box-shadow: -1px -0 1px black;
+    height: 5%;
+    width: 30%;
+    border-radius: 0 7px 7px 0;
+    margin:1px;
+}
+
+.seat:not(.sold):hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+.seat + .sold {
+    background-color: #fc8c0f;
+}
+
+.seat + .selected {
+    background-color: #268085;
+}
+
+.seat-row + .cheap {
+    background-color: red;
+}

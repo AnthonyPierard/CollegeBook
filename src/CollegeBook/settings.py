@@ -123,6 +123,8 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "CollegeBook/static",
+    BASE_DIR / "Event/static",
+    BASE_DIR / "Configuration/static",
 ]
 
 MEDIA_URL = "Media/"
