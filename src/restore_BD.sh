@@ -1,5 +1,4 @@
 rm ./db.sqlite3
-# find -type d -name migration -a -prune -exec rm -rf {} \;
 py ./manage.py makemigrations Account
 py ./manage.py makemigrations Configuration
 py ./manage.py makemigrations Event
