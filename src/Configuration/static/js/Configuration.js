@@ -20,7 +20,7 @@ function fill_seat(seats){
 }
 async function prepare_json() {
 
-    const requestURL = 'C:\\Users\\Anthony Pierard\\Documents\\MA1\\GENIE\\projet\\CollegeBook\\src\\Configuration\\static\\json\\allSeat.json';
+    const requestURL = 'https://github.com/AnthonyPierard/CollegeBook/blob/Refactoring/src/Configuration/static/json/allSeat.json'; //je ne sais pas comment y accéder
     const request = new Request(requestURL);
     const response = await fetch(request);
     const seat = await response.json();
