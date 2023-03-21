@@ -66,3 +66,10 @@
 .seat-row + .cheap {
     background-color: red;
 }
+
+.space {
+    height: 5%;
+    width: 30%;
+    margin: 1px;
+    border : 5px double transparent;
+}
