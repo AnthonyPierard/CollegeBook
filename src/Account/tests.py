@@ -29,7 +29,6 @@ class AccountTest(StaticLiveServerTestCase):
         box_email.send_keys('admin@test.com')
         box_pwd.send_keys('testpassword')
         box_submit.send_keys(Keys.RETURN)
-        return driver
 
     @staticmethod
     def login_user(driver):
@@ -41,7 +40,6 @@ class AccountTest(StaticLiveServerTestCase):
         box_email.send_keys('user@test.com')
         box_pwd.send_keys('testpassword')
         box_submit.send_keys(Keys.RETURN)
-        return driver
 
     def test_login_superuser(self):
         driver = BaseTest.init(self)
@@ -75,30 +73,33 @@ class AccountTest(StaticLiveServerTestCase):
         assert 'Se connecter' in driver.page_source
         driver.close()
 
-    # def test_update_first_name_superuser(self):
-    #     driver = BaseTest.init(self)
-    #     AccountTest.init_superuser()
-    #     driver = AccountTest.login_superuser(driver)
-    #     link = driver.find_element(By.ID, 'nav-account')
-    #     link.click()
-    #     box_email = driver.find_element(By.NAME, 'first_name')
-    #     box_submit = driver.find_element(By.CSS_SELECTOR, "input[type='submit']")
-    #     box_email.send_keys('test_superuser@test.com')
-    #     box_submit.send_keys(Keys.RETURN)
-    #     link.click()
-    #     assert 'test_superuser' in driver.page_source
-    #
-    # def test_update_first_name_user(self):
-    #     driver = BaseTest.init(self)
-    #     AccountTest.init_user()
-    #     driver = AccountTest.login_user(driver)
-    #     link = driver.find_element(By.ID, 'nav-account')
-    #     link.click()
-    #     box_email = driver.find_element(By.NAME, 'first_name')
-    #     box_submit = driver.find_element(By.CSS_SELECTOR, "input[type='submit']")
-    #     box_email.send_keys('test_user@test.com')
-    #     box_submit.send_keys(Keys.RETURN)
-    #     link.click()
-    #     assert 'test_user' in driver.page_source
+    def test_update_first_name_superuser(self):
+        driver = BaseTest.init(self)
+        AccountTest.init_superuser()
+        AccountTest.login_superuser(driver)
+        link = driver.find_element(By.ID, 'nav-account')
+        link.click()
+        box_first_name = driver.find_element(By.NAME, 'first_name')
+        box_submit = driver.find_element(By.CSS_SELECTOR, "input[type='submit']")
+        box_first_name.send_keys('test_superuser')
+        box_submit.send_keys(Keys.RETURN)
+        link = driver.find_element(By.ID, 'nav-account')
+        link.click()
+        assert 'test_superuser' in driver.page_source
+
+    def test_update_first_name_user(self):
+        driver = BaseTest.init(self)
+        AccountTest.init_user()
+        AccountTest.login_user(driver)
+        sleep(1)
+        link = driver.find_element(By.ID, 'nav-account')
+        link.click()
+        box_first_name = driver.find_element(By.NAME, 'first_name')
+        box_submit = driver.find_element(By.CSS_SELECTOR, "input[type='submit']")
+        box_first_name.send_keys('test_user')
+        box_submit.send_keys(Keys.RETURN)
+        link = driver.find_element(By.ID, 'nav-account')
+        link.click()
+        assert 'test_user' in driver.page_source
 
 
