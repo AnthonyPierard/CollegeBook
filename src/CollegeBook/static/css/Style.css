@@ -8,6 +8,10 @@ body {
     flex-direction: column;
 }
 
+.scroll-disabled {
+    overflow: hidden;
+}
+
 .nav-ul {
     padding: 0;
     margin: 0;
@@ -95,8 +99,8 @@ a {
         display: block;
         color: #f2f2f2;
         transform: scale(3);
-        width:100%;
-        height:auto;
+        width: 100%;
+        height: auto;
     }
 
     .menu svg:hover {
@@ -116,7 +120,7 @@ a {
         left: 0;
         top: 0;
         width: 100%;
-        height: 100vh;
+        height: 115vh;
         display: none;
         justify-content: center;
         align-items: center;
@@ -125,8 +129,7 @@ a {
         backdrop-filter: blur(2px);
     }
 
-
-    .nav-bar .nav-a{
+    .nav-bar .nav-a {
         padding: 0;
         border: 0;
         text-shadow: 1px 1px 2px black;
@@ -135,6 +138,7 @@ a {
     .nav-bar .nav-a:hover {
         border-bottom: 0;
     }
+
     .selected {
         display: flex;
     }
@@ -237,10 +241,69 @@ a {
     background-color: #fc8c0f;
 }
 /* #todo forms */
-/*.test input[type="text"], .test input[type="email"], .test input[type="password"]{*/
-/*    border: 1px solid gray;*/
-/*}*/
-/*.test input[type="text"]:focus, .test input[type="email"]:focus, .test input[type="password"]:focus {*/
-/*    border: 2px solid #268085;*/
-/*    box-shadow: none;*/
-/*}*/
+
+.form {
+    padding: 0 30px;
+    border-radius: 10px;
+    /*border: 2px solid #268085;*/
+    /*background: linear-gradient(to bottom, #9EB2BBFF, #268085);*/
+    font-size: 1.125rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: normal;
+}
+
+.form form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.form form .input-box {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.input-box input:not(input[type="checkbox"]) {
+    width: 100%;
+    height: 40px;
+    padding: 0 8px;
+    margin-top: 5px;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.input-box::selection, .input-box input::selection {
+    background-color: rgba(38, 128, 133, 0.5);
+    color: black;
+}
+
+.input-box input[type="checkbox"]{
+    /*appearance: none;*/
+    width: 25px;
+    height: 25px;
+    border-block-color: #ccc;
+    border-color: #ccc;
+    box-shadow: none;
+    margin: 0 10px;
+    padding: 0;
+    cursor: pointer;
+    accent-color: #268085;
+}
+
+.input-box input:not(input[type="checkbox"]):focus {
+    border: 2px solid rgba(38, 128, 133, 0.8);
+}
+
+input[type="submit"] {
+    margin: 10px auto;
+    padding: 15px 40px;
+    border-radius: 15px;
+    border: none;
+    background-color: #268085;
+    color: white;
+    font-family: 'Noto Sans', sans-serif;
+}

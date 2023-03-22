@@ -1,11 +1,34 @@
 {% extends "default.html" %}
 
 {% block body %}
-    <div>
+    <div class="form">
         <form action="" method="post">
             {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Create account">
+            <div class="input-box">
+                {{ form.first_name.label }}
+                {{ form.first_name }}
+            </div>
+            <div class="input-box">
+                {{ form.last_name.label }}
+                {{ form.last_name }}
+            </div>
+            <div class="input-box">
+                {{ form.email.label }}
+                {{ form.email }}
+            </div>
+            <div class="input-box">
+                {{ form.password.label }}
+                {{ form.password }}
+            </div>
+            <div class="input-box">
+                {{ form.confirm_password.label }}
+                {{ form.confirm_password }}
+            </div>
+            <div class="input-box">
+                {{ form.is_staff.label }}
+                {{ form.is_staff }}
+            </div>
+            <input type="submit" value="Créer compte">
         </form>
     </div>
 {% endblock %}

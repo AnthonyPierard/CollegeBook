@@ -1,6 +1,6 @@
 from django import forms
 
-from Account.models import User
+from .models import User
 
 
 class UserForm(forms.ModelForm):
@@ -13,7 +13,7 @@ class UserForm(forms.ModelForm):
             'password',
             'is_staff',
         ]
-        labels = {'first_name': 'Prenom', 'last_name': 'Nom', 'email': 'Email', 'password': 'Password',
+        labels = {'first_name': 'Prénom', 'last_name': 'Nom', 'email': 'Email', 'password': 'Password',
                   'is_staff': 'Super Admin'}
         widgets = {'password': forms.PasswordInput}
 
@@ -45,4 +45,4 @@ class UpdateUserForm(forms.ModelForm):
             'last_name',
             'email',
         ]
-        labels = {'first_name': 'Prenom', 'last_name': 'Nom', 'email': 'Email'}
+        labels = {'first_name': 'Prénom', 'last_name': 'Nom', 'email': 'Email'}
