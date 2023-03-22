@@ -20,7 +20,7 @@
 .seat-area {
     height: 100%;
     width: 90%;
-    background-color: pink;
+    background-color: white;
     display: flex;
     justify-content: flex-start;
 }
@@ -29,6 +29,23 @@
     width: 5%;
     height: 100%;
     background-color: lightblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.none-row {
+    width: 5%;
+    height: 100%;
+    background-color: grey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.standing-zone{
+    width: 60%;
+    height: 100%;
+    background-color : darkseagreen;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -65,6 +82,10 @@
 
 .seat-row + .cheap {
     background-color: red;
+}
+
+.seat-row + .balcon {
+
 }
 
 .space {
