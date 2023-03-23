@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import User
+from .utils import check_password
 
 
 class UserForm(forms.ModelForm):
@@ -20,8 +21,8 @@ class UserForm(forms.ModelForm):
     confirm_password = forms.CharField(label='Confirm Password', max_length=50, required=True,
                                        widget=forms.PasswordInput)
 
-    # def clean_confirm_password(self):
-    #     check_password(self)
+    def clean_confirm_password(self):
+        check_password(self)
 
     def save(self, commit=True):
         user = super(UserForm, self).save(commit=False)
