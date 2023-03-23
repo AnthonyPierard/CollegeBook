@@ -7,7 +7,10 @@ seat.addEventListener('click', () => {
 })*/
 
 function fill_seat(obj){
-    const seat_area = document.querySelector('.seat-area');
+    const seat_area = document.createElement('div');
+    seat_area.classList.add('seat-area');
+    const theatre = document.querySelector('.theatre');
+    theatre.appendChild(seat_area);
     for (const index in obj){
         const row = document.createElement('div');
         row.classList.add(obj[index].class);
@@ -19,7 +22,6 @@ function fill_seat(obj){
                 const balise_seat = document.createElement('div');
                 const new_seat = seat.split(' ');
                 for (const class_seat of new_seat) {
-                    console.log(class_seat);
                     balise_seat.classList.add(class_seat);
                 }
                 row.appendChild(balise_seat);
@@ -30,14 +32,16 @@ function fill_seat(obj){
 
 
 }
-async function prepare_json() {
+async function prepare_json(url) {
 
-    const requestURL = "../static/json/onlySeat.json" //'https://github.com/AnthonyPierard/CollegeBook/blob/Refactoring/src/Configuration/static/json/allSeat.json'; //je ne sais pas comment y accéder
+    //on retire ce qu'il y avait dans le seat-area
+    const seat_area = document.querySelector('.seat-area');
+    seat_area.remove();
+    //on va chercher ce qu'il y a dans le json
+    const requestURL = url;
     const request = new Request(requestURL);
     const response = await fetch(request);
     const seat = await response.json();
 
     fill_seat(seat);
 }
-
-prepare_json();
