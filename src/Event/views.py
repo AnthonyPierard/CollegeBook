@@ -52,7 +52,7 @@ def delete_representation(request, representation_id):
     if request.method == 'POST':
         form = ConfirmForm(request.POST)
         if form.is_valid():
-            choice = form.cleaned_data['choix']
+            choice = form.cleaned_data['choice']
             if choice == "1":
                 Representation.objects.filter(pk=representation_id).delete()
                 #TODO avertir les personnes qui ont réserver via un mail.

@@ -16,10 +16,10 @@ class EventForm(forms.ModelForm):
             'user'
 
         ]
-        lables = {'name': 'Nom de l\' événement', 'duration': 'Durée', 'description': 'desc', 'image': 'Illustration',
+        labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'desc', 'image': 'Illustration',
                   'user': 'Organisateurs'}
 
-    date = forms.CharField(widget=forms.TextInput(attrs={'class': 'MultiDate'}))
+    date = forms.CharField(label='Date de l\'événement', widget=forms.TextInput(attrs={'class': 'MultiDate'}))
 
     def save(self, commit=True):
         event = super(EventForm, self).save(commit=False)
@@ -46,4 +46,4 @@ class ConfirmForm(forms.Form):
         ('1', 'OUI'),
         ('2', 'NON'),
     ]
-    choix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+    choice = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)

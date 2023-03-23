@@ -1,13 +1,36 @@
 {% extends "defaultEvent.html" %}
 
 {% block body %}
-    <div>
+    <div class="form">
         <form action="" method="post" enctype='multipart/form-data'>
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="create Event">
+            <div class="input-box">
+                {{ form.name.label }}
+                {{ form.name }}
+            </div>
+            <div class="input-box">
+                {{ form.image.label }}
+                {{ form.image }}
+            </div>
+            <div class="input-box">
+                {{ form.description.label }}
+                {{ form.description }}
+            </div>
+            <div class="input-box">
+                {{ form.duration.label }}
+                {{ form.duration }}
+            </div>
+            <div class="input-box">
+                {{ form.user.label }}
+                {{ form.user }}
+            </div>
+            <div class="input-box">
+                {{ form.date.label }}
+                {{ form.date }}
+            </div>
+            <a href="{% url 'Config:Configuration' %}">Configuration de la salle</a>
+            <input type="submit" value="Créer l'événement">
         </form>
     </div>
 
-    <a href="{% url 'Config:Configuration' %}">Configuration de la salle</a>
 {% endblock %}

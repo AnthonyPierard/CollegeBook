@@ -14,7 +14,7 @@ def account_creation(request):
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('Account:users_display')
+            return redirect('Account:display')
     else:
         form = UserForm()
 

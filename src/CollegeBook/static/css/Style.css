@@ -282,10 +282,8 @@ a {
 }
 
 .input-box input[type="checkbox"]{
-    /*appearance: none;*/
     width: 25px;
     height: 25px;
-    border-block-color: #ccc;
     border-color: #ccc;
     box-shadow: none;
     margin: 0 10px;

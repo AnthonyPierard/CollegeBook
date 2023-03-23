@@ -2,10 +2,19 @@
 
 {% block body %}
     <div>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="login">
-        </form>
+        <div class="form">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="input-box">
+                    {{ form.email.label }}
+                    {{ form.email }}
+                </div>
+                <div class="input-box">
+                    {{ form.password.label }}
+                    {{ form.password }}
+                </div>
+                <input type="submit" value="Se connecter">
+            </form>
+        </div>
     </div>
 {% endblock %}
