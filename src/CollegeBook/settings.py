@@ -56,7 +56,13 @@ ROOT_URLCONF = 'CollegeBook.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'CollegeBook/../CollegeBook/templates')],
+        'DIRS': [
+            BASE_DIR / 'CollegeBook/templates',
+            BASE_DIR / 'Account/templates',
+            BASE_DIR / 'Event/templates',
+            BASE_DIR / 'Configuration/templates',
+            BASE_DIR / 'Reservation/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,6 +131,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "CollegeBook/static",
     BASE_DIR / "Event/static",
     BASE_DIR / "Configuration/static",
+    BASE_DIR / "Reservation/static",
 ]
 
 MEDIA_URL = "Media/"

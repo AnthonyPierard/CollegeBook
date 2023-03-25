@@ -1,10 +1,11 @@
 {% extends 'defaultConfiguration.html' %}
+{% load static %}
 
 {% block body %}
-    <button onclick="prepare_json('../static/json/onlySeat.json')"> onlySeat </button>
-    <button onclick="prepare_json('../static/json/allSeat.json')"> allSeat </button>
-    <button onclick="prepare_json('../static/json/standingWithBleacher.json')"> standingWithBleacher </button>
-    <button onclick="prepare_json('../static/json/onlyStanding.json')"> onlyStanding </button>
+    <button onclick="prepare_json('{% static 'json/onlySeat.json' %}')"> onlySeat </button>
+    <button onclick="prepare_json('{% static 'json/allSeat.json' %}')"> allSeat </button>
+    <button onclick="prepare_json('{% static 'json/standingWithBleacher.json' %}')"> standingWithBleacher </button>
+    <button onclick="prepare_json('{% static 'json/onlyStanding.json' %}')"> onlyStanding </button>
     <div class="full-area">
         <div class="theatre">
             <div class="seat-area">

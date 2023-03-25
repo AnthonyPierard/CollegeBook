@@ -87,6 +87,21 @@ a {
     left: 2%;
 }
 
+.button {
+    width: auto;
+    background-color: #268085;
+    border-radius: 5px;
+    padding: 9px 14px;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button:hover {
+    color: #fff;
+    transform: scale(1.05);
+}
+
 @media screen and (max-width: 1400px) {
 
     .menu {
@@ -231,6 +246,11 @@ a {
     margin: 0 auto;
 }
 
+.table-svg:hover {
+    color:#fff;
+    transform: scale(1.02);
+}
+
 .ok {
     border: 2px solid #268085;
     background-color: #268085;
@@ -304,4 +324,8 @@ input[type="submit"] {
     background-color: #268085;
     color: white;
     font-family: 'Noto Sans', sans-serif;
+}
+
+input[type="submit"]:hover {
+    transform: scale(1.01);
 }

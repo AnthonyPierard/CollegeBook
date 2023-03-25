@@ -1,0 +1,29 @@
+{% extends "default.html" %}
+
+{% block body %}
+    <div class="form">
+        <form action="" method="post" enctype='multipart/form-data'>
+            {% csrf_token %}
+            <div class="input-box">
+                {{ form.email.label }}
+                {{ form.email }}
+            </div>
+            <div class="input-box">
+                {{ form.last_name.label }}
+                {{ form.last_name }}
+            </div>
+            <div class="input-box">
+                {{ form.first_name.label }}
+                {{ form.first_name }}
+            </div>
+            <div class="input-box">
+                {{ form.phone.label }}
+                {{ form.phone }}
+            </div>
+            <input type="submit" value="Réserver l'événement">
+        </form>
+    </div>
+    <script>
+        var selectedSeats = JSON.parse(sessionStorage.getItem("selectedSeatsIDs"));
+    </script>
+{% endblock %}
