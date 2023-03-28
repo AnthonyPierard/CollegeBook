@@ -2,8 +2,10 @@
 {% load static %}
 
 {% block body %}
-    <button onclick="prepare_json('{% static 'json/onlySeat.json' %}')"> onlySeat </button>
-    <button onclick="prepare_json('{% static 'json/allSeat.json' %}')"> allSeat </button>
+    {% for config in configs %}
+        <button onclick={{config.url_json}}> {{config.name}} </button>
+    {% endfor %}
+
     <button onclick="prepare_json('{% static 'json/standingWithBleacher.json' %}')"> standingWithBleacher </button>
     <button onclick="prepare_json('{% static 'json/onlyStanding.json' %}')"> onlyStanding </button>
     <div class="full-area">
