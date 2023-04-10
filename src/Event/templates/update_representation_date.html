@@ -1,0 +1,17 @@
+{% extends "defaultEvent.html" %}
+
+{% block body %}
+    <h1 class="titre"> Modifier la date de l'événement {{ representation.event.name}} </h1>
+    <p> Date actuelle : {{ representation.date }}</p>
+
+    <div class="form">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="input-box">
+                {{ form.date.label }}
+                {{ form.date }}
+            </div>
+            <input type="submit" value="Changer la date">
+        </form> 
+    </div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'defaultConfiguration.html' %}
+{% load static %}
+
+{% block body %}
+    <select name="config" onchange="prepare_json(this)">
+        {% for configuration in configurations %}
+            <option value={{configuration.url_json}} >{{configuration.name}}</option>
+        {% endfor %}
+    </select>
+    <input>
+    <div class="full-area">
+        <div class="theatre">
+            <div class="seat-area">
+            </div>
+        </div>
+    </div>
+{% endblock %}

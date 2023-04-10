@@ -1,0 +1,17 @@
+{% extends "default.html" %}
+{%  load static %}
+
+{% block body %}
+    <h1>Choisissez vos places</h1>
+    {% include "selectable_configuration.html" %}
+    <div class="row">
+        <div class="col-sm-10">
+
+        </div>
+{#        <div class="col-sm-2">#}
+{#            <a href="{% url 'Reservation:representation_reservation' representation.id %}">Confirmer</a>#}
+{#        </div>#}
+        <script src="{% static 'js/Reservation.js' %}"></script>
+    </div>
+    <a href="{% url 'Reservation:representation_reservation' representation.id %}" class="button">Valider</a>
+{% endblock %}

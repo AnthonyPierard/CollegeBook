@@ -1,0 +1,25 @@
+{% extends "default.html" %}
+
+{% block body %}
+    <div>
+        <div class="form">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="input-box">
+                    {{ form.first_name.label }}
+                    {{ form.first_name }}
+                </div>
+                <div class="input-box">
+                    {{ form.last_name.label }}
+                    {{ form.last_name }}
+                </div>
+                <div class="input-box">
+                    {{ form.email.label }}
+                    {{ form.email }}
+                </div>
+                <input type="submit" value="Modifier le compte">
+            </form>
+        </div>
+    </div>
+    
+{% endblock %}
