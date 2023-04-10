@@ -51,10 +51,6 @@
     align-items: center;
 }
 
-.seat-row + .cheap {
-    background-color: red;
-}
-
 .seat {
     background-color: grey;
     border-bottom:5px double black;
@@ -72,19 +68,19 @@
     transform: scale(1.2);
 }
 
-.seat + .sold {
+.seat.sold {
     background-color: #fc8c0f;
 }
 
-.seat + .selected {
+.seat.selected {
     background-color: #268085;
 }
 
-.seat-row + .cheap {
+.seat-row.cheap {
     background-color: red;
 }
 
-.seat-row + .balcon {
+.seat-row.balcony {
 
 }
 
@@ -93,4 +89,5 @@
     width: 30%;
     margin: 1px;
     border : 5px double transparent;
+    cursor: pointer;
 }

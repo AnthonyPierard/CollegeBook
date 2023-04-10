@@ -3,8 +3,8 @@
 
 {% block body %}
     <select name="config" onchange="prepare_json(this)">
-        {% for config in configs %}
-            <option value={{config.url_json}} >{{config.name}}</option>
+        {% for configuration in configurations %}
+            <option value={{configuration.url_json}} >{{configuration.name}}</option>
         {% endfor %}
     </select>
     <input>
