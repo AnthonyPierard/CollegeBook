@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block body %}
-    {% for config in configs %}
-        <button onclick={{config.url_json}}> {{config.name}} </button>
-    {% endfor %}
-
-    <button onclick="prepare_json('{% static 'json/standingWithBleacher.json' %}')"> standingWithBleacher </button>
-    <button onclick="prepare_json('{% static 'json/onlyStanding.json' %}')"> onlyStanding </button>
+    <select name="config" onchange="prepare_json(this)">
+        {% for config in configs %}
+            <option value={{config.url_json}} >{{config.name}}</option>
+        {% endfor %}
+    </select>
+    <input>
     <div class="full-area">
         <div class="theatre">
             <div class="seat-area">

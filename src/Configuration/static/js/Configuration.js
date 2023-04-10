@@ -1,16 +1,12 @@
 
-/*const seat = document.querySelector(".seat");
-console.log(seat)
-seat.addEventListener('click', () => {
-    console.log(seat)
-    menu.classList.toggle('clicked') // créer une classe à un élément et la retire si on reclique
-})*/
 
+//remplis le seat-area de siège ou d'espace debout
 function fill_seat(obj){
     const seat_area = document.createElement('div');
     seat_area.classList.add('seat-area');
     const theatre = document.querySelector('.theatre');
     theatre.appendChild(seat_area);
+    //va regarder dans le json les seats
     for (const index in obj){
         const row = document.createElement('div');
         row.classList.add(obj[index].class);
@@ -29,16 +25,35 @@ function fill_seat(obj){
         }
 
     }
+    //part where when we click on a space or a seat it's change for the other one
+    $('.seat').on('click', function(e){
+        this.classList.remove('seat');
+        this.classList.add('space');
+        //don't forget to add the possibility to reclick on the object
+        $('.space').on('click', function(e){
+            this.classList.remove('space');
+            this.classList.add('seat');
+        })
+    })
+
+    $('.space').on('click', function(e){
+        this.classList.remove('space');
+        this.classList.add('seat');
+        $('.seat').on('click', function(e) {
+            this.classList.remove('seat');
+            this.classList.add('space');
+        })
+    })
 
 
 }
+//fonction pour choisir le json
 async function prepare_json(url) {
-
     //on retire ce qu'il y avait dans le seat-area
     const seat_area = document.querySelector('.seat-area');
     seat_area.remove();
     //on va chercher ce qu'il y a dans le json
-    const requestURL = url;
+    const requestURL = url.value;
     const request = new Request(requestURL);
     const response = await fetch(request);
     const seat = await response.json();
