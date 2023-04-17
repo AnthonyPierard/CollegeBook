@@ -7,7 +7,15 @@
             <option value={{configuration.url_json}} >{{configuration.name}}</option>
         {% endfor %}
     </select>
-    <input>
+    <br>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.nom.label}}
+        {{form.nom}}
+        <input type="submit" value="Confirmer">
+    </form>
+
+    <button onclick=""
     <div class="full-area">
         <div class="theatre">
             <div class="seat-area">

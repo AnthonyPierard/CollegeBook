@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from .forms import ConfigForm
 from .models import Config
 
 def add_default_configuration(userId):
@@ -15,8 +16,18 @@ def add_default_configuration(userId):
 
 @login_required
 def area_configuration(request):
-    if not(Config.objects.all()) :
-        add_default_configuration(request.user)
-
-    configurations = Config.objects.filter(user=request.user.id)
-    return render(request, 'area_configuration.html', {'configurations' : configurations})
+    if request.method=='POST':
+        form = ConfigForm(request.POST)
+        if form.is_valid():
+            #l'enregistrement marche bien mais ne marche pas bien en globale car je ne crée pas encore de json
+            configName = form.cleaned_data['nom']
+            newConfig = Config(name=configName, url_json="/static/json/" + configName + ".json", user= request.user)
+            newConfig.save()
+            configurations = Config.objects.filter(user=request.user.id)
+            return render(request, 'area_configuration.html', {'configurations' : configurations, 'form' : form})
+    else :
+        if not(Config.objects.filter(user=request.user)) :
+            add_default_configuration(request.user)
+        configurations = Config.objects.filter(user=request.user.id)
+        form = ConfigForm()
+        return render(request, 'area_configuration.html', {'configurations' : configurations, 'form' : form})
