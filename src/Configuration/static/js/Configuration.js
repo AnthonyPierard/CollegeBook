@@ -1,7 +1,6 @@
 
 function clickable_seats_and_spaces(){
     const seats_and_spaces = document.querySelectorAll('.seat, .space')
-    console.log(seats_and_spaces)
     for (const element of seats_and_spaces) {
         element.addEventListener('click', () => {
             element.classList.toggle('seat')
@@ -51,3 +50,57 @@ async function prepare_json(url) {
 
     fill_seat(seat);
 }
+
+function tmp_create(){
+    let new_json = [];
+    new_json.push({"nom" : document.querySelector('#id_nom').value})
+    const seat_area = document.querySelector('.seat-area');
+    let row = seat_area.childNodes;
+    for (let i=0; i<row.length; i++) {
+        if(row[i].classList[0] == "standing-zone"){
+            new_json.push({"class" : "standing-zone"});
+        }
+        else if(row[i].classList[0] == "seat-row"){
+            let tmp_json = {"class" : "seat-row"};
+            let seats = row[i].childNodes;
+            let array_seat = [];
+            seats.forEach(function (seat){
+                if(seat.classList.length==1){
+                    array_seat.push(seat.classList[0])
+                }
+                else{
+                    let tmp_seat= seat.classList[0];
+                    seat.classList.forEach(function (clas){
+                        tmp_seat = tmp_seat + " " + clas;
+                    })
+                    array_seat.push(tmp_seat);
+                }
+            })
+            tmp_json["seat"] = array_seat;
+            new_json.push(tmp_json);
+        }
+        else if(row[i].classList[0] == "none-row"){
+            new_json.push({"class" : "none-row"});
+        }
+
+
+    }
+    return new_json;
+}
+
+document.querySelector("#create_json").addEventListener("click", event => {
+    //envoie le nouveu json créer au python pour créer un nouveau fichier json dans le dossier static
+    //pour la nouvelle configuration
+    let new_json = tmp_create();
+    const debug = {coucou : "world"};
+    let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    var request = new Request('/configuration/create_json/', {
+        method:'POST',
+        headers: {'X-CSRFToken': csrfTokenValue, 'Content-Type' : 'application/json'},
+        body: JSON.stringify(new_json),
+    });
+
+    fetch(request)
+        .then(response => response.json())
+})
+
