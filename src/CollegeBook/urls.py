@@ -25,5 +25,5 @@ urlpatterns = [
     path('account/', include("Account.urls")),
     path('configuration/', include("Configuration.urls")),
     path('reservation/', include("Reservation.urls")),
+    path('payment/', include("Payment.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-#TODO Refactor les urls en mode django
