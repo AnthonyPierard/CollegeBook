@@ -4,7 +4,7 @@ from django import forms
 
 from tagify.fields import TagField
 
-from Event.models import Event, Representation
+from Event.models import Event, Representation, Place, CodePromo
 
 from CollegeBook.utils import stripe_id_creation
 
@@ -28,30 +28,34 @@ class EventForm(forms.ModelForm):
 
     place_types = TagField(label='Types de places', delimiters=';', initial='Classic : 3.00€;Golang : 5.00€')
 
+    promo_codes = TagField(label='Codes promo', delimiters=';', initial='FIRST : 3.00€;MAI : 5.00%')
+
     def save(self, commit=True):
         event = super(EventForm, self).save(commit=False)
 
         if commit:
             event.save()
+
+            #Representations creation in DB
             for user in self.cleaned_data["user"]:
                 event.user.add(user)
+            event = Event.objects.get(name=self.cleaned_data['name'])
             dates = self.cleaned_data['date'].split(', ')
             if dates != '':
-                event = Event.objects.get(name=self.cleaned_data['name'])
                 for date in dates:
                     test = datetime.strptime(date, '%d-%m-%Y/%H:%M')
                     Representation(date=test, remaining_places={}, event_id=event.id).save()
 
-
-
-            #Create a stripe product
             place_values = self.cleaned_data["place_types"]
-            event_name = self.cleaned_data["name"]
+            event_name = self.cleaned_data['name']
             for element in place_values:
                 splitted = element.split(":")
                 place_type = splitted[0].split(' ')[0]
                 place_price = splitted[1].split(' ')[1].replace("€","")
 
+                # Places creation in DB
+                Place(type= place_type, price= place_price, event_id = event.id).save()
+                # Create a stripe product
                 stripe.Product.create(
                     name= "Siège " + place_type.capitalize() + " [" + event_name + "]",
                     default_price_data= {
@@ -60,6 +64,20 @@ class EventForm(forms.ModelForm):
                     },
                     id= stripe_id_creation(place_type, event_name)
                 )
+
+            codes_value = self.cleaned_data["promo_codes"]
+            for element in codes_value:
+                print(element)
+                splitted = element.split(":")
+                code_name = splitted[0].split(' ')[0].upper()
+                code_amount = splitted[1].split(' ')[1]
+                if "€" == code_amount[-1]:
+                    print("euro")
+                    CodePromo(code= code_name, amount= code_amount.replace("€", ""), event_id = event.id).save()
+                elif "%" == code_amount[-1]:
+                    print("pourcent")
+                    CodePromo(code= code_name, percentage= code_amount.replace("%", ""), event_id = event.id).save()
+
         return event
 
 
