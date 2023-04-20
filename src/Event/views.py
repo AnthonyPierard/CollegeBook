@@ -28,14 +28,6 @@ def event_creation(request):
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            stripe.Product.create(
-                name= "Siège classique [Danse des canards]",
-                default_price_data={
-                    'unit_amount': 200,
-                    'currency':'eur'
-                },
-                id = "classicDanseCanard"
-            )
             return redirect('Event:display')
     else:
         form = EventForm()

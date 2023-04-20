@@ -11,15 +11,6 @@ from .templates import *
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-# stripe.Price.create(product='test', unit_amount= 200, currency='eur')
-stripe.Product.create(
-    name='test_product',
-    default_price_data={
-        'unit_amount': 200,
-        'currency':'eur'
-    },
-    expand=['default_price'],
-)
 
 class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
