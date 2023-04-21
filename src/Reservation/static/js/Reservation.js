@@ -38,7 +38,7 @@ function canBeSelected(seatID){
         if (rightSeats.length == 0){
             return true;
         }
-        else if (rightSeats[0].className == "seat" && rightSeats[1].className == "seat sold"){
+        else if (rightSeats[0].className == "seat" && (rightSeats[1].className == "seat sold" || rightSeats[1].className == "seat selected")){
             return false;
         }
         return true;
@@ -49,7 +49,7 @@ function canBeSelected(seatID){
         if (leftSeats.length == 0){
             return true;
         }
-        if (leftSeats[0].className == "seat" && leftSeats[1].className == "seat sold"){
+        else if (leftSeats[0].className == "seat" && (leftSeats[1].className == "seat sold" || leftSeats[1].className == "seat selected")){
             return false;
         }
         return true;
@@ -62,10 +62,10 @@ function canBeSelected(seatID){
         else if (leftSeats[0].className == "seat" && leftSeats.length==1){
             return false
         }
-        else if (leftSeats[0].className == "seat" && leftSeats[1].className == "seat sold"){
+        else if (leftSeats[0].className == "seat" && (leftSeats[1].className == "seat sold" ||leftSeats[1].className == "seat selected")){
             return false;
         }
-        else if (rightSeats[0].className == "seat" && rightSeats[1].className == "seat sold"){
+        else if (rightSeats[0].className == "seat" && (rightSeats[1].className == "seat sold" || rightSeats[1].className == "seat selected")){
             return false;
         }
         return true;
