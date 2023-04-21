@@ -4,7 +4,7 @@ from django import forms
 
 from tagify.fields import TagField
 
-from Event.models import Event, Representation, Place, CodePromo
+from Event.models import Event, Representation, Place, Price, CodePromo
 
 from CollegeBook.utils import stripe_id_creation
 
@@ -21,12 +21,16 @@ class EventForm(forms.ModelForm):
             'user'
 
         ]
-        labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'desc', 'image': 'Illustration',
+        labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'Description', 'image': 'Illustration',
                   'user': 'Organisateurs'}
 
     date = forms.CharField(label='Date de l\'événement', widget=forms.TextInput(attrs={'class': 'MultiDate'}))
 
-    place_types = TagField(label='Types de places', delimiters=';', initial='Classic : 3.00€;Golang : 5.00€')
+    drink_price = forms.FloatField(label='Prix des tickets boisson', min_value=0, widget=forms.NumberInput(attrs={"step":'0.5'}))
+
+    food_price = forms.FloatField(label='Prix des tickets nourriture', min_value=0, widget=forms.NumberInput(attrs={"step":'0.5'}))
+
+    place_types = TagField(label='Types de places', delimiters=';', initial='Classic : 3.00€;Vip : 5.00€')
 
     promo_codes = TagField(label='Codes promo', delimiters=';', initial='FIRST : 3.00€;MAI : 5.00%')
 
@@ -45,6 +49,12 @@ class EventForm(forms.ModelForm):
                 for date in dates:
                     test = datetime.strptime(date, '%d-%m-%Y/%H:%M')
                     Representation(date=test, remaining_places={}, event_id=event.id).save()
+
+            #Prices creation
+            drink_price = float(self.cleaned_data["drink_price"])
+            food_price = float(self.cleaned_data["food_price"])
+            Price.objects.create(type="Boisson", price=drink_price, event_id=event.id).save()
+            Price.objects.create(type="Nourriture", price=food_price, event_id=event.id).save()
 
             place_values = self.cleaned_data["place_types"]
             event_name = self.cleaned_data['name']

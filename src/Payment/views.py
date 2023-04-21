@@ -24,7 +24,7 @@ class CreateCheckoutSessionView(View):
                     #     'product':'classicDanseCanard',
                     #     'unit_amount': 200
                     # },
-                    'price': stripe.Product.retrieve('classicDanseCanard')["default_price"],
+                    'price': stripe.Product.retrieve('classicTest')["default_price"],
                     'quantity': 2
                 },
             ],
@@ -41,5 +41,5 @@ def success(request):
     return render(request, 'success.html')
 
 def ProductLandingPageView(request):
-    place = Place.objects.get(type="classicq")
+    place = Place.objects.get(type="Classic")
     return render(request, 'landing.html', {'place': place})

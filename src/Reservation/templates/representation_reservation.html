@@ -20,10 +20,29 @@
                 {{ form.phone.label }}
                 {{ form.phone }}
             </div>
+            <div class="input-box">
+                {{ form.note.label }}
+                {{ form.note }}
+            </div>
+            <div class="input-box">
+                {{ form.drink_number.label }}
+                {{ form.drink_number }}
+            </div>
+            <div>  <p>Prix du ticket : {{drink_price.price}}</p>
+                   </div>
+            <div class="input-box">
+                {{ form.food_number.label }}
+                {{ form.food_number }}
+            </div>
+            <div>  <p>Prix du ticket : {{food_price.price}}</p>
+            </div>
+            <label for="selectedseat">Sieges selectionnés</label>
+            <input type="text"name="selectedseat" id="id_selectedseat" value="" maxlength="30" readonly>
             <input type="submit" value="Réserver l'événement">
         </form>
     </div>
     <script>
         var selectedSeats = JSON.parse(sessionStorage.getItem("selectedSeatsIDs"));
+        document.getElementById("id_selectedseat").value = selectedSeats;
     </script>
 {% endblock %}

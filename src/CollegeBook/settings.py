@@ -151,3 +151,10 @@ DOMAIN = "http://localhost:8000/"
 
 STRIPE_PUBLIC_KEY = "pk_test_51My9egKzH6J7qKOAvja1Gc7MAjiYmhRWeoCW25bXv2ymkb4wDUrSMWkWPUdH82GizI7esBI6UUyXLDEgbUxZYVHI00aIBswFkO"
 STRIPE_SECRET_KEY = "sk_test_51My9egKzH6J7qKOAtpIjOzmEUcP5mHkvejI1syfp7t9konG7teSXWwXl88yTdA3Wtx5UT6wOiuy4TEVjrB4k3o9j00FEtHZOC6"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'collegebooktest@gmail.com'
+EMAIL_HOST_PASSWORD = 'bukbfkukzqosrqcu'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
