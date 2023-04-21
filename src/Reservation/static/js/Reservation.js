@@ -7,6 +7,7 @@ function changeStatus(seatID){
             seat.className = "seat selected";
             selectedSeatsIDs.push(seatID);
         }
+        //TODO : Deux groupes de siege avec espace au milieu
         else alert("Vous ne pouvez pas laissez de place vide entre deux places vendues");
     }
     else if (seat.className == "seat selected"){
@@ -19,6 +20,7 @@ function changeStatus(seatID){
     else if (seat.className == "seat sold"){
         alert("Ce siège a déjà été vendu");
     }
+    updateSeats();
 
 
     sessionStorage.setItem("selectedSeatsIDs", JSON.stringify(selectedSeatsIDs));
@@ -121,4 +123,20 @@ function updatePrice(isIncreasing){
     }
     element.innerHTML = String(price)+"€";
     sessionStorage.setItem("price", price);
+}
+
+function updateSeats(){
+    const displayedSeats = document.getElementById("places");
+    displayedSeats.innerHTML = "";
+    selectedSeatsIDs.sort();
+
+    for(seatId of selectedSeatsIDs){
+        if (seatId == selectedSeatsIDs[selectedSeatsIDs.length-1]){
+            displayedSeats.innerHTML += seatId;
+        }
+        else {
+            displayedSeats.innerHTML += seatId + ", ";
+        }
+    }
+
 }
