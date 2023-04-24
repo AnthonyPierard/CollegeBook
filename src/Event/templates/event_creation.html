@@ -28,7 +28,12 @@
                 {{ form.date.label }}
                 {{ form.date }}
             </div>
-            <a href="{% url 'Config:Configuration' %}">Configuration de la salle</a>
+            <div class="input-box">
+                {{form.configuration.label}}
+                {{ form.configuration }}
+            </div>
+
+            <a href="{% url 'Config:Configuration' %}">Créer une configuration de salle</a>
             <input type="submit" value="Créer l'événement">
         </form>
     </div>

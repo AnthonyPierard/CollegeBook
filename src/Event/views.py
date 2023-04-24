@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import EventForm, UpdateDateEventForm, ConfirmForm
 
-from Event.models import Event, Representation
+from Event.models import Event, Representation, Config
 
 
 def events_display(request):
@@ -28,8 +28,8 @@ def event_creation(request):
             return redirect('Event:display')
     else:
         form = EventForm()
-
-    return render(request, 'event_creation.html', {'form': form})
+    configurations = Config.objects.filter(user=request.user.id)
+    return render(request, 'event_creation.html', {'form': form, 'configurations' : configurations})
 
 
 @login_required

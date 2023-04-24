@@ -11,7 +11,7 @@ class Event(models.Model):
     image = models.ImageField("Image(s) de l'événement(s)", upload_to="Images/", blank=True, null=True)
     duration = models.TimeField("Durée de l'événement", default='02:00')
 
-    configuration = models.ForeignKey(Config, on_delete=models.CASCADE, null=True)  # todo Retirer le null=True
+    configuration = models.ForeignKey(Config, on_delete=models.CASCADE)  # todo Retirer le null=True
 
     user = models.ManyToManyField(User)
 

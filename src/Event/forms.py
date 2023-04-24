@@ -13,11 +13,12 @@ class EventForm(forms.ModelForm):
             'image',
             'description',
             'duration',
-            'user'
+            'user',
+            'configuration'
 
         ]
-        labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'desc', 'image': 'Illustration',
-                  'user': 'Organisateurs'}
+        labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'Description', 'image': 'Illustration',
+                  'user': 'Organisateurs', 'configuration' : 'Configuration'}
 
     date = forms.CharField(label='Date de l\'événement', widget=forms.TextInput(attrs={'class': 'MultiDate'}))
 
