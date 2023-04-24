@@ -30,7 +30,7 @@ class EventForm(forms.ModelForm):
 
     food_price = forms.FloatField(label='Prix des tickets nourriture', min_value=0, widget=forms.NumberInput(attrs={"step":'0.5'}))
 
-    place_types = TagField(label='Types de places', delimiters=';', initial='Classic : 3.00€;Vip : 5.00€')
+    place_types = TagField(label='Types de places', delimiters=';', initial='Debout : 3.00€;Classic : 4.00€;Vip : 5.00€')
 
     promo_codes = TagField(label='Codes promo', delimiters=';', initial='FIRST : 3.00€;MAI : 5.00%')
 
