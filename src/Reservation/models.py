@@ -14,7 +14,10 @@ class Reservation(models.Model):
     phone = models.CharField("Numéro de tel de la personne qui réserve", max_length=10)
     date = models.DateTimeField("Date de la réservation", default=datetime.now())
     note = models.CharField("Remarque sur la réservation", max_length=1000)
-    number = models.IntegerField("Numéro du ticket pour le spectatcle")
+    drink_number = models.IntegerField("Ticket boisson pris avec la réservation", default=0)
+    food_number = models.IntegerField("Ticket nourriture pris avec la réservation", default=0)
+
+    # price = models.ForeignKey(Price, on_delete=models.CASCADE)
 
     representation = models.ForeignKey(Representation, on_delete=models.CASCADE)
 
@@ -23,14 +26,12 @@ class Reservation(models.Model):
 
 
 class Ticket(PolymorphicModel):
-    drink_number = models.IntegerField("Ticket boisson pris avec la réservation", default=0)
-    food_number = models.IntegerField("Ticket nourriture pris avec la réservation", default=0)
+    # drink_number = models.IntegerField("Ticket boisson pris avec la réservation", default=0)
+    # food_number = models.IntegerField("Ticket nourriture pris avec la réservation", default=0)
 
     type = models.ForeignKey(Place, on_delete=models.CASCADE)
 
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
-
-    price = models.ForeignKey(Price, on_delete=models.CASCADE)
 
 
 class StandingTicket(Ticket):

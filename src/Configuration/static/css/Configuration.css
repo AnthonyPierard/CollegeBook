@@ -3,6 +3,14 @@
     justify-content: center;
     border: 2px solid black;
 } */
+
+.full-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
 .theatre {
     display: flex;
     flex-direction: column;
@@ -90,4 +98,10 @@
     margin: 1px;
     border : 5px double transparent;
     cursor: pointer;
+}
+
+.details {
+    flex: 1;
+    border: 5px solid #268085;
+    padding: 50px;
 }

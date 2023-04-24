@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event
-# Register your models here.
+from .models import Price, Event
 
+admin.site.register(Price)
 admin.site.register(Event)

@@ -5,8 +5,11 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import EventForm, UpdateDateEventForm, ConfirmForm
 
-from Event.models import Event, Representation, Config
+from Event.models import Event, Representation, Config, Price
 
+from Reservation.models import SeatingTicket
+
+import stripe
 
 def events_display(request):
     all_event = Event.objects.all()

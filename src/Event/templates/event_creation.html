@@ -1,5 +1,9 @@
 {% extends "defaultEvent.html" %}
 
+{%  block head %}
+    {{ form.media }}
+{%  endblock %}
+
 {% block body %}
     <div class="form">
         <form action="" method="post" enctype='multipart/form-data'>
@@ -34,6 +38,22 @@
             </div>
 
             <a href="{% url 'Config:Configuration' %}">Créer une configuration de salle</a>
+            <div class="input-box">
+                {{ form.drink_price.label }}
+                {{ form.drink_price }}
+            </div>
+            <div class="input-box">
+                {{ form.food_price.label }}
+                {{ form.food_price }}
+            </div>
+            <div class="input-box">
+                {{ form.place_types.label }}
+                {{ form.place_types }}
+            </div>
+            <div class="input-box">
+                {{ form.promo_codes.label }}
+                {{ form.promo_codes }}
+            </div>
             <input type="submit" value="Créer l'événement">
         </form>
     </div>
