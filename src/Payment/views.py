@@ -4,8 +4,9 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
-from Reservation.models import Ticket
-from Event.models import Place
+from Reservation.models import Reservation, SeatingTicket, StandingTicket
+from Event.models import Place, Price
+from CollegeBook.utils import stripe_id_creation
 
 from .templates import *
 
@@ -14,20 +15,35 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
-        id = Place.objects.get(id=self.kwargs["pk"])
+        reservation = Reservation.objects.get(id=self.kwargs["representation_id"])
+        event_name = reservation.representation.event.name
+        tickets = list(StandingTicket.objects.filter(reservation_id=reservation.id)) + list(SeatingTicket.objects.filter(reservation=reservation.id))
+        tickets_quantity = dict()
+        for ticket in tickets:
+            if not ticket.type.type in tickets_quantity.keys():
+                tickets_quantity[ticket.type.type] = 1
+            else:
+                tickets_quantity[ticket.type.type] += 1
+
+        line_items = [{'price': stripe.Product.retrieve(stripe_id_creation(type, event_name))["default_price"], 'quantity':tickets_quantity[type]} for type in tickets_quantity.keys()]
+        if reservation.drink_number > 0:
+            line_items += [
+                {
+                    'price': stripe.Product.retrieve(stripe_id_creation("boisson", event_name))["default_price"],
+                    'quantity': reservation.drink_number
+                }
+            ]
+        if reservation.food_number > 0:
+            line_items += [
+                {
+                    'price': stripe.Product.retrieve(stripe_id_creation("nourriture", event_name))["default_price"],
+                    'quantity': reservation.food_number
+                }
+            ]
+
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card', 'bancontact', 'sepa_debit'],
-            line_items=[
-                {
-                    # 'price_data':{
-                    #     'currency':'eur',
-                    #     'product':'classicDanseCanard',
-                    #     'unit_amount': 200
-                    # },
-                    'price': stripe.Product.retrieve('classicTest')["default_price"],
-                    'quantity': 2
-                },
-            ],
+            line_items= line_items,
             mode='payment',
             success_url= settings.DOMAIN + 'payment/success/',
             cancel_url= settings.DOMAIN + 'payment/cancel/',
@@ -40,6 +56,18 @@ def cancel(request):
 def success(request):
     return render(request, 'success.html')
 
-def ProductLandingPageView(request):
-    place = Place.objects.get(type="Classic")
-    return render(request, 'landing.html', {'place': place})
+def landing(request, representation_id):
+    reservation = Reservation.objects.get(id=representation_id)
+
+    standing_tickets = StandingTicket.objects.filter(reservation_id=reservation.id)
+    standing_list = [{"type":ticket.type.type,  "price":ticket.type.price} for ticket in standing_tickets]
+    seating_tickets = SeatingTicket.objects.filter(reservation_id=reservation.id)
+    seating_list = [{"type":ticket.type.type, "place":ticket.seat_number, "price":ticket.type.price} for ticket in seating_tickets]
+    drink_price = Price.objects.get(event_id=reservation.representation.event.id, type="Boisson").price
+    food_price = Price.objects.get(event_id=reservation.representation.event.id, type="Nourriture").price
+    price = 0
+    for seat in standing_list + seating_list:
+        price += seat["price"]
+    price += reservation.food_number * food_price + reservation.drink_number * drink_price
+
+    return render(request, 'landing.html', {"reservation":reservation, "standing_seats":standing_list, "seating_seats":seating_list, "price":price})

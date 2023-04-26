@@ -1,7 +1,7 @@
 {% extends "defaultEvent.html" %}
 
 {% block body %}
-    <h1 class="titre"> Souhaitez vous vraiment supprimer l'event {{event.name}} ?</h1>
+    <h1 class="title"> Souhaitez vous vraiment supprimer l'event {{event.name}} ?</h1>
     <div class="form">
         <form action="" method="post">
             {% csrf_token %}

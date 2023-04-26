@@ -37,7 +37,7 @@ class Representation(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.event.name + " " + str(self.date)
+        return self.event.name + " " + str(self.date.strftime('%d/%m/%Y'))
 
 #TODO faire un trigger pour qu'un event soit supp si plus AUCUNE reprensentation existante
 

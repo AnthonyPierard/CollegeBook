@@ -30,7 +30,7 @@ a {
     margin: 0 auto;
 }
 
-.titre {
+.title {
     color: #268085;
     font-family: 'Noto Sans', sans-serif;
     margin: 1% 0;
@@ -102,7 +102,7 @@ a {
     transform: scale(1.05);
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1700px) {
 
     .menu {
         display: block;

@@ -51,14 +51,31 @@ class EventForm(forms.ModelForm):
                     test = datetime.strptime(date, '%d-%m-%Y/%H:%M')
                     Representation(date=test, remaining_places={}, event_id=event.id).save()
 
+            place_values = self.cleaned_data["place_types"]
+            event_name = self.cleaned_data['name']
+
             #Prices creation
             drink_price = float(self.cleaned_data["drink_price"])
             food_price = float(self.cleaned_data["food_price"])
             Price.objects.create(type="Boisson", price=drink_price, event_id=event.id).save()
+            stripe.Product.create(
+                name="Ticket boisson" + " [" + event_name + "]",
+                default_price_data={
+                    'unit_amount': int(drink_price * 100),
+                    'currency': 'eur'
+                },
+                id=stripe_id_creation("boisson", event_name)
+            )
             Price.objects.create(type="Nourriture", price=food_price, event_id=event.id).save()
+            stripe.Product.create(
+                name="Ticket nourriture" + " [" + event_name + "]",
+                default_price_data={
+                    'unit_amount': int(food_price * 100),
+                    'currency': 'eur'
+                },
+                id=stripe_id_creation("nourriture", event_name)
+            )
 
-            place_values = self.cleaned_data["place_types"]
-            event_name = self.cleaned_data['name']
             for element in place_values:
                 splitted = element.split(":")
                 place_type = splitted[0].split(' ')[0]

@@ -22,7 +22,7 @@ class Reservation(models.Model):
     representation = models.ForeignKey(Representation, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "Reservation n°" + str(self.number) + " pour le spectacle " + str(self.representation.date)
+        return "Reservation de " + self.last_name + " " + self.first_name + " pour le spectacle du " + str(self.representation.date)
 
 
 class Ticket(PolymorphicModel):
