@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tagify',
-    'django_crontab',
+    #'django_crontab', # only for UNIX systems
+    'apscheduler',
     'Account',
     'Event',
     'Configuration',
@@ -161,7 +162,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 #TASKS
-CRONJOBS = [
+#CRONJOBS = [       #For django-crontab
     #('0 2 * * *', 'Event.tasks.check_event_is_archived'),
-    ('*/2 * * * *', 'Event.tasks.check_event_is_archived')
-]
+#]
+
+SCHEDULER_AUTOSTART = True
