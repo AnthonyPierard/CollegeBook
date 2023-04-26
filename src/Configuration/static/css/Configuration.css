@@ -105,3 +105,14 @@
     border: 5px solid #268085;
     padding: 50px;
 }
+
+.select-row {
+    width: 0;
+    height: 0;
+
+    border-right: 16px solid transparent;
+    border-left: 16px solid transparent;
+
+    border-top: 20px solid #f7df6c;
+    cursor: pointer;
+}
