@@ -20,6 +20,8 @@ def events_display(request):
 
 def event_details(request, even_id):
     event = Event.objects.get(pk=even_id)
+    if event.is_archived:
+        return redirect('Event:display')
     representations = Representation.objects.filter(date__gte=datetime.now(), event=event.id)
     return render(request, 'event_details.html', {"event": event, "representations": representations})
 
