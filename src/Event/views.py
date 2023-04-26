@@ -9,6 +9,8 @@ from Event.models import Event, Representation, Config, Price
 
 from Reservation.models import SeatingTicket
 
+from Configuration.views import add_default_configuration
+
 import stripe
 
 def events_display(request):
@@ -31,8 +33,10 @@ def event_creation(request):
             return redirect('Event:display')
     else:
         form = EventForm()
-    configurations = Config.objects.filter(user=request.user.id)
-    return render(request, 'event_creation.html', {'form': form, 'configurations' : configurations})
+        if not (Config.objects.filter(user=request.user)):
+            add_default_configuration(request.user)
+        configurations = Config.objects.filter(user=request.user.id)
+        return render(request, 'event_creation.html', {'form': form, 'configurations' : configurations})
 
 
 @login_required
