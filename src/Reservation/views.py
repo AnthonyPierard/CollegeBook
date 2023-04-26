@@ -15,9 +15,14 @@ import qrcode
 
 def seat_selection(request, representation_id):
     representation = Representation.objects.get(pk = representation_id)
+    if Event.objects.get(pk=representation.event.id).is_archived:
+        return redirect('Event:display')
     return render(request, 'seat_selection.html', {"representation" : representation})
 
 def representation_reservation(request, representation_id):
+    representation = Representation.objects.get(pk=representation_id)
+    if Event.objects.get(pk= representation.event.id).is_archived:
+        return redirect('Event:display')
     if request.method == 'POST':
         form = ReservationForm(request.POST)
         if form.is_valid():
