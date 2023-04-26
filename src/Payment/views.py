@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
-from Reservation.models import Reservation, SeatingTicket, StandingTicket
+from Reservation.models import Reservation, SeatingTicket, StandingTicket, Ticket
 from Event.models import Place, Price
 from CollegeBook.utils import stripe_id_creation
 
@@ -17,7 +17,7 @@ class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
         reservation = Reservation.objects.get(id=self.kwargs["representation_id"])
         event_name = reservation.representation.event.name
-        tickets = list(StandingTicket.objects.filter(reservation_id=reservation.id)) + list(SeatingTicket.objects.filter(reservation=reservation.id))
+        tickets = Ticket.objects.filter(reservation_id=reservation.id)
         tickets_quantity = dict()
         for ticket in tickets:
             if not ticket.type.type in tickets_quantity.keys():
@@ -25,7 +25,7 @@ class CreateCheckoutSessionView(View):
             else:
                 tickets_quantity[ticket.type.type] += 1
 
-        line_items = [{'price': stripe.Product.retrieve(stripe_id_creation(type, event_name))["default_price"], 'quantity':tickets_quantity[type]} for type in tickets_quantity.keys()]
+        line_items = [{'price': stripe.Product.retrieve(stripe_id_creation(key, event_name))["default_price"], 'quantity':tickets_quantity[key]} for key in tickets_quantity.keys()]
         if reservation.drink_number > 0:
             line_items += [
                 {
