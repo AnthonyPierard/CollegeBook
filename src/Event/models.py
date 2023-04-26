@@ -10,7 +10,7 @@ class Event(models.Model):
     description = models.CharField("Description de l'événement", max_length=1000)
     image = models.ImageField("Image(s) de l'événement(s)", upload_to="Images/", blank=True, null=True)
     duration = models.TimeField("Durée de l'événement", default='02:00')
-
+    is_archived = models.BooleanField("Archivé quand toutes les dates de représentations sont passées", default=False)
     configuration = models.ForeignKey(Config, on_delete=models.CASCADE)  # todo Retirer le null=True
 
     user = models.ManyToManyField(User)
@@ -33,7 +33,6 @@ class CodePromo(models.Model):
 class Representation(models.Model):
     date = models.DateTimeField("Date", default=datetime.now())
     remaining_places = models.JSONField("Informations de la salle", blank=True, null=True)  # TODO pour tester aussi il faudra retirer blank et null
-
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):

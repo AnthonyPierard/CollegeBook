@@ -5,20 +5,20 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import EventForm, UpdateDateEventForm, ConfirmForm
 
-from Event.models import Event, Representation, Config, Price
+from Event.models import Event, Representation, Config
 
 from Reservation.models import SeatingTicket
 
 import stripe
 
 def events_display(request):
-    all_event = Event.objects.all()
+    all_event = Event.objects.filter(is_archived=False)
     return render(request, 'events_display.html', {'all_event': all_event})
 
 
 def event_details(request, even_id):
     event = Event.objects.get(pk=even_id)
-    representations = Representation.objects.filter(event=event.id)
+    representations = Representation.objects.filter(date__gte=datetime.now(), event=event.id)
     return render(request, 'event_details.html', {"event": event, "representations": representations})
 
 

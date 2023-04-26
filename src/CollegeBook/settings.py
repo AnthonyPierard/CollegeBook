@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tagify',
+    'django_crontab',
     'Account',
     'Event',
     'Configuration',
@@ -158,3 +159,9 @@ EMAIL_HOST_USER = 'collegebooktest@gmail.com'
 EMAIL_HOST_PASSWORD = 'bukbfkukzqosrqcu'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+#TASKS
+CRONJOBS = [
+    #('0 2 * * *', 'Event.tasks.check_event_is_archived'),
+    ('*/2 * * * *', 'Event.tasks.check_event_is_archived')
+]
