@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, HttpResponse, redirect
+from django.utils import timezone
 
 from Account.forms import UserForm, LoginUserForm, UpdateUserForm
 from Account.models import User
@@ -84,4 +85,4 @@ def user_events_display(request, user_id):
         representations = Representation.objects.filter(event=event.id)
         for representation in representations:
             user_representations.append(representation)
-    return render(request, 'user_events_display.html', {'user_representations': user_representations})
+    return render(request, 'user_events_display.html', {'user_representations': user_representations, 'now' : timezone.now()})

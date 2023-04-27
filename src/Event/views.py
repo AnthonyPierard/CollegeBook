@@ -4,9 +4,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .forms import EventForm, UpdateDateEventForm, ConfirmForm
-
+from django.utils import timezone
 from Event.models import Event, Representation, Config
-
+from CollegeBook.utils import check_if_representation_is_passed
 from Reservation.models import SeatingTicket
 
 from Configuration.views import add_default_configuration
@@ -43,9 +43,13 @@ def event_creation(request):
 
 @login_required
 def update_representation_date(request, representation_id):
+    representation = Representation.objects.get(pk=representation_id)
+    if representation.date <= timezone.now():
+        return redirect('Account:events', request.user.id)
     if request.method == 'POST':
         form = UpdateDateEventForm(request.POST)
         if form.is_valid():
+
             representation = Representation.objects.get(pk=representation_id)
             representation.date = datetime.strptime(form.cleaned_data['date'], '%d-%m-%Y/%H:%M')
             representation.save()
@@ -58,8 +62,13 @@ def update_representation_date(request, representation_id):
 
 @login_required
 def delete_representation(request, representation_id):
+    representation = Representation.objects.get(pk=representation_id)
+    if representation.date <= timezone.now():
+        return redirect('Account:events', request.user.id)
     if request.method == 'POST':
+
         form = ConfirmForm(request.POST)
+
         if form.is_valid():
             choice = form.cleaned_data['choice']
             if choice == "1":
