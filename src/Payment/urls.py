@@ -7,4 +7,5 @@ urlpatterns = [
     path('success/', success , name='success'),
     path('checkout/<int:representation_id>', CreateCheckoutSessionView.as_view() , name='CreateCheckoutSessionView'),
     path('landing/<int:representation_id>', landing , name='landing'),
+    path('webhook/', webhook, name='webhook')
 ]

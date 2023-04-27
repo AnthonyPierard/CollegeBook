@@ -16,6 +16,8 @@ class Reservation(models.Model):
     note = models.CharField("Remarque sur la réservation", max_length=1000)
     drink_number = models.IntegerField("Ticket boisson pris avec la réservation", default=0)
     food_number = models.IntegerField("Ticket nourriture pris avec la réservation", default=0)
+    paid = models.BooleanField("État du payement", default=False)
+    checkout_session = models.CharField("Session du payement", max_length=70, blank=True)
 
     # price = models.ForeignKey(Price, on_delete=models.CASCADE)
 
