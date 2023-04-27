@@ -6,9 +6,6 @@ from django.contrib.auth.decorators import login_required
 from .forms import EventForm, UpdateDateEventForm, ConfirmForm
 from django.utils import timezone
 from Event.models import Event, Representation, Config
-from CollegeBook.utils import check_if_representation_is_passed
-from Reservation.models import SeatingTicket
-
 from Configuration.views import add_default_configuration
 
 import stripe

@@ -1,8 +1,12 @@
-from datetime import datetime
-
+from datetime import datetime, timedelta
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.db import models
 from Account.models import User
 from Configuration.models import Config
+from CollegeBook.settings import TIME_ZONE
+from zoneinfo import ZoneInfo
+import pytz
 
 
 class Event(models.Model):
@@ -32,13 +36,51 @@ class CodePromo(models.Model):
 
 class Representation(models.Model):
     date = models.DateTimeField("Date", default=datetime.now())
-    remaining_places = models.JSONField("Informations de la salle", blank=True, null=True)  # TODO pour tester aussi il faudra retirer blank et null
+    remaining_places = models.JSONField("Informations de la salle", blank=True,
+                                        null=True)  # TODO pour tester aussi il faudra retirer blank et null
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.event.name + " " + str(self.date)
 
-#TODO faire un trigger pour qu'un event soit supp si plus AUCUNE reprensentation existante
+
+@receiver(pre_save, sender=Representation)
+def trigger_representation_at_same_time(sender, instance, *args, **kwargs):
+    all_rep_same_day = Representation.objects.filter(date__day=instance.date.day).exclude(pk=instance.id)   #on recupere toutes les representations du meme jour
+    event_instance = Event.objects.get(pk=instance.event.id)
+    if event_instance is None:
+        pass
+    instance_duration = event_instance.duration                                                             #recupere la duree de la rep qu'on essaye d ajouter
+    i_date = datetime.combine(instance.date, instance.date.time()).astimezone(pytz.utc)                     #on transforme la date en UTC+0
+    instance_datetime_date = datetime(year=i_date.year,                                                     #on garde la date UTC+0 MAIS on lui rajoute le +2000 apres
+                                      month=i_date.month,
+                                      day=i_date.day,
+                                      hour=i_date.hour,
+                                      minute=i_date.minute,
+                                      second=i_date.second,
+                                      tzinfo=ZoneInfo(TIME_ZONE))
+    instance_time_end = instance_datetime_date + timedelta(hours=instance_duration.hour,                    #on cree l heure de fin pour les tests
+                                                           minutes=instance_duration.minute,
+                                                           seconds=instance_duration.second)
+    for rep in all_rep_same_day:                                                                            #on boucle sur toutes les rep
+        rep_datetime_date = datetime.combine(rep.date, rep.date.time(), tzinfo=ZoneInfo(TIME_ZONE))         #on met la date de rep au meme format que celle de instance
+        rep_duration = Event.objects.get(pk=rep.event.id).duration                                          #on recupere sa duree
+        rep_time_end = rep_datetime_date + timedelta(hours=rep_duration.hour, minutes=rep_duration.minute,  #on cree la date de fin de rep pour les tests
+                                                     seconds=rep_duration.second)
+
+        if rep_datetime_date <= instance_datetime_date <= rep_time_end:
+            event_instance.delete()
+            raise ValueError("Une représentation à déjà lieu à ce moment là")
+        if rep_datetime_date <= instance_time_end <= rep_time_end:
+            event_instance.delete()
+            raise ValueError("Une représentation à déjà lieu à ce moment là")
+        if instance_datetime_date <= rep_datetime_date and instance_time_end >= rep_time_end:
+            event_instance.delete()
+            raise ValueError("Une représentation à déjà lieu à ce moment là")
+
+
+
+# TODO faire un trigger pour qu'un event soit supp si plus AUCUNE reprensentation existante
 
 
 class Place(models.Model):
