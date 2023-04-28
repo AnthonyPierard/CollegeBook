@@ -10,6 +10,7 @@ class Event(models.Model):
     description = models.CharField("Description de l'événement", max_length=1000)
     image = models.ImageField("Image(s) de l'événement(s)", upload_to="Images/", blank=True, null=True)
     duration = models.TimeField("Durée de l'événement", default='02:00')
+    artiste = models.CharField("Artistes", max_length= 2000)
 
     configuration = models.ForeignKey(Config, on_delete=models.CASCADE)  # todo Retirer le null=True
 

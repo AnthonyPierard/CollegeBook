@@ -15,7 +15,8 @@ import stripe
 
 def events_display(request):
     all_event = Event.objects.all()
-    return render(request, 'events_display.html', {'all_event': all_event})
+    all_representation = Representation.objects.all()
+    return render(request, 'events_display.html', {'all_event': all_event, 'all_representation' : all_representation})
 
 
 def event_details(request, even_id):
@@ -68,3 +69,23 @@ def delete_representation(request, representation_id):
         form = ConfirmForm()
         event = Representation.objects.get(pk=representation_id)
         return render(request, 'delete_representation.html', {"form": form, "event": event})
+
+@login_required
+def event_update(request, event_id):
+    if request.method == 'POST':
+        event = Event.objects.get(pk=event_id)
+        event.delete()
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('Event:display')
+    else :
+        event = Event.objects.get(pk=event_id)
+        form = EventForm(initial={
+            'name' : event.name,
+            'image' : event.image,
+            'description' : event.description,
+            'duration' : event.duration,
+            'configuration' : event.configuration,
+            'artiste' : event.artiste})
+        return render(request, 'event_modification.html', {"form" : form, "event" : event})
