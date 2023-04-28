@@ -76,7 +76,7 @@ async function prepare_json(url) {
 //création du json de la page HTML
 function tmp_create(){
     let new_json = [];
-    new_json.push({"nom" : document.querySelector('#id_nom').value})
+    new_json.push({"nom" : document.querySelector('#id_name').value})
     const seat_area = document.querySelector('.seat-area');
     let row = seat_area.childNodes;
     for (let i=0; i<row.length; i++) {
