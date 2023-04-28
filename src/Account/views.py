@@ -79,10 +79,19 @@ def user_update_archive(request, user_id):
 
 @login_required
 def user_events_display(request, user_id):
-    user_events = Event.objects.filter(user=user_id)
+    user_events_draft = Event.objects.filter(user=user_id,state='DRF')
+    user_events = Event.objects.filter(user=user_id, state='ACT')
+    user_events_archived = Event.objects.filter(user=user_id, state='ARC')
     user_representations = list()
+    user_representations_archived = list()
     for event in user_events:
         representations = Representation.objects.filter(event=event.id)
         for representation in representations:
             user_representations.append(representation)
-    return render(request, 'user_events_display.html', {'user_representations': user_representations, 'now' : timezone.now()})
+    for event in user_events_archived:
+        representations = Representation.objects.filter(event=event.id)
+        for representation in representations:
+            user_representations_archived.append(representation)
+    return render(request, 'user_events_display.html', {'user_representations': user_representations,
+                                                        'user_events_draft': user_events_draft,
+                                                        'user_representations_archived': user_representations_archived})

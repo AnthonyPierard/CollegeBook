@@ -138,6 +138,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "Configuration/static",
     BASE_DIR / "Reservation/static",
     BASE_DIR / "Payment/static",
+    BASE_DIR / "Account/static"
 ]
 
 MEDIA_URL = "Media/"

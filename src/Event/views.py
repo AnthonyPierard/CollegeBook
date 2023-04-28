@@ -11,14 +11,16 @@ from Configuration.views import add_default_configuration
 import stripe
 
 def events_display(request):
-    all_event = Event.objects.filter(is_archived=False)
+    all_event = Event.objects.filter(state='ACT')
     return render(request, 'events_display.html', {'all_event': all_event})
 
 
 def event_details(request, even_id):
     event = Event.objects.get(pk=even_id)
-    if event.is_archived:
+    if event.state != 'ACT':
+        print('ok')
         return redirect('Event:display')
+
     representations = Representation.objects.filter(date__gte=datetime.now(), event=event.id)
     return render(request, 'event_details.html', {"event": event, "representations": representations})
 
