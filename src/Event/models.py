@@ -10,11 +10,16 @@ import pytz
 
 
 class Event(models.Model):
+    STATES =[
+        ("DRF", "Draft"),
+        ("ACT", "Active"),
+        ("ARC", "Archived")
+    ]
     name = models.CharField("Nom de l'événement", max_length=200, unique=True)
     description = models.CharField("Description de l'événement", max_length=1000)
     image = models.ImageField("Image(s) de l'événement(s)", upload_to="Images/", blank=True, null=True)
     duration = models.TimeField("Durée de l'événement", default='02:00')
-    is_archived = models.BooleanField("Archivé quand toutes les dates de représentations sont passées", default=False)
+    state = models.CharField("Etat de l'event brouillon/actif/archivé", choices=STATES, max_length=3, default="DRF")
     configuration = models.ForeignKey(Config, on_delete=models.CASCADE)
 
     user = models.ManyToManyField(User)
@@ -46,7 +51,7 @@ class Representation(models.Model):
 
 @receiver(pre_save, sender=Representation)
 def trigger_representation_at_same_time(sender, instance, *args, **kwargs):
-    all_rep_same_day = Representation.objects.filter(date__day=instance.date.day).exclude(pk=instance.id)   #on recupere toutes les representations du meme jour
+    all_rep_same_day = Representation.objects.filter(date__day=instance.date.day).exclude(pk=instance.id)   #on recupere toutes les representations du meme jour sauf lui meme en cas de modif
     event_instance = Event.objects.get(pk=instance.event.id)
     if event_instance is None:
         pass
