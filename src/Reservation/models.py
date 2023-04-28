@@ -2,7 +2,8 @@ from datetime import datetime
 
 from django.db import models
 
-from Event.models import Representation, Place, Price
+from Configuration.models import Place
+from Event.models import Representation, Price
 
 from polymorphic.models import PolymorphicModel
 

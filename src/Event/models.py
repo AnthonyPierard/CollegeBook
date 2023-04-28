@@ -32,21 +32,14 @@ class CodePromo(models.Model):
 
 class Representation(models.Model):
     date = models.DateTimeField("Date", default=datetime.now())
-    remaining_places = models.JSONField("Informations de la salle", blank=True, null=True)  # TODO pour tester aussi il faudra retirer blank et null
+    remaining_seats = models.JSONField("Informations de la salle", blank=True, null=True)  # TODO pour tester aussi il faudra retirer blank et null
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.event.name + " " + str(self.date.strftime('%d/%m/%Y'))
+        return self.event.name + " le " + str(datetime.makenaive(self.date).strftime('%d/%m/%Y à %H:%M'))
 
 #TODO faire un trigger pour qu'un event soit supp si plus AUCUNE reprensentation existante
-
-
-class Place(models.Model):
-    type = models.CharField("Nom de la place", max_length=50)
-    price = models.DecimalField("Prix de la place", max_digits=5, decimal_places=2)
-
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
 
 class Price(models.Model):

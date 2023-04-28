@@ -21,11 +21,7 @@ def area_configuration(request):
     if request.method=='POST':
         form = ConfigForm(request.POST)
         if form.is_valid():
-            #l'enregistrement marche bien mais ne marche pas bien en globale car je ne crée pas encore de json
-            configName = form.cleaned_data['nom']
-            goodConfigName = configName.replace(' ', '_')
-            newConfig = Config(name=configName, url_json="/static/json/" + goodConfigName + ".json", user= request.user)
-            newConfig.save()
+            form.save(user= request.user)
             configurations = Config.objects.filter(user=request.user.id)
             return render(request, 'area_configuration.html', {'configurations' : configurations, 'form' : form})
     else :
@@ -36,6 +32,7 @@ def area_configuration(request):
         return render(request, 'area_configuration.html', {'configurations' : configurations, 'form' : form})
 
 def create_json(request):
+    print("rentre?")
     if request.method == 'POST':
         data = json.loads(request.body)
         goodName = data[0]['nom'].replace(" " , "_")

@@ -6,14 +6,14 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from Reservation.models import Reservation, SeatingTicket, StandingTicket, Ticket
-from Event.models import Place, Price
+from Event.models import Price
 from CollegeBook.utils import stripe_id_creation
 
 from .templates import *
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-
+#TODO empêcher d'accéder à certaines pages
 class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
         reservation = Reservation.objects.get(id=self.kwargs["representation_id"])
@@ -46,8 +46,7 @@ class CreateCheckoutSessionView(View):
             ]
 
         checkout_session_id = reservation.checkout_session
-        # if checkout_session_id == '' or stripe.checkout.Session.retrieve(checkout_session_id).status == "expired":
-        if True:
+        if checkout_session_id == '' or stripe.checkout.Session.retrieve(checkout_session_id).status == "expired":
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card', 'bancontact', 'sepa_debit'],
                 line_items= line_items,
@@ -121,7 +120,7 @@ def webhook(request):
         #     event['data']['object']['id']
         # )
         # print(session)
-        reservation = Reservation.objects.get(paid=False, checkout_session=event['data']['object']['id'])
+        reservation = Reservation.objects.get(checkout_session=event['data']['object']['id'])
         reservation.paid = True
         print(reservation)
         # email = EmailMessage(

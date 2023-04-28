@@ -12,3 +12,9 @@ class Config(models.Model):
 
     def __str__(self):
         return self.name
+
+class Place(models.Model):
+    type = models.CharField("Nom de la place", max_length=50)
+    price = models.DecimalField("Prix de la place", max_digits=5, decimal_places=2)
+
+    configuration = models.ForeignKey(Config, on_delete=models.CASCADE)

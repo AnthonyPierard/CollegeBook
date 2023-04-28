@@ -4,7 +4,8 @@ from django import forms
 
 from tagify.fields import TagField
 
-from Event.models import Event, Representation, Place, Price, CodePromo
+from Configuration.models import Config, Place
+from Event.models import Event, Representation, Price, CodePromo
 
 from CollegeBook.utils import stripe_id_creation
 
@@ -31,8 +32,6 @@ class EventForm(forms.ModelForm):
 
     food_price = forms.FloatField(label='Prix des tickets nourriture', min_value=0, widget=forms.NumberInput(attrs={"step":'0.5'}))
 
-    place_types = TagField(label='Types de places', delimiters=';', initial='Debout : 3.00€;Classic : 4.00€;Vip : 5.00€')
-
     promo_codes = TagField(label='Codes promo', delimiters=';', initial='FIRST : 3.00€;MAI : 5.00%')
 
     def save(self, commit=True):
@@ -49,9 +48,8 @@ class EventForm(forms.ModelForm):
             if dates != '':
                 for date in dates:
                     test = datetime.strptime(date, '%d-%m-%Y/%H:%M')
-                    Representation(date=test, remaining_places={}, event_id=event.id).save()
+                    Representation(date=test, remaining_seats={}, event_id=event.id).save()
 
-            place_values = self.cleaned_data["place_types"]
             event_name = self.cleaned_data['name']
 
             #Prices creation
@@ -76,21 +74,18 @@ class EventForm(forms.ModelForm):
                 id=stripe_id_creation("nourriture", event_name)
             )
 
-            for element in place_values:
-                splitted = element.split(":")
-                place_type = splitted[0].split(' ')[0]
-                place_price = splitted[1].split(' ')[1].replace("€","")
-
-                # Places creation in DB
-                Place(type= place_type, price= place_price, event_id = event.id).save()
-                # Create a stripe product
+            # Create a stripe product
+            configuration = Config.objects.get(name=event.configuration)
+            places = Place.objects.filter(configuration_id=configuration.id)
+            for place in places :
+                print(place)
                 stripe.Product.create(
-                    name= "Siège " + place_type.capitalize() + " [" + event_name + "]",
-                    default_price_data= {
-                        'unit_amount': int(float(place_price) * 100),
+                    name="Siège " + place.type.capitalize() + " [" + event_name + "]",
+                    default_price_data={
+                        'unit_amount': int(float(place.price) * 100),
                         'currency': 'eur'
                     },
-                    id= stripe_id_creation(place_type, event_name)
+                    id=stripe_id_creation(place.type, event_name)
                 )
 
             codes_value = self.cleaned_data["promo_codes"]

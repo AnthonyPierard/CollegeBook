@@ -2,7 +2,8 @@ import os.path
 
 from django.shortcuts import render, redirect
 
-from Event.models import Representation, Event, Price, Place
+from Event.models import Representation, Event, Price
+from Configuration.models import Place
 from .models import Reservation, Ticket, SeatingTicket, StandingTicket
 from .forms import ReservationForm
 from CollegeBook.settings import MEDIA_ROOT

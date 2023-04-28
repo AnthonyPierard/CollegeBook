@@ -1,6 +1,12 @@
 {% extends 'defaultConfiguration.html' %}
 {% load static %}
 
+{%  block head %}
+    {{ form.media }}
+    <link rel="stylesheet" href= {% static "css/Configuration.css" %} >
+{%  endblock %}
+
+
 {% block body %}
     <select name="config" onchange="prepare_json(this)">
         {% for configuration in configurations %}
@@ -10,8 +16,15 @@
     <br>
     <form method="post">
         {% csrf_token %}
-        {{form.nom.label}}
-        {{form.nom}}
+        <div>
+            {{ form.name.label }}
+            {{ form.name }}
+        </div>
+        <div class="input-box">
+            {{ form.place_types.label }}
+            {{ form.place_types }}
+        </div>
+
         <input id="create_json" type="submit" value="Confirmer">
     </form>
     <br>
