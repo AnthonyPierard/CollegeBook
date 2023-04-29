@@ -2,19 +2,17 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 
+from CollegeBook.utils import configCreator
 from .forms import ConfigForm
 from .models import Config
 
 import json
 def add_default_configuration(userId):
-    onlySeat = Config(name="only Seat", url_json="/static/json/onlySeat.json", user=userId)
-    onlySeat.save()
-    allSeat = Config(name="all Seat", url_json="/static/json/allSeat.json", user=userId)
-    allSeat.save()
-    onlyStanding = Config(name="only standing", url_json="/static/json/onlyStanding.json", user=userId)
-    onlyStanding.save()
-    standingBleacher = Config(name="standing with bleacher", url_json="/static/json/standingWithBleacher.json", user=userId)
-    standingBleacher.save()
+    basicSeats = {"Debout":3.00, "Classic":4.00, "Vip":5.00}
+    configCreator(config_name="only Seat", json_url="/static/json/onlySeat.json", user_id=userId, seats=basicSeats)
+    configCreator(config_name="all Seat", json_url="/static/json/allSeat.json", user_id=userId, seats=basicSeats)
+    configCreator(config_name="only standing", json_url="/static/json/onlyStanding.json", user_id=userId, seats=basicSeats)
+    configCreator(config_name="standing with bleacher", json_url="/static/json/standingWithBleacher.json", user_id=userId, seats=basicSeats)
 
 @login_required
 def area_configuration(request):

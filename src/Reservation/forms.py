@@ -1,6 +1,7 @@
 from django import forms
 
-from .models import Reservation, Representation, Place, Price, StandingTicket, SeatingTicket
+from Configuration.models import Place
+from .models import Reservation, Representation, StandingTicket, SeatingTicket
 
 
 class ReservationForm(forms.ModelForm):
@@ -30,11 +31,10 @@ class ReservationForm(forms.ModelForm):
             selected_seats = selected_seats.split(",")
             for element in selected_seats:
                 if element == "Debout":
-                    print(reservation.representation.event_id)
-                    place = Place.objects.get(type="Debout", event_id=reservation.representation.event_id)
+                    place = Place.objects.get(type="Debout", configuration_id=reservation.representation.event.configuration_id)
                     StandingTicket(type_id = place.id, reservation_id = reservation.id).save()
                 else:
                     #TODO changer le debout
-                    place = Place.objects.get(type="Debout", event_id=reservation.representation.event_id)
+                    place = Place.objects.get(type="Debout", configuration_id=reservation.representation.event.configuration_id)
                     SeatingTicket(seat_number= element, type_id= place.id, reservation_id = reservation.id).save()
         return reservation

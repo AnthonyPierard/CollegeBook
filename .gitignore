@@ -1,6 +1,7 @@
 .idea/
 src/*.sqlite3
 src/db.sqlite3
-src/Media/
+src/CollegeBook/Media/
 src/env/
+src/Configuration/static/json/
 *.pyc
