@@ -3,6 +3,7 @@ import os.path
 from django.shortcuts import render, redirect
 
 from Event.models import Representation, Event, Price, Place
+from Configuration.models import Config
 from .models import Reservation, Ticket, SeatingTicket, StandingTicket
 from .forms import ReservationForm
 from CollegeBook.settings import MEDIA_ROOT
@@ -15,7 +16,12 @@ import qrcode
 
 def seat_selection(request, representation_id):
     representation = Representation.objects.get(pk = representation_id)
-    return render(request, 'seat_selection.html', {"representation" : representation})
+    eventID = representation.event_id
+    event = Event.objects.get(pk = eventID)
+    configurationID = event.configuration_id
+    configuration = Config.objects.get(pk = configurationID)
+    url = configuration.url_json
+    return render(request, 'seat_selection.html', {"representation" : representation, "url": "../Configuration/"+url})
 
 def representation_reservation(request, representation_id):
     if request.method == 'POST':

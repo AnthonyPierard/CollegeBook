@@ -29,6 +29,7 @@ function clickable_select_row(){
 
 //remplis le seat-area de siège ou d'espace debout
 function fill_seat(json_dictionnary){
+    let charcode = 65;
     const seat_area = document.createElement('div');
     seat_area.classList.add('seat-area');
     const theatre = document.querySelector('.theatre');
@@ -42,16 +43,23 @@ function fill_seat(json_dictionnary){
         select_row.classList.add("select-row");
         row.appendChild(select_row);
         if(json_dictionnary[index].seat != null){
+            let placeNumber = 1;
             const all_seat = json_dictionnary[index].seat;
 
             for (const seat of all_seat){
                 const marker_seat = document.createElement('div');
                 const new_seat = seat.split(' ');
+                const seat_id = String.fromCharCode(charcode) + String(placeNumber);
                 for (const class_seat of new_seat) {
                     marker_seat.classList.add(class_seat);
+                    if (class_seat == "seat"){
+                        marker_seat.id = seat_id;
+                        placeNumber = placeNumber + 1;
+                    } 
                 }
                 row.appendChild(marker_seat);
             }
+            charcode = charcode+1;
         }
 
     }
