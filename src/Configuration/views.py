@@ -19,13 +19,16 @@ def add_default_configuration(userId):
 @login_required
 def area_configuration(request):
     if request.method=='POST':
+        print(request.POST.get('config'))
         form = ConfigForm(request.POST)
         if form.is_valid():
             #l'enregistrement marche bien mais ne marche pas bien en globale car je ne crée pas encore de json
             configName = form.cleaned_data['nom']
             goodConfigName = configName.replace(' ', '_')
-            newConfig = Config(name=configName, url_json="/static/json/" + goodConfigName + ".json", user= request.user)
-            newConfig.save()
+            otherConfig = Config.objects.filter(name=goodConfigName)
+            if(len(otherConfig)==0):
+                newConfig = Config(name=configName, url_json="/static/json/" + goodConfigName + ".json", user= request.user)
+                newConfig.save()
             configurations = Config.objects.filter(user=request.user.id)
             return render(request, 'area_configuration.html', {'configurations' : configurations, 'form' : form})
     else :

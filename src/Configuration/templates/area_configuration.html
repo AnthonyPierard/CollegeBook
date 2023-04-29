@@ -3,6 +3,7 @@
 
 {% block body %}
     <select name="config" onchange="prepare_json(this)">
+            <option id="option" class="rien" value=1>rien</option>
         {% for configuration in configurations %}
             <option value={{configuration.url_json}} >{{configuration.name}}</option>
         {% endfor %}
