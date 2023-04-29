@@ -1,31 +1,43 @@
-<!DOCTYPE html>
-<html>
+{% extends "default.html" %}
 
-<head>
-    <title>Buy cool new product</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
-    <script src="https://js.stripe.com/v3/"></script>
-</head>
+{% load static %}
 
-<body>
-    <section>
-        <div class="product">
-            <div class="description">
-                <h3>Test</h3>
-                <hr />
+{%  block head %}
+    <link rel="stylesheet" href= {% static "css/Payment.css" %} >
+{% endblock %}
 
-                <div>
-                    <h5>10</h5>
-                    <form action="{% url 'Payment:CreateCheckoutSessionView' place.id %}" method="POST">
-                        {% csrf_token %}
-                        <button type="submit">Checkout</button>
-                    </form>
-                </div>
+{% block body %}
+    <h1 class="title">Récapitulatif de réservation</h1>
 
+    <div class="summary-area">
+        <p class="event-title">Événement {{ reservation.representation }}</p>
+        {% for seat in standing_seats %}
+            <div class="item-summary">
+                <p>Place {{ seat.type }}</p>
             </div>
+        {% endfor %}
+        {% for seat in seating_seats %}
+            <div class="item-summary">
+                <p>Siège {{ seat.type }} </p><p> {{ seat.place }} </p>
+            </div>
+        {% endfor %}
+        <div class="item-summary">
+            <p>Tickets boisson</p><p>{{ reservation.drink_number }}</p>
         </div>
-    </section>
-</body>
+        <div class="item-summary">
+            <p>Tickets nourriture</p><p>{{ reservation.food_number }}</p>
+        </div>
+        <hr />
+        <div class="item-summary">
+            <p>Prix total</p> <p>{{ price }}€</p>
+        </div>
 
-</html>
+        <div class="button-area">
+            <form action="{% url 'Payment:CreateCheckoutSessionView' reservation.id %}" method="POST">
+            {% csrf_token %}
+            <button class="button" type="submit">Payement</button>
+        </form>
+        </div>
+
+    </div>
+{% endblock %}

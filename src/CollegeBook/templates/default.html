@@ -40,6 +40,7 @@
                     <li><a href="{% url 'Account:creation' %}" class="nav-a" id="nav-create-account">Créer un compte</a></li>
                     {% endif %}
                     <li><a href="{% url 'Event:creation' %}" class="nav-a" id="nav-create-event">Créer un événement</a></li>
+                    <li><a href="{% url 'Config:Configuration' %}" class="nav-a" id="nav-create-config">Créer une configuration</a></li>
                     <li><a href="{% url 'Account:events' user.id %}" class="nav-a" id="nav-personnal-events">Vos événements</a></li>
                     <li><a href="{% url 'Account:logout' %}" class="nav-a" id="nav-logout">Se déconnecter</a></li>
                     <li><a href="{% url 'Account:update' user.id %}" class="nav-a" id="nav-account">Compte</a></li>

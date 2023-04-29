@@ -10,8 +10,9 @@ class Event(models.Model):
     description = models.CharField("Description de l'événement", max_length=1000)
     image = models.ImageField("Image(s) de l'événement(s)", upload_to="Images/", blank=True, null=True)
     duration = models.TimeField("Durée de l'événement", default='02:00')
+    artiste = models.CharField("Artistes", max_length= 2000)
 
-    configuration = models.ForeignKey(Config, on_delete=models.CASCADE, null=True)  # todo Retirer le null=True
+    configuration = models.ForeignKey(Config, on_delete=models.CASCADE)  # todo Retirer le null=True
 
     user = models.ManyToManyField(User)
 
@@ -37,7 +38,7 @@ class Representation(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.event.name + " " + str(self.date)
+        return self.event.name + " " + str(self.date.strftime('%d/%m/%Y'))
 
 #TODO faire un trigger pour qu'un event soit supp si plus AUCUNE reprensentation existante
 

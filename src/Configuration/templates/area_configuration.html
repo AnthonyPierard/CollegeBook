@@ -7,11 +7,22 @@
             <option value={{configuration.url_json}} >{{configuration.name}}</option>
         {% endfor %}
     </select>
-    <input>
+    <br>
+    <form method="post">
+        {% csrf_token %}
+        {{form.nom.label}}
+        {{form.nom}}
+        <input id="create_json" type="submit" value="Confirmer">
+    </form>
+    <br>
+    <a href="{% url 'Event:creation' %}">Revenir vers la création</a>
+
     <div class="full-area">
         <div class="theatre">
             <div class="seat-area">
             </div>
         </div>
     </div>
+
+
 {% endblock %}

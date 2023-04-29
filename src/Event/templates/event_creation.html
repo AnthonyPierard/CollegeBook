@@ -25,6 +25,10 @@
                 {{ form.duration }}
             </div>
             <div class="input-box">
+                {{form.artiste.label}}
+                {{form.artiste}}
+            </div>
+            <div class="input-box">
                 {{ form.user.label }}
                 {{ form.user }}
             </div>
@@ -32,6 +36,12 @@
                 {{ form.date.label }}
                 {{ form.date }}
             </div>
+            <div class="input-box">
+                {{form.configuration.label}}
+                {{ form.configuration }}
+            </div>
+
+            <a href="{% url 'Config:Configuration' %}">Créer une configuration de salle</a>
             <div class="input-box">
                 {{ form.drink_price.label }}
                 {{ form.drink_price }}
@@ -48,7 +58,6 @@
                 {{ form.promo_codes.label }}
                 {{ form.promo_codes }}
             </div>
-            <a href="{% url 'Config:Configuration' %}">Configuration de la salle</a>
             <input type="submit" value="Créer l'événement">
         </form>
     </div>
