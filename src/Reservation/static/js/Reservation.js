@@ -111,17 +111,19 @@ function getAdjacentSeats(seatID){
 }
 
 function updatePrice(isIncreasing){
-    const element = document.getElementById("price");
-    stringPrice = element.innerHTML;
+    const displayed_price = document.getElementById("price");
+    stringPrice = displayed_price.innerHTML;
     stringPrice.slice(0,-1);
     let price = parseInt(stringPrice);
     if (isIncreasing){
         price = price + 5;
     }
     else{
-        price = price - 5;
+        if (price > 0) {
+            price = price - 5;
+        }
     }
-    element.innerHTML = String(price)+"€";
+    displayed_price.innerHTML = String(price)+"€";
     sessionStorage.setItem("price", price);
 }
 

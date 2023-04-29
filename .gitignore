@@ -1,11 +1,9 @@
 .idea/
+src/*.sqlite3
+src/db.sqlite3
+src/Media/
 src/polls/__pycache__/
 src/polls/migrations/__pycache__/
 src/CollegeBookSite/__pycache__/
-src/college/__pycache__/
-src/college/migrations/
-src/*.sqlite3
-src/db.sqlite3
-src/Media/Images/
-src/env/
+venv/
 *.pyc

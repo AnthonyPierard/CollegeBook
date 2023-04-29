@@ -15,11 +15,11 @@
     {% block config %}
         <div class="full-area">
             <div class="theatre">
-                <div class="seat-area" id="seat-area">
+                <div class="seat-area" id ="seat-area">
                     <div class="seat-row">
                         <span class="seat" id="A1"onclick="changeStatus(this.id)"></span>
                         <span class="seat sold" id="A2"onclick="changeStatus(this.id)"></span>
-                        <span class="seat selected" id="A3"onclick="changeStatus(this.id)"></span>
+                        <span class="seat" id="A3"onclick="changeStatus(this.id)"></span>
                         <span class="seat" id="A4"onclick="changeStatus(this.id)"></span>
                         <span class="seat" id="A5"onclick="changeStatus(this.id)"></span>
                         <span class="seat" id="A6"onclick="changeStatus(this.id)"></span>
@@ -38,7 +38,7 @@
                         <span class="seat" id="A19"onclick="changeStatus(this.id)"></span>
                         <span class="seat" id="A20"onclick="changeStatus(this.id)"></span>
                     </div>
-                    <div class="seat-row cheap">
+                    <div class="seat-row">
                         <span class="seat" id="B1"onclick="changeStatus(this.id)"></span>
                         <span class="seat" id="B2"onclick="changeStatus(this.id)"></span>
                         <span class="seat" id="B3"onclick="changeStatus(this.id)"></span>
@@ -461,7 +461,7 @@
             <div class="details">
                 <h2>Détails de la réservation:</h2>
                 <p>Prix : </p><p id="price">0€</p>
-                <p>Places :</p><p id="places"></p>
+                <p>Places : </p><p id="places"></p>
             </div>
         </div>
     {% endblock %}
