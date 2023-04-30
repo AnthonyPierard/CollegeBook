@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from Reservation.models import Reservation, SeatingTicket, StandingTicket, Ticket
 from Event.models import Price
-from CollegeBook.utils import stripe_id_creation
+from CollegeBook.utils import stripe_id_creation, create_ticket_pdf
 from CollegeBook.settings import MEDIA_ROOT
 
 from django.core.mail import send_mail,EmailMessage
@@ -153,54 +153,61 @@ def webhook(request):
             os.mkdir(ticket_path)
         if not os.path.exists(qr_path):
             os.mkdir(qr_path)
-        p = canvas.Canvas(pdf_path)
-
+        pdf = canvas.Canvas(pdf_path)
+        print("here1")
         for i in range(len(selected_seats)):
-            y = 150
-            x = 50
-            d = i + 1
-            data = 'https://www.youtube.com/%d' % d
-            img = qrcode.make(data)
-            ticket_name = f'{date}_{prefix_mail}_Ticket_Place_{selected_seats[i]}.png'
-            img.save(qr_path / ticket_name)
-            p.drawString(x, y, "Tickets place %s" % selected_seats[i])
-            y = + 200
-            p.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-            p.showPage()
+            print("here")
+            # y = 150
+            # x = 50
+            # d = i + 1
+            # data = 'https://www.youtube.com/%d' % d
+            # img = qrcode.make(data)
+            # ticket_name = f'{date}_{prefix_mail}_Ticket_Place_{selected_seats[i]}.png'
+            # img.save(qr_path / ticket_name)
+            # pdf.drawString(x, y, "Tickets place %s" % selected_seats[i])
+            # y = + 200
+            # pdf.drawImage(qr_path / ticket_name, 100, y, mask='auto')
+            # pdf.showPage()
+            pdf = create_ticket_pdf(pdf, selected_seats[i], i+1,  reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
+            print("done 3")
 
         drink_number = reservation.drink_number
         if drink_number > 0:
             for i in range(drink_number):
-                y = 150
-                x = 50
-                d = i + 1
-                data = 'https://www.youtube.com/%d' % d
-                img = qrcode.make(data)
-                ticket_name = f'{date}_{prefix_mail}_Ticket_Boisson_n°{d}.png'
-                img.save(qr_path / ticket_name)
-                p.drawString(x, y, "Ticket Boisson")
-                y = + 200
-                p.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-                p.showPage()
+                pdf = create_ticket_pdf(pdf, "Boisson", i+1, reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
+                # print("done 1")
+                # y = 150
+                # x = 50
+                # d = i + 1
+                # data = 'https://www.youtube.com/%d' % d
+                # img = qrcode.make(data)
+                # ticket_name = f'{date}_{prefix_mail}_Ticket_Boisson_n°{d}.png'
+                # img.save(qr_path / ticket_name)
+                # pdf.drawString(x, y, "Ticket Boisson")
+                # y = + 200
+                # pdf.drawImage(qr_path / ticket_name, 100, y, mask='auto')
+                # pdf.showPage()
 
         food_number = reservation.food_number
         if food_number > 0:
             for i in range(food_number):
-                y = 150
-                x = 50
-                d = i + 1
-                data = 'https://www.youtube.com/%d' % d
-                img = qrcode.make(data)
-                ticket_name = f'{date}_{prefix_mail}_Ticket_Nourriture_n°{d}.png'
-                img.save(qr_path / ticket_name)
-                p.drawString(x, y, "Ticket Nourriture")
-                y = + 200
-                p.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-                p.showPage()
+                pdf = create_ticket_pdf(pdf, "Nourriture", i+1, reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
+                print("done 2")
+                # y = 150
+                # x = 50
+                # d = i + 1
+                # data = 'https://www.youtube.com/%d' % d
+                # img = qrcode.make(data)
+                # ticket_name = f'{date}_{prefix_mail}_Ticket_Nourriture_n°{d}.png'
+                # img.save(qr_path / ticket_name)
+                # pdf.drawString(x, y, "Ticket Nourriture")
+                # y = + 200
+                # pdf.drawImage(qr_path / ticket_name, 100, y, mask='auto')
+                # pdf.showPage()
 
-        p.save()
+        pdf.save()
         email.attach_file(pdf_path)
         email.send()
         # email.attach_file('Tickets Nourriture n° %d.png' %d)
-
+        print("mail send")
     return HttpResponse(status=200)

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from Event.tasks import check_event_is_archived
+from Event.tasks import check_event_is_archived, send_remainders_mail, send_thanks_mail
 
 from . import settings
 
@@ -34,4 +34,6 @@ urlpatterns = [
 print("setup tasks")
 scheduler = BackgroundScheduler()
 scheduler.add_job(check_event_is_archived, CronTrigger.from_crontab('* * * * *'))  # Exécute toutes les minutes
+scheduler.add_job(send_remainders_mail, CronTrigger.from_crontab('0 2 * * *'))  # Exécute toutes les minutes
+scheduler.add_job(send_thanks_mail, CronTrigger.from_crontab('0 2 * * *'))  # Exécute toutes les minutes
 scheduler.start()
