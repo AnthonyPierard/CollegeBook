@@ -2,10 +2,15 @@
 function clickable_seats_and_spaces(){
     const seats_and_spaces = document.querySelectorAll('.seat, .space');
     for (const element of seats_and_spaces) {
-        element.addEventListener('click', () => {
-            element.classList.toggle('seat');
-            element.classList.toggle('space');
-        })
+        element.addEventListener('click', (event) => {
+            if (!element.classList.contains('space') && event.ctrlKey) {
+                set_place_type(element);
+                console.log("OK")
+            } else {
+                element.classList.toggle('seat');
+                element.classList.toggle('space');
+            }
+        });
     }
 }
 
@@ -18,8 +23,13 @@ function clickable_select_row(){
             const all_seat = row.childNodes;
             all_seat.forEach(function (seat){
                 if(seat.classList[0] != "select-row"){
-                    seat.classList.toggle('seat');
-                    seat.classList.toggle('space');
+                    if (!seat.classList.contains('space') && event.ctrlKey) {
+                        set_place_type(seat);
+                        console.log("OK")
+                    } else {
+                        seat.classList.toggle('seat');
+                        seat.classList.toggle('space');
+                    }
                 }
             })
         })
@@ -137,3 +147,112 @@ document.querySelector("#create_json").addEventListener("click", event => {
     }
 
 })
+
+
+//obtenir la config
+function get_config(){
+    // Récupérer l'élément de sélection par son ID
+    const selectElement = document.getElementById("config_choice");
+
+    // Récupérer la valeur sélectionnée
+    const selectedValue = selectElement.value;
+
+    // Afficher la valeur sélectionnée
+    console.log(selectedValue);
+
+    return selectedValue;
+
+}
+
+//récuperer les types de places dans le tagify
+function get_place_types(){
+
+    const places = document.getElementsByName("place_types");
+    const placeValues = places[0].defaultValue;
+    const allPlaces = placeValues.split(";");
+
+    const checkboxList = document.getElementById('checkboxList');
+
+    while (checkboxList.firstChild) {
+        checkboxList.removeChild(checkboxList.firstChild);
+    }
+
+    allPlaces.forEach((place) => {
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = "choice";
+        checkbox.value = place.split(":")[0];
+        checkboxList.appendChild(checkbox);
+
+        const label = document.createElement('label');
+        label.appendChild(document.createTextNode(place.split(":")[0]));
+        checkboxList.appendChild(label);
+
+        checkbox.addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('input[name=choice]');
+        checkboxes.forEach((cb) => {
+          if (cb !== checkbox) {
+            cb.checked = false;
+          }
+        });
+      });
+    });
+}
+
+function random_color(){
+    const hex = Math.floor(Math.random() * 16777215).toString(16);
+    return '#' + ('000000' + hex).slice(-6);
+}
+
+const seatColors = {};
+
+// attribuer un type à un siège
+function set_place_type(seat) {
+    const types = document.querySelectorAll("#checkboxList input[type='checkbox']");
+    let selected_type = "";
+
+    types.forEach((type) => {
+        if (type.checked) {
+          selected_type = type.value.replace(" ", "").toLowerCase();
+        }
+    });
+
+    seat.addEventListener('click', function() {
+        const seat_classes = seat.classList;
+        seat_classes.forEach((seat_class) => {
+            if (seat_class !== "seat" && seat_class !== "space") {
+                seat.classList.remove(seat_class);
+            }
+        });
+        if (selected_type != "") {
+            if (!seat.classList.contains(selected_type)) {
+                seat.classList.add(selected_type);
+
+                let styleTag = document.querySelector('style');
+                if (!styleTag) {
+                    styleTag = document.createElement('style');
+                    document.head.appendChild(styleTag);
+                }
+
+                // Récupérer la feuille de style et la règle CSS correspondant au type de siège
+                const styleSheet = styleTag.sheet;
+                const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${selected_type}`);
+
+                // Vérifier si une couleur a déjà été générée pour ce type de siège
+                let color = seatColors[selected_type];
+                if (!color) {
+                    // Générer une nouvelle couleur
+                    color = random_color();
+                    seatColors[selected_type] = color;
+                }
+
+                // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
+                if (!rule) {
+                    styleSheet.insertRule(`.seat.${selected_type} { background-color: ${color}; }`, styleSheet.cssRules.length);
+                } else {
+                    rule.style.backgroundColor = color;
+                }
+            }
+        }
+    });
+}

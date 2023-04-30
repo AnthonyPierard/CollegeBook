@@ -4,12 +4,12 @@
 {%  block head %}
     {{ form.media }}
     <link rel="stylesheet" href= {% static "css/Configuration.css" %} >
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {%  endblock %}
 
 
 {% block body %}
-    <select name="config" onchange="prepare_json(this)">
-            <option id="option" class="rien" value=1>rien</option>
+    <select name="config" id="config_choice" onchange="prepare_json(this)">
         {% for configuration in configurations %}
             <option value={{configuration.url_json}} >{{configuration.name}}</option>
         {% endfor %}
@@ -23,8 +23,10 @@
         </div>
         <div class="input-box">
             {{ form.place_types.label }}
+            <button type="button" onclick="get_place_types()"> Trouver les types de place associées à la configuration </button>
             {{ form.place_types }}
         </div>
+        <div id="checkboxList"></div>
 
         <input id="create_json" type="submit" value="Confirmer">
     </form>
