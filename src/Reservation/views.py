@@ -6,15 +6,21 @@ from Event.models import Representation, Event, Price
 from Configuration.models import Place
 from .models import Reservation, Ticket, SeatingTicket, StandingTicket
 from .forms import ReservationForm
+from django.utils import timezone
 from CollegeBook.settings import MEDIA_ROOT
-
 import qrcode
 
 def seat_selection(request, representation_id):
-    representation = Representation.objects.get(pk = representation_id)
+    representation = Representation.objects.get(pk=representation_id)
+    if representation.date <= timezone.now():
+        return redirect('Event:display')
+
     return render(request, 'seat_selection.html', {"representation" : representation})
 
 def representation_reservation(request, representation_id):
+    representation = Representation.objects.get(pk=representation_id)
+    if representation.date <= timezone.now():
+        return redirect('Event:display')
     if request.method == 'POST':
         form = ReservationForm(request.POST)
         if form.is_valid():

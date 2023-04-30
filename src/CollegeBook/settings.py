@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tagify',
+    #'django_crontab', # only for UNIX systems
+    'apscheduler',
     'Account',
     'Event',
     'Configuration',
@@ -136,6 +138,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "Configuration/static",
     BASE_DIR / "Reservation/static",
     BASE_DIR / "Payment/static",
+    BASE_DIR / "Account/static"
 ]
 
 MEDIA_URL = "Media/"
@@ -159,3 +162,10 @@ EMAIL_HOST_USER = 'collegebooktest@gmail.com'
 EMAIL_HOST_PASSWORD = 'bukbfkukzqosrqcu'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+#TASKS
+#CRONJOBS = [       #For django-crontab
+    #('0 2 * * *', 'Event.tasks.check_event_is_archived'),
+#]
+
+SCHEDULER_AUTOSTART = True
