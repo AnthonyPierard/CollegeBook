@@ -3,10 +3,15 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
+from Account.models import User
+from Configuration.models import Place
 from .forms import EventForm, UpdateDateEventForm, ConfirmForm
 from django.utils import timezone
-from Event.models import Event, Representation, Config
+from CollegeBook.utils import stripe_id_creation, get_stripe_product_price
+from Event.models import Event, Representation, Config, CodePromo, Price
 from Configuration.views import add_default_configuration
+
+import stripe
 
 
 def events_display(request):
@@ -17,7 +22,6 @@ def events_display(request):
 def event_details(request, even_id):
     event = Event.objects.get(pk=even_id)
     if event.state != 'ACT':
-        print('ok')
         return redirect('Event:display')
 
     representations = Representation.objects.filter(date__gte=datetime.now(), event=event.id)
@@ -37,24 +41,6 @@ def event_creation(request):
             add_default_configuration(request.user)
         configurations = Config.objects.filter(user=request.user.id)
         return render(request, 'event_creation.html', {'form': form, 'configurations': configurations})
-
-
-@login_required
-def update_representation_date(request, representation_id):
-    representation = Representation.objects.get(pk=representation_id)
-    if representation.date <= timezone.now():
-        return redirect('Account:events', request.user.id)
-    if request.method == 'POST':
-        form = UpdateDateEventForm(request.POST)
-        if form.is_valid():
-            representation = Representation.objects.get(pk=representation_id)
-            representation.date = datetime.strptime(form.cleaned_data['date'], '%d-%m-%Y/%H:%M')
-            representation.save()
-        return redirect('Account:events', request.user.id)
-    else:
-        form = UpdateDateEventForm()
-        representation = Representation.objects.get(pk=representation_id)
-        return render(request, 'update_representation_date.html', {"form": form, "representation": representation})
 
 
 @login_required
@@ -82,20 +68,30 @@ def delete_representation(request, representation_id):
 def event_update(request, event_id):
     if request.method == 'POST':
         event = Event.objects.get(pk=event_id)
-        event.delete()
-        form = EventForm(request.POST, request.FILES)
+        form = EventForm(request.POST, instance=event)
         if form.is_valid():
+            event.user.clear()
+            Representation.objects.filter(event_id=event.id).delete()
+            CodePromo.objects.filter(event_id=event.id).delete()
+            Price.objects.filter(event_id=event.id).delete()
+
             form.save()
-            return redirect('Event:display')
+
+        return redirect('Event:display')
     else:
         event = Event.objects.get(pk=event_id)
-        form = EventForm(initial={
-            'name': event.name,
-            'image': event.image,
-            'description': event.description,
-            'duration': event.duration,
-            'configuration': event.configuration,
-            'artiste': event.artiste})
+        representations = Representation.objects.filter(event_id=event.id)
+        dates = ""
+        for representation in representations:
+            dates += representation.date.strftime("%d-%m-%Y/%H:%M, ")
+        if dates[-2] == "," and dates[-1] == " ":
+            dates = dates[:-2]
+        # drink_price = get_stripe_product_price(product_type="boisson", event_name=event.name)
+        # food_price = get_stripe_product_price(product_type="nourriture", event_name=event.name)
+        drink_price = Price.objects.get(type="Boisson", event_id=event.id).price
+        food_price = Price.objects.get(type="Nourriture", event_id=event.id).price
+
+        form = EventForm(instance=event, initial={"date":dates, "drink_price":drink_price, "food_price":food_price})
         return render(request, 'event_modification.html', {"form": form, "event": event})
 
 
@@ -104,6 +100,39 @@ def publish_event(request, event_id):
     event = Event.objects.get(pk=event_id)
     event.state = 'ACT'
     event.save()
+
+    #Create stripe products
+    drink_price = Price.objects.get(type="Boisson", event_id=event.id).price
+    stripe.Product.create(
+        name="Ticket boisson" + " [" + event.name + "]",
+        default_price_data={
+            'unit_amount': int(drink_price * 100),
+            'currency': 'eur'
+        },
+        id=stripe_id_creation("boisson", event.name)
+    )
+
+    food_price = Price.objects.get(type="Nourriture", event_id=event.id).price
+    stripe.Product.create(
+        name="Ticket nourriture" + " [" + event.name + "]",
+        default_price_data={
+            'unit_amount': int(food_price * 100),
+            'currency': 'eur'
+        },
+        id=stripe_id_creation("nourriture", event.name)
+    )
+
+    configuration = Config.objects.get(name=event.configuration)
+    places = Place.objects.filter(configuration_id=configuration.id)
+    for place in places :
+        stripe.Product.create(
+            name="Siège " + place.type.capitalize() + " [" + event.name + "]",
+            default_price_data={
+                'unit_amount': int(float(place.price) * 100),
+                'currency': 'eur'
+            },
+            id=stripe_id_creation(place.type, event.name)
+        )
     return redirect('Account:events', request.user.id)
 
 @login_required()
@@ -112,5 +141,5 @@ def delete_event_draft(request,event_id):
     if event.state =='DRF':
         Representation.objects.filter(event=event_id).delete()
         event.delete()
-
+    #TODO delete stripe products
     return redirect('Account:events', request.user.id)
