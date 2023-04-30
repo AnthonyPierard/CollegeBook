@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'Configuration',
     'Reservation',
     'Payment',
+    'Validation',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,7 @@ TEMPLATES = [
             BASE_DIR / 'Configuration/templates',
             BASE_DIR / 'Reservation/templates',
             BASE_DIR / 'Payment/templates',
+            BASE_DIR / 'Validation/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -138,7 +140,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "Configuration/static",
     BASE_DIR / "Reservation/static",
     BASE_DIR / "Payment/static",
-    BASE_DIR / "Account/static"
+    BASE_DIR / "Account/static",
+    BASE_DIR / "Validation/static",
 ]
 
 MEDIA_URL = "Media/"

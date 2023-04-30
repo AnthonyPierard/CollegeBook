@@ -29,6 +29,7 @@ urlpatterns = [
     path('configuration/', include("Configuration.urls")),
     path('reservation/', include("Reservation.urls")),
     path('payment/', include("Payment.urls")),
+    path('validation/', include('Validation.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 print("setup tasks")
