@@ -286,7 +286,7 @@ a {
     flex-wrap: wrap;
 }
 
-.input-box input:not(input[type="checkbox"]) {
+.input-box input:not(input[type="checkbox"], input[type="file"]) {
     width: 100%;
     height: 40px;
     padding: 0 8px;
@@ -312,7 +312,7 @@ a {
     accent-color: #268085;
 }
 
-.input-box input:not(input[type="checkbox"]):focus {
+.input-box input:not(input[type="checkbox"], input[type="file"]):focus {
     border: 2px solid rgba(38, 128, 133, 0.8);
 }
 
@@ -328,4 +328,37 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     transform: scale(1.01);
+}
+
+input[type="file"] {
+    height: 40px;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+@media screen and (max-width: 650px) {
+
+    .table thead {
+        display: none;
+    }
+
+    .table td{
+        display:block;
+        width: 100%;
+        border-bottom: 0px;
+        text-align: right;
+    }
+
+
+    .table tr td a{
+        display: inline-block;
+        text-align: center;
+    }
+
+    .table td::before {
+        display: flex;
+        content: attr(data-label);
+        text-align: start;
+        font-weight: bold;
+    }
 }

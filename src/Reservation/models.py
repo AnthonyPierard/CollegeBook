@@ -43,3 +43,11 @@ class StandingTicket(Ticket):
 
 class SeatingTicket(Ticket):
     seat_number = models.CharField("Trigramme du siège", max_length=3)
+#
+# class FoodTicket(Ticket):
+#     seat_number = models.CharField("Trigramme du siège", max_length=3)
+#
+# class DrinkTicket(Ticket):
+#     seat_number = models.CharField("Trigramme du siège", max_length=3)
+
+
