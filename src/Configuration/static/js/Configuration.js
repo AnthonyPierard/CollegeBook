@@ -62,15 +62,18 @@ function fill_seat(json_dictionnary){
 //fonction pour choisir le json
 async function prepare_json(url) {
     //on retire ce qu'il y avait dans le seat-area
-    const seat_area = document.querySelector('.seat-area');
-    seat_area.remove();
-    //on va chercher ce qu'il y a dans le json
-    const requestURL = url.value;
-    const request = new Request(requestURL);
-    const response = await fetch(request);
-    const seat = await response.json();
+    if(url.value!="rien"){
+        const seat_area = document.querySelector('.seat-area');
+        seat_area.remove();
+        //on va chercher ce qu'il y a dans le json
+        const requestURL = url.value;
+        const request = new Request(requestURL);
+        const response = await fetch(request);
+        const seat = await response.json();
 
-    fill_seat(seat);
+        fill_seat(seat);
+    }
+
 }
 
 //création du json de la page HTML
@@ -89,14 +92,18 @@ function tmp_create(){
             let array_seat = [];
             seats.forEach(function (seat){
                 if(seat.classList.length==1){
-                    array_seat.push(seat.classList[0])
+                    if(seat.classList[0]!="select-row"){
+                        array_seat.push(seat.classList[0]);
+                    }
                 }
                 else{
-                    let tmp_seat= seat.classList[0];
-                    seat.classList.forEach(function (clas){
-                        tmp_seat = tmp_seat + " " + clas;
-                    })
-                    array_seat.push(tmp_seat);
+                    if(seat.classList[0]!="select-row"){
+                        let tmp_seat= seat.classList[0];
+                        seat.classList.forEach(function (clas){
+                            tmp_seat = tmp_seat + " " + clas;
+                        })
+                        array_seat.push(tmp_seat);
+                    }
                 }
             })
             tmp_json["seat"] = array_seat;
@@ -115,16 +122,18 @@ function tmp_create(){
 document.querySelector("#create_json").addEventListener("click", event => {
     //envoie le nouveu json créer au python pour créer un nouveau fichier json dans le dossier static
     //pour la nouvelle configuration
-    let new_json = tmp_create();
-    const debug = {coucou : "world"};
-    let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    var request = new Request('/configuration/create_json/', {
-        method:'POST',
-        headers: {'X-CSRFToken': csrfTokenValue, 'Content-Type' : 'application/json'},
-        body: JSON.stringify(new_json),
-    });
+    if (document.querySelector('#option').classList.length == 0) {
 
-    fetch(request)
-        .then(response => response.json())
+        let new_json = tmp_create();
+        let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        var request = new Request('/configuration/create_json/', {
+            method: 'POST',
+            headers: {'X-CSRFToken': csrfTokenValue, 'Content-Type': 'application/json'},
+            body: JSON.stringify(new_json),
+        });
+
+        fetch(request)
+            .then(response => response.json())
+    }
+
 })
-

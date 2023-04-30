@@ -17,6 +17,7 @@ def add_default_configuration(userId):
 @login_required
 def area_configuration(request):
     if request.method=='POST':
+        print(request.POST.get('config'))
         form = ConfigForm(request.POST)
         if form.is_valid():
             form.save(user= request.user)

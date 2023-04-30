@@ -8,5 +8,6 @@ urlpatterns = [
     path('creation/', event_creation, name='creation'),
     path('update_date/<int:representation_id>/', update_representation_date, name="update_date"),
     path('delete_representation/<int:representation_id>/', delete_representation, name="delete_representation"),
+    path('update_event/<int:event_id>/', event_update, name='update'),
 ]
 

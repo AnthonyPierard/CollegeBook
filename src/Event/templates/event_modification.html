@@ -1,0 +1,63 @@
+{% extends "defaultEvent.html" %}
+
+{%  block head %}
+    {{ form.media }}
+{%  endblock %}
+
+{% block body %}
+
+<h1 class="title">Modification de l'évènement {{event.name}}</h1>
+
+<div class="form">
+    <form action="" method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <div class="input-box">
+            {{ form.name.label }}
+            {{ form.name }}
+        </div>
+        <div class="input-box">
+            {{ form.image.label }}
+            {{ form.image }}
+        </div>
+        <div class="input-box">
+            {{ form.description.label }}
+            {{ form.description }}
+        </div>
+        <div class="input-box">
+            {{ form.duration.label }}
+            {{ form.duration }}
+        </div>
+        <div class="input-box">
+                {{form.artiste.label}}
+                {{form.artiste}}
+        </div>
+        <div class="input-box">
+            {{ form.user.label }}
+            {{ form.user }}
+        </div>
+        <div class="input-box">
+            {{ form.date.label }}
+            {{ form.date }}
+        </div>
+        <div class="input-box">
+            {{form.configuration.label}}
+            {{ form.configuration }}
+        </div>
+
+        <a href="{% url 'Config:Configuration' %}">Créer une configuration de salle</a>
+        <div class="input-box">
+            {{ form.drink_price.label }}
+            {{ form.drink_price }}
+        </div>
+        <div class="input-box">
+            {{ form.food_price.label }}
+            {{ form.food_price }}
+        </div>
+        <div class="input-box">
+            {{ form.promo_codes.label }}
+            {{ form.promo_codes }}
+        </div>
+        <input type="submit" value="Modifier l'évènement">
+    </form>
+</div>
+{% endblock %}
