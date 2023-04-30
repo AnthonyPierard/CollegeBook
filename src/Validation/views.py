@@ -3,17 +3,19 @@ from django.contrib.auth.decorators import login_required
 from Reservation.models import SeatingTicket, StandingTicket, FoodTicket, DrinkTicket, AbstractTicket, Reservation, \
     Representation
 from django.utils import timezone
+
 from datetime import datetime
 
 
 # Create your views here.
 @login_required()
 def scan_ticket(request, code):
-    ticket = AbstractTicket.objects.get(pk=code)
-    if ticket is None:
+    try:
+        ticket = AbstractTicket.objects.get(pk=code)
+    except AbstractTicket.DoesNotExist:
         error = "Ce ticket n'est pas valide"
         return render(request, 'ticket_error.html', {'error_str': error})
-    if ticket.qrcode_is_validated == True:
+    if ticket.qrcode_is_validated:
         error = "Le ticket à déjà été utilisé"
         return render(request, 'ticket_error.html', {'error_str': error})
     type_ticket = ticket.get_real_concrete_instance_class()
