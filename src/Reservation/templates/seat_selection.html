@@ -7,13 +7,21 @@
         <div class="theatre">
             <div class="seat-area">
             </div>
-            <a href="{% url 'Reservation:representation_reservation' representation.id %}" class="button">Valider</a>
+
         </div>
-        <script src="{% static 'js/Reservation.js' %}">
+        <script src="{% static 'js/Reservation.js' %}"></script>
+        <script>
             let url = "{{url}}";
             window.addEventListener("load", prepare_json(url));
         </script>
+        <div class = "details">
+            <div class="detailstext">
+                <h2>Détails de la réservation:</h2>
+                <p id = "price">Prix : </p>
+                <p id = "places">Places : </p>
+            </div>
+                <a href="{% url 'Reservation:representation_reservation' representation.id %}" class="button">Valider</a>
+        </div>
     </div>
-
 {% endblock %}
 

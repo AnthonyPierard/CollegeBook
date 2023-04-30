@@ -94,12 +94,12 @@
     border : 5px double transparent;
     cursor: pointer;
 }
-
-.details {
+.detailstext{
     flex: 1;
     border: 5px solid #268085;
     padding: 50px;
 }
+
 
 .select-row {
     width: 0;

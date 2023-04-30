@@ -1,6 +1,9 @@
 import os.path
 
 from django.shortcuts import render, redirect
+from django.core.mail import send_mail,EmailMessage
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 from Event.models import Representation, Event, Price, Place
 from Configuration.models import Config
@@ -8,11 +11,10 @@ from .models import Reservation, Ticket, SeatingTicket, StandingTicket
 from .forms import ReservationForm
 from CollegeBook.settings import MEDIA_ROOT
 
-from django.core.mail import send_mail,EmailMessage
-from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
 import reportlab
 import qrcode
+import json
 
 def seat_selection(request, representation_id):
     representation = Representation.objects.get(pk = representation_id)
@@ -20,8 +22,15 @@ def seat_selection(request, representation_id):
     event = Event.objects.get(pk = eventID)
     configurationID = event.configuration_id
     configuration = Config.objects.get(pk = configurationID)
-    url = configuration.url_json
-    return render(request, 'seat_selection.html', {"representation" : representation, "url": "../Configuration/"+url})
+    url = "/static/json/"+event.name+"/"+str(representation.id)+".json"
+    return render(request, 'seat_selection.html', {"representation" : representation, "url":url})
+
+def process_price(request, representation_id):
+    selected_seats = request.POST.getlist("selected_seats_ID[]")
+    price = Place.objects.get(event_id=representation_id, type="Classic").price
+    total_price = len(selected_seats) * price
+
+    return JsonResponse({'total_price':total_price, 'selected_seats':selected_seats})
 
 def representation_reservation(request, representation_id):
     if request.method == 'POST':

@@ -11,7 +11,7 @@ from Reservation.models import SeatingTicket
 
 from Configuration.views import add_default_configuration
 
-import stripe
+import stripe,shutil,os
 
 def events_display(request):
     all_event = Event.objects.all()
