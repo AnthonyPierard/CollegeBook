@@ -111,6 +111,7 @@ class EventForm(forms.ModelForm):
                     CodePromo(code= code_name, percentage= code_amount.replace("%", ""), event_id = event.id).save()
             
             #Create 1 room per representation
+            #TODO déplacer ça dans partie validation du brouillon
             event_name_json = self.cleaned_data["name"]
             event_config_name = self.cleaned_data["configuration"]
             event_config_url = Config.objects.get(name=event_config_name).url_json
