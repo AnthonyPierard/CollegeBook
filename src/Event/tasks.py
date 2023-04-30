@@ -1,8 +1,5 @@
-from datetime import datetime
 from .models import Representation, Event
 from django.utils import timezone
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
 
 
 def check_event_is_archived():

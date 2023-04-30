@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 
 from Configuration.models import Place
-from Event.models import Representation, Price
+from Event.models import Representation
 
 from polymorphic.models import PolymorphicModel
 
