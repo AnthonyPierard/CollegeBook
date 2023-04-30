@@ -1,0 +1,9 @@
+{% extends "default.html" %}
+
+{% block body %}
+    <p>Ticket : {{ type_ticket }}</p>
+    <p>Pour la représentation {{ representation.name }} le {{ representation.date }}</p>
+    <p>Réservation au nom de {{ reservation.first_name }} {{ reservation.last_name }}</p>
+
+    <a href="{% url 'Validation:validation' code %}">Validé le ticket</a>
+{% endblock %}
