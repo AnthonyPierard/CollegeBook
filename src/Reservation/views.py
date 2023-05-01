@@ -29,7 +29,10 @@ def seat_selection(request, representation_id):
 
 def process_price(request, representation_id):
     selected_seats = request.POST.getlist("selected_seats_ID[]")
-    price = Place.objects.get(event_id=representation_id, type="Classic").price
+    config = Config.objects.get(pk=Event.objects
+                                .get(pk=Representation.objects.
+                                     get(pk=representation_id).event.id).configuration.id)
+    price = Place.objects.get(configuration=config, type="Classic").price
     total_price = len(selected_seats) * price
 
     return JsonResponse({'total_price': total_price, 'selected_seats': selected_seats})
