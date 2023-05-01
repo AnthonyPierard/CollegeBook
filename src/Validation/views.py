@@ -22,16 +22,16 @@ def scan_ticket(request, code):
     print(type_ticket)
     if type_ticket == DrinkTicket:
         type_ticket = 'BOISSON'
-    if type_ticket == FoodTicket:
+    elif type_ticket == FoodTicket:
         type_ticket = 'NOURRITURE'
-    if type_ticket == SeatingTicket:
+    elif type_ticket == SeatingTicket:
         type_ticket = "ASSIS"
-    if type_ticket == StandingTicket:
+    else:
         type_ticket = "DEBOUT"
     reservation = Reservation.objects.get(pk=ticket.reservation.id)
     representation = Representation.objects.get(pk=reservation.representation.id)
     if representation.date.year <= timezone.now().year \
-            and representation.date.month<=timezone.now().month and representation.date.day < timezone.now().day:
+            and representation.date.month <= timezone.now().month and representation.date.day < timezone.now().day:
         error = f"Ticket expiré. Valable pour le {representation.date.strftime('%d/%m/%Y')}"
         return render(request, 'ticket_error.html', {'error_str': error})
     return render(request, 'scan_tickets.html',
@@ -42,7 +42,7 @@ def scan_ticket(request, code):
 @login_required()
 def validation_ticket(request, code):
     ticket = AbstractTicket.objects.get(pk=code)
-    if ticket is None :
+    if ticket is None:
         raise ValueError("Ce ticket n'existe pas")
     ticket.qrcode_is_validated = True
     ticket.save()
