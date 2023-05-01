@@ -22,6 +22,8 @@ class EventForm(forms.ModelForm):
         ]
         labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'Description', 'image': 'Illustration',
                   'user': 'Organisateurs', 'configuration' : 'Configuration', 'artiste' : 'Le(s) Artiste(s)'}
+        widgets = {'duration': forms.TimeInput(attrs={'class': 'Time'}), 'user': forms.CheckboxSelectMultiple}
+
 
     date = forms.CharField(label='Date de l\'événement', widget=forms.TextInput(attrs={'class': 'MultiDate'}))
 

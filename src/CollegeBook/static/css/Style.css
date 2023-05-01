@@ -175,30 +175,6 @@ a {
     }
 }
 
-/*.footer {*/
-/*    !* background-color: rgb(241, 241, 241); *!*/
-/*    flex-shrink: 0;*/
-/*    border-top: 1px solid rgb(201, 201, 201);*/
-/*    width: 100%;*/
-/*    display: flex;*/
-/*    justify-content: space-around;*/
-/*    font-family: 'Noto Sans', sans-serif;*/
-/*    user-select: none;*/
-/*}*/
-
-/*footer ul li a{*/
-/*    display: block;*/
-/*    text-align: center;*/
-/*    margin-top: 17px;*/
-/*    text-decoration: none;*/
-/*    color:black;*/
-/*}*/
-
-/*.footer-title {*/
-/*    font-weight: bold;*/
-/*    margin-top: 10px;*/
-/*}*/
-
 .table{
     table-layout: fixed;
     width: 100%;
@@ -295,14 +271,23 @@ a {
     flex-wrap: wrap;
 }
 
+.input-box input:not(input[type="checkbox"]) {
+    outline: none;
+    border-radius: 5px;
+}
+
 .input-box input:not(input[type="checkbox"], input[type="file"]) {
     width: 100%;
     height: 40px;
     padding: 0 8px;
     margin-top: 5px;
-    outline: none;
-    border-radius: 5px;
     border: 1px solid #ccc;
+}
+
+
+.input-box::selection, .input-box input::selection {
+    background-color: rgba(38, 128, 133, 0.5);
+    color: black;
 }
 
 .input-box input[type="checkbox"]{
@@ -316,7 +301,7 @@ a {
     accent-color: #268085;
 }
 
-.input-box input:not(input[type="checkbox"], input[type="file"]):focus {
+.input-box input:not(input[type="checkbox"]):focus {
     border: 2px solid rgba(38, 128, 133, 0.8);
 }
 
