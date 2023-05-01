@@ -1,5 +1,7 @@
 {% extends "defaultEvent.html" %}
 
+{% load static %}
+
 {%  block head %}
     {{ form.media }}
 {%  endblock %}
@@ -29,6 +31,7 @@
                 {{form.artiste}}
             </div>
             <div class="input-box">
+                <input type="text" id="search-input" placeholder="email">
                 {{ form.user.label }}
                 {{ form.user }}
             </div>
@@ -61,5 +64,5 @@
             <input type="submit" value="Créer l'événement">
         </form>
     </div>
-
+    <script src="{% static 'js/Event.js' %}"></script>
 {% endblock %}
