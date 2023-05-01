@@ -5,9 +5,6 @@ from django import forms
 from tagify.fields import TagField
 
 from Event.models import Event, Representation, Price, CodePromo
-from pathlib import Path
-from Configuration.models import Config
-
 
 
 class EventForm(forms.ModelForm):
@@ -25,6 +22,8 @@ class EventForm(forms.ModelForm):
         ]
         labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'Description', 'image': 'Illustration',
                   'user': 'Organisateurs', 'configuration' : 'Configuration', 'artiste' : 'Le(s) Artiste(s)'}
+        widgets = {'duration': forms.TimeInput(attrs={'class': 'Time'}), 'user': forms.CheckboxSelectMultiple}
+
 
     date = forms.CharField(label='Date de l\'événement', widget=forms.TextInput(attrs={'class': 'MultiDate'}))
 
@@ -61,25 +60,6 @@ class EventForm(forms.ModelForm):
                     CodePromo(code= code_name, amount= code_amount.replace("€", ""), event_id = event.id).save()
                 elif "%" == code_amount[-1]:
                     CodePromo(code= code_name, percentage= code_amount.replace("%", ""), event_id = event.id).save()
-            
-            #Create 1 room per representation
-            #TODO déplacer ça dans partie validation du brouillon
-            event_name_json = self.cleaned_data["name"]
-            event_config_name = self.cleaned_data["configuration"]
-            event_config_url = Config.objects.get(name=event_config_name).url_json
-            event_representations = Representation.objects.filter(event_id=event.id)
-            path = Path(__file__).resolve().parent
-            srcPath = path.parent
-            src_file = srcPath.joinpath("Configuration" + event_config_url)
-            if not path.joinpath("static/json/"+event_name_json).exists():
-                path.joinpath("static/json/"+event_name_json).mkdir(parents=True,exist_ok=True)
-            for represent in event_representations:
-                dst_file = path /"static"/"json"/event_name_json/str(represent.id)
-                dst_file = dst_file.with_suffix(".json")
-                with open(src_file, "rb") as source_file:
-                    with open(dst_file, "wb") as destination_file:
-                        destination_file.write(source_file.read())
-
 
 
             # #Prices creation
