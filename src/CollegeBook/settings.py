@@ -36,11 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tagify',
+    #'django_crontab', # only for UNIX systems
+    'apscheduler',
     'Account',
     'Event',
     'Configuration',
     'Reservation',
     'Payment',
+    'Validation',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +68,7 @@ TEMPLATES = [
             BASE_DIR / 'Configuration/templates',
             BASE_DIR / 'Reservation/templates',
             BASE_DIR / 'Payment/templates',
+            BASE_DIR / 'Validation/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -136,6 +140,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "Configuration/static",
     BASE_DIR / "Reservation/static",
     BASE_DIR / "Payment/static",
+    BASE_DIR / "Account/static",
+    BASE_DIR / "Validation/static",
 ]
 
 MEDIA_URL = "Media/"
@@ -151,6 +157,7 @@ DOMAIN = "http://localhost:8000/"
 
 STRIPE_PUBLIC_KEY = "pk_test_51My9egKzH6J7qKOAvja1Gc7MAjiYmhRWeoCW25bXv2ymkb4wDUrSMWkWPUdH82GizI7esBI6UUyXLDEgbUxZYVHI00aIBswFkO"
 STRIPE_SECRET_KEY = "sk_test_51My9egKzH6J7qKOAtpIjOzmEUcP5mHkvejI1syfp7t9konG7teSXWwXl88yTdA3Wtx5UT6wOiuy4TEVjrB4k3o9j00FEtHZOC6"
+STRIPE_ENDPOINT_SECRET = "whsec_0f4a1af15fa5c6f432602f48bb6cb05dbcfbae36733e61e6adbfa8cddffe2507"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -158,3 +165,10 @@ EMAIL_HOST_USER = 'collegebooktest@gmail.com'
 EMAIL_HOST_PASSWORD = 'bukbfkukzqosrqcu'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+#TASKS
+#CRONJOBS = [       #For django-crontab
+    #('0 2 * * *', 'Event.tasks.check_event_is_archived'),
+#]
+
+SCHEDULER_AUTOSTART = True

@@ -1,16 +1,10 @@
-{% extends "default.html" %}
-
-{% load static %}
-
-{%  block head %}
-    <link rel="stylesheet" href= {% static "css/Payment.css" %} >
-{% endblock %}
+{% extends "defaultPayment.html" %}
 
 {% block body %}
     <h1 class="title">Récapitulatif de réservation</h1>
 
     <div class="summary-area">
-        <p class="event-title">Événement {{ reservation.representation }}</p>
+        <p class="event-title">Événement {{ reservation.representation.event.name }} le {{ reservation.representation.date }}</p>
         {% for seat in standing_seats %}
             <div class="item-summary">
                 <p>Place {{ seat.type }}</p>
@@ -35,7 +29,7 @@
         <div class="button-area">
             <form action="{% url 'Payment:CreateCheckoutSessionView' reservation.id %}" method="POST">
             {% csrf_token %}
-            <button class="button" type="submit">Payement</button>
+            <button class="button" type="submit">Paiement</button>
         </form>
         </div>
 

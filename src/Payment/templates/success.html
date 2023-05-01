@@ -1,17 +1,9 @@
-<html>
+{% extends "defaultPayment.html" %}
 
-<head>
-    <title>Thanks for your order!</title>
-</head>
-
-<body>
-    <section>
-        <p>
-            We appreciate your business! If you have any questions, please email
-            <a href="mailto:orders@example.com">orders@example.com</a>.
-        </p>
-        <a href="{% url 'Payment:landing' %}">Test again</a>
-    </section>
-</body>
-
-</html>
+{% block body %}
+    <div class="centered">
+        <h1>Merci pour votre réservation</h1>
+        <p>Votre/Vos tickets ont été envoyé à l'adresse <a>sumup@pueducul.com</a></p>
+        <a href="{% url 'Event:display' %}" class="button">Retour aux événements</a>
+    </div>
+{% endblock %}

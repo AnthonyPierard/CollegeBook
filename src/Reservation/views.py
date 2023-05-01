@@ -2,34 +2,43 @@ import os.path
 
 from CollegeBook.utils import findRowId
 from django.shortcuts import render, redirect
-from django.core.mail import send_mail,EmailMessage
+from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
-from Event.models import Representation, Event, Price, Place
-from Configuration.models import Config
+from Event.models import Representation, Event, Price
+from Configuration.models import Place, Config
 from .models import Reservation, Ticket, SeatingTicket, StandingTicket
 from .forms import ReservationForm
+from django.utils import timezone
 from CollegeBook.settings import MEDIA_ROOT
 
 from reportlab.pdfgen import canvas
 import reportlab, qrcode, json
 
+
 def seat_selection(request, representation_id):
-    representation = Representation.objects.get(pk = representation_id)
+    representation = Representation.objects.get(pk=representation_id)
+    if representation.date <= timezone.now():
+        return redirect('Event:display')
     eventID = representation.event_id
-    event = Event.objects.get(pk = eventID)
+    event = Event.objects.get(pk=eventID)
     configurationID = event.configuration_id
-    configuration = Config.objects.get(pk = configurationID)
-    url = "/static/json/"+event.name+"/"+str(representation.id)+".json"
-    return render(request, 'seat_selection.html', {"representation" : representation, "url":url})
+    configuration = Config.objects.get(pk=configurationID)
+    url = "/static/json/" + event.name + "/" + str(representation.id) + ".json"
+    return render(request, 'seat_selection.html', {"representation": representation, "url": url})
+
 
 def process_price(request, representation_id):
     selected_seats = request.POST.getlist("selected_seats_ID[]")
-    price = Place.objects.get(event_id=representation_id, type="Classic").price
+    config = Config.objects.get(pk=Event.objects
+                                .get(pk=Representation.objects.
+                                     get(pk=representation_id).event.id).configuration.id)
+    price = Place.objects.get(configuration=config, type="Classic").price
     total_price = len(selected_seats) * price
 
-    return JsonResponse({'total_price':total_price, 'selected_seats':selected_seats})
+    return JsonResponse({'total_price': total_price, 'selected_seats': selected_seats})
+
 
 def check_availability(request,representation_id):
     seatID = request.POST.get("seatID") 
@@ -39,6 +48,9 @@ def check_availability(request,representation_id):
     seatID_Json = findRowId(seatID[0])
         
 def representation_reservation(request, representation_id):
+    representation = Representation.objects.get(pk=representation_id)
+    if representation.date <= timezone.now():
+        return redirect('Event:display')
     if request.method == 'POST':
         form = ReservationForm(request.POST)
         if form.is_valid():
@@ -51,75 +63,9 @@ def representation_reservation(request, representation_id):
             # reservation.representation = Representation.objects.get(pk=representation_id)
             form.save(representation_id)
 
-            reservation = Reservation.objects.filter(email= form.cleaned_data['email'], representation_id= representation_id).last()
-            # email = EmailMessage(
-            #     'Reservation',
-            #     'Vous avez reserver un Ticket pour la representation de %s pour la date du %s' % (
-            #     reservation.representation.event.name, reservation.representation.date),
-            #     'collegebooktest@gmail.com',
-            #     ['%s' % form.cleaned_data['email']],
-            #     headers={"Reply-To": 'collegebooktest@gmail.com'})
+            reservation = Reservation.objects.filter(email=form.cleaned_data['email'],
+                                                     representation_id=representation_id).last()
 
-            # selected_seats = form.cleaned_data["selectedseat"]
-            # selected_seats = selected_seats.split(",")
-            # prefix_mail = reservation.email.split("@")[0].replace('.', ' ')
-            # date = str(reservation.representation.date).split(' ')[0]
-            # qr_path = MEDIA_ROOT / 'QR'
-            # ticket_path = MEDIA_ROOT / 'Ticket'
-            # pdf_path = os.path.join(ticket_path, f'{date}_{prefix_mail}_Tickets.pdf')
-            # if not os.path.exists(ticket_path):
-            #     os.mkdir(ticket_path)
-            # if not os.path.exists(qr_path):
-            #     os.mkdir(qr_path)
-            # p = canvas.Canvas(pdf_path)
-            #
-            # for i in range(len(selected_seats)):
-            #     y = 150
-            #     x = 50
-            #     d = i + 1
-            #     data = 'https://www.youtube.com/%d' % d
-            #     img = qrcode.make(data)
-            #     ticket_name = f'{date}_{prefix_mail}_Ticket_Place_{selected_seats[i]}.png'
-            #     img.save(qr_path / ticket_name)
-            #     p.drawString(x, y, "Tickets place %s" % selected_seats[i])
-            #     y = + 200
-            #     p.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-            #     p.showPage()
-            #
-            # drink_number = int(form.cleaned_data["drink_number"])
-            # if drink_number > 0:
-            #     for i in range(drink_number):
-            #         y = 150
-            #         x = 50
-            #         d = i + 1
-            #         data = 'https://www.youtube.com/%d' % d
-            #         img = qrcode.make(data)
-            #         ticket_name = f'{date}_{prefix_mail}_Ticket_Boisson_n°{d}.png'
-            #         img.save(qr_path / ticket_name)
-            #         p.drawString(x, y, "Ticket Boisson")
-            #         y = + 200
-            #         p.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-            #         p.showPage()
-            #
-            # food_number = int(form.cleaned_data["food_number"])
-            # if food_number > 0:
-            #     for i in range(food_number):
-            #         y = 150
-            #         x = 50
-            #         d = i + 1
-            #         data = 'https://www.youtube.com/%d' % d
-            #         img = qrcode.make(data)
-            #         ticket_name = f'{date}_{prefix_mail}_Ticket_Nourriture_n°{d}.png'
-            #         img.save(qr_path / ticket_name)
-            #         p.drawString(x, y, "Ticket Nourriture")
-            #         y = + 200
-            #         p.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-            #         p.showPage()
-            #
-            # p.save()
-            # email.attach_file(pdf_path)
-            # email.send()
-            # # email.attach_file('Tickets Nourriture n° %d.png' %d)
             return redirect('Payment:landing', reservation.id)
 
     else:
@@ -131,6 +77,7 @@ def representation_reservation(request, representation_id):
         place_price = Place.objects.all()
         return render(request, 'representation_reservation.html',
                       {'form': form, 'drink_price': drink_price, 'food_price': food_price, "place_price": place_price})
+
 
 def makeQrcode():
     data = 'https://www.youtube.com/shorts/SXHMnicI6Pg'

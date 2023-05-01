@@ -1,4 +1,21 @@
 # CollegeBook
+## Auteurs
+Cette application à été réalisée par Janssens van der Maelen Emile, Miglionico Massimo , Leclerq Théo, Pierard Anthony,
+Piras Antoine et Verly Jonah dans le cadre du cours de "Génie logicielle" en master 1 à l'Université de Namur.
+
+
+## Description 
+CollegeBook est une application web réalisée pour le Collège Saint Pierre de Uccle (CSPU). Cette application permet 
+au CSPU de mettre en ligne les différentes représentations (spectacles, concerts, présentations, etc.) qu'ils souhaitent
+organiser. L'application va permettre de :
+* Créer des événements
+* Paramétrer des configurations de salle 
+* Réserver des places ainsi que des tickets boisson et de nourriture en temps que clients 
+* Payer sa réservation en temps que client
+
+## Technologies et libraires
+L'application est développée en Django avec une base de données SQLite. \
+La gestion des paiements est réalisée avec Stripe. 
 
 ## WINDOWS
 
@@ -17,13 +34,6 @@ To launch the project :
 python -m venv env
 source ./env/bin/activate
 pip install -r unix_requirements.txt
-rm ./db.sqlite3
-python ./manage.py makemigrations Account
-python ./manage.py makemigrations Configuration
-python ./manage.py makemigrations Event
-python ./manage.py makemigrations Reservation
-python ./manage.py migrate
-python ./manage.py shell -c "from Account.models import User; User.objects.create_superuser('admin@admin.com', 'adminpassword')"
-find -type d -name migrations -a -prune -exec rm -rf {} \;
-find -type d -name __pycache__ -a -prune -exec rm -rf {} \;
+sh restore_BD.sh
+python ./src/manage.py runserver
 ```

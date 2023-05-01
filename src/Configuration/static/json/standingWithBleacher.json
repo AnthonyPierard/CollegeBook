@@ -1,6 +1,7 @@
 [
   {
-    "class" : "standing-zone"
+    "class" : "standing-zone",
+    "nbr_place" : 300
   },
   {
     "class" : "none-row"

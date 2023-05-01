@@ -1,8 +1,16 @@
 {% extends 'defaultConfiguration.html' %}
 {% load static %}
 
+{%  block head %}
+    {{ form.media }}
+    <link rel="stylesheet" href= {% static "css/Configuration.css" %} >
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{%  endblock %}
+
+
 {% block body %}
-    <select name="config" onchange="prepare_json(this)">
+    <select name="config" id="config_choice" onchange="prepare_json(this)">
+        <option id="option" value="nothing">----------</option>
         {% for configuration in configurations %}
             <option value={{configuration.url_json}} >{{configuration.name}}</option>
         {% endfor %}
@@ -10,9 +18,30 @@
     <br>
     <form method="post">
         {% csrf_token %}
-        {{form.nom.label}}
-        {{form.nom}}
-        <input id="create_json" type="submit" value="Confirmer">
+        <div>
+            {{ form.name.label }}
+            {{ form.name }}
+        </div>
+
+        <input id="create_json" type="submit" disabled="true" value="Confirmer">
+
+        <div class="input-box">
+            {{ form.place_types.label }}
+            {{ form.place_types }}
+        </div>
+        <div id="checkboxList"></div>
+        <form> <!-- Sert à selectionner le mode d'edition -->
+            <label>
+                <input type="radio" name="mode" value="suppression" checked>
+                    Mode suppression
+            </label>
+            <label>
+                <input type="radio" name="mode" value="assignation">
+                    Mode assignation
+            </label>
+        </form>
+
+
     </form>
     <br>
     <a href="{% url 'Event:creation' %}">Revenir vers la création</a>
@@ -24,6 +53,7 @@
         </div>
         <script src="{% static 'js/Configuration.js' %}"></script>
     </div>
+    <div id="nbr_place"></div>
 
 
 {% endblock %}

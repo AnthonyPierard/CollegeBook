@@ -1,7 +1,10 @@
 .idea/
 src/*.sqlite3
 src/db.sqlite3
-src/Media/
+src/CollegeBook/Media/
+src/env/
+src/Configuration/static/json/
+src/Media/Images/
 src/polls/__pycache__/
 src/polls/migrations/__pycache__/
 src/CollegeBookSite/__pycache__/
