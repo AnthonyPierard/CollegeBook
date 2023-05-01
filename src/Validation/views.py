@@ -30,7 +30,8 @@ def scan_ticket(request, code):
         type_ticket = "DEBOUT"
     reservation = Reservation.objects.get(pk=ticket.reservation.id)
     representation = Representation.objects.get(pk=reservation.representation.id)
-    if representation.date.day >= timezone.now().day:
+    if representation.date.year <= timezone.now().year \
+            and representation.date.month<=timezone.now().month and representation.date.day < timezone.now().day:
         error = f"Ticket expiré. Valable pour le {representation.date.strftime('%d/%m/%Y')}"
         return render(request, 'ticket_error.html', {'error_str': error})
     return render(request, 'scan_tickets.html',
