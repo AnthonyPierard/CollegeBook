@@ -1,7 +1,7 @@
 import os.path
 
 from django.shortcuts import render, redirect
-from django.core.mail import send_mail,EmailMessage
+from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
@@ -14,23 +14,26 @@ from CollegeBook.settings import MEDIA_ROOT
 import qrcode
 import json
 
+
 def seat_selection(request, representation_id):
-    representation = Representation.objects.get(pk = representation_id)
+    representation = Representation.objects.get(pk=representation_id)
     if representation.date <= timezone.now():
         return redirect('Event:display')
     eventID = representation.event_id
-    event = Event.objects.get(pk = eventID)
+    event = Event.objects.get(pk=eventID)
     configurationID = event.configuration_id
-    configuration = Config.objects.get(pk = configurationID)
-    url = "/static/json/"+event.name+"/"+str(representation.id)+".json"
-    return render(request, 'seat_selection.html', {"representation" : representation, "url":url})
+    configuration = Config.objects.get(pk=configurationID)
+    url = "/static/json/" + event.name + "/" + str(representation.id) + ".json"
+    return render(request, 'seat_selection.html', {"representation": representation, "url": url})
+
 
 def process_price(request, representation_id):
     selected_seats = request.POST.getlist("selected_seats_ID[]")
     price = Place.objects.get(event_id=representation_id, type="Classic").price
     total_price = len(selected_seats) * price
 
-    return JsonResponse({'total_price':total_price, 'selected_seats':selected_seats})
+    return JsonResponse({'total_price': total_price, 'selected_seats': selected_seats})
+
 
 def representation_reservation(request, representation_id):
     representation = Representation.objects.get(pk=representation_id)
@@ -48,7 +51,8 @@ def representation_reservation(request, representation_id):
             # reservation.representation = Representation.objects.get(pk=representation_id)
             form.save(representation_id)
 
-            reservation = Reservation.objects.filter(email= form.cleaned_data['email'], representation_id= representation_id).last()
+            reservation = Reservation.objects.filter(email=form.cleaned_data['email'],
+                                                     representation_id=representation_id).last()
 
             return redirect('Payment:landing', reservation.id)
 
@@ -61,6 +65,7 @@ def representation_reservation(request, representation_id):
         place_price = Place.objects.all()
         return render(request, 'representation_reservation.html',
                       {'form': form, 'drink_price': drink_price, 'food_price': food_price, "place_price": place_price})
+
 
 def makeQrcode():
     data = 'https://www.youtube.com/shorts/SXHMnicI6Pg'
