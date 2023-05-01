@@ -213,6 +213,7 @@ select.addEventListener('change', function (){
     }
 })
 
+
 //obtenir la config
 function get_config(){
     // Récupérer l'élément de sélection par son ID
@@ -230,11 +231,9 @@ function get_config(){
 
 //récuperer les types de places dans le tagify
 function get_place_types(){
-
     const places = document.getElementsByName("place_types");
-    const placeValues = places[0].defaultValue;
-    const allPlaces = placeValues.split(";");
-
+    let placeValues = places[0].value;
+    let allPlaces = placeValues.split(";");
     const checkboxList = document.getElementById('checkboxList');
 
     while (checkboxList.firstChild) {
@@ -262,6 +261,9 @@ function get_place_types(){
       });
     });
 }
+
+//ajout ou suppression toute les 2 secondes
+setInterval(get_place_types,2000);
 
 function random_color(){
     const hex = Math.floor(Math.random() * 16777215).toString(16);
