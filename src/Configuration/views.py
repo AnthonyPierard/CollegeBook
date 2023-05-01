@@ -21,8 +21,9 @@ def area_configuration(request):
         form = ConfigForm(request.POST)
         if form.is_valid():
             form.save(user= request.user)
-            configurations = Config.objects.filter(user=request.user.id)
-            return render(request, 'area_configuration.html', {'configurations' : configurations, 'form' : form})
+        configurations = Config.objects.filter(user=request.user.id)
+        return render(request, 'area_configuration.html', {'configurations' : configurations, 'form' : form})
+
     else :
         if not(Config.objects.filter(user=request.user)) :
             add_default_configuration(request.user)
@@ -31,7 +32,6 @@ def area_configuration(request):
         return render(request, 'area_configuration.html', {'configurations' : configurations, 'form' : form})
 
 def create_json(request):
-    print("rentre?")
     if request.method == 'POST':
         data = json.loads(request.body)
         goodName = data[0]['nom'].replace(" " , "_")

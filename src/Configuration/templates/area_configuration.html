@@ -4,12 +4,13 @@
 {%  block head %}
     {{ form.media }}
     <link rel="stylesheet" href= {% static "css/Configuration.css" %} >
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {%  endblock %}
 
 
 {% block body %}
-    <select name="config" onchange="prepare_json(this)">
-            <option id="option" class="rien" value=1>rien</option>
+    <select name="config" id="config_choice" onchange="prepare_json(this)">
+        <option id="option" value="nothing">----------</option>
         {% for configuration in configurations %}
             <option value={{configuration.url_json}} >{{configuration.name}}</option>
         {% endfor %}
@@ -21,12 +22,27 @@
             {{ form.name.label }}
             {{ form.name }}
         </div>
+
+        <input id="create_json" type="submit" disabled="true" value="Confirmer">
+
         <div class="input-box">
             {{ form.place_types.label }}
+            <button type="button" onclick="get_place_types()"> Trouver les types de place associées à la configuration </button>
             {{ form.place_types }}
         </div>
+        <div id="checkboxList"></div>
+        <form> <!-- Sert à selectionner le mode d'edition -->
+            <label>
+                <input type="radio" name="mode" value="suppression" checked>
+                    Mode suppression
+            </label>
+            <label>
+                <input type="radio" name="mode" value="assignation">
+                    Mode assignation
+            </label>
+        </form>
 
-        <input id="create_json" type="submit" value="Confirmer">
+
     </form>
     <br>
     <a href="{% url 'Event:creation' %}">Revenir vers la création</a>

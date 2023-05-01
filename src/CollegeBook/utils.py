@@ -1,4 +1,5 @@
 from Configuration.models import Config, Place
+<<<<<<< HEAD
 from reportlab.pdfgen import canvas
 import qrcode
 import cv2
@@ -9,10 +10,18 @@ from unidecode import unidecode
 from datetime import datetime
 from .settings import TIME_ZONE
 import pytz
+=======
+import stripe
 
-def stripe_id_creation(place_type, event_name):
-    stripe_id = place_type.lower() + ''.join([element.capitalize() for element in event_name.split(' ')])
+>>>>>>> Webhook
+
+def stripe_id_creation(product_type, event_name):
+    stripe_id = product_type.lower() + ''.join([element.capitalize() for element in event_name.split(' ')])
     return stripe_id
+
+def get_stripe_product_price(product_type, event_name):
+    product = stripe.Product.retrieve(stripe_id_creation(product_type=product_type, event_name=event_name))
+    return stripe.Price.retrieve(product["default_price"])["unit_amount"] / 100
 
 def configCreator(config_name, json_url, user_id, seats):
     configuration = Config(name=config_name, url_json=json_url, user=user_id)
