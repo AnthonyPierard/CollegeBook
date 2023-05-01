@@ -240,37 +240,43 @@ function get_config(){
 
 }
 
+let nbr_cat = 0;
 //récuperer les types de places dans le tagify
 function get_place_types(){
     const places = document.getElementsByName("place_types");
     let placeValues = places[0].value;
     let allPlaces = placeValues.split(";");
-    const checkboxList = document.getElementById('checkboxList');
+    let nbr_cat_now = allPlaces.length;
+    if(nbr_cat!=nbr_cat_now){
+        const checkboxList = document.getElementById('checkboxList');
 
-    while (checkboxList.firstChild) {
-        checkboxList.removeChild(checkboxList.firstChild);
+        while (checkboxList.firstChild) {
+            checkboxList.removeChild(checkboxList.firstChild);
+        }
+
+        allPlaces.forEach((place) => {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.name = "choice";
+            checkbox.value = place.split(":")[0];
+            checkboxList.appendChild(checkbox);
+
+            const label = document.createElement('label');
+            label.appendChild(document.createTextNode(place.split(":")[0]));
+            checkboxList.appendChild(label);
+
+            checkbox.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('input[name=choice]');
+            checkboxes.forEach((cb) => {
+              if (cb !== checkbox) {
+                cb.checked = false;
+              }
+            });
+          });
+        });
+        nbr_cat = nbr_cat_now;
     }
 
-    allPlaces.forEach((place) => {
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.name = "choice";
-        checkbox.value = place.split(":")[0];
-        checkboxList.appendChild(checkbox);
-
-        const label = document.createElement('label');
-        label.appendChild(document.createTextNode(place.split(":")[0]));
-        checkboxList.appendChild(label);
-
-        checkbox.addEventListener('click', () => {
-        const checkboxes = document.querySelectorAll('input[name=choice]');
-        checkboxes.forEach((cb) => {
-          if (cb !== checkbox) {
-            cb.checked = false;
-          }
-        });
-      });
-    });
 }
 
 //ajout ou suppression toute les 2 secondes
