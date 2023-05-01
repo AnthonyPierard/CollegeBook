@@ -15,27 +15,70 @@ function clickable_seats_and_spaces(){
 }
 
 //créer un élément au dessus qui permet de sélectionner une ligne entière
-function clickable_select_row(){
+function clickable_select_row() {
     const select_rows = document.querySelectorAll('.select-row');
     for (const select_row of select_rows) {
-        select_row.addEventListener('click', () => {
+        select_row.addEventListener('click', (event) => {
             const row = select_row.parentNode;
             const all_seat = row.childNodes;
-            all_seat.forEach(function (seat){
-                if(seat.classList[0] != "select-row"){
+
+            all_seat.forEach(function(seat) {
+                if (seat.classList[0] !== "select-row") {
                     if (!seat.classList.contains('space') && event.ctrlKey) {
-                        set_place_type(seat);
-                        console.log("OK")
+                        const types = document.querySelectorAll("#checkboxList input[type='checkbox']");
+                        let selected_type = "";
+
+                        types.forEach((type) => {
+                            if (type.checked) {
+                              selected_type = type.value.replace(" ", "").toLowerCase();
+                            }
+                        });
+
+                        const other_classes = [...seat.classList].filter(c => c !== 'seat' && c !== 'space');
+                        other_classes.forEach((c) => {
+                            seat.classList.remove(c);
+                        });
+
+                        if (selected_type !== "") {
+                            if (!seat.classList.contains(selected_type)) {
+                                seat.classList.add(selected_type);
+
+                                let styleTag = document.querySelector('style');
+                                if (!styleTag) {
+                                    styleTag = document.createElement('style');
+                                    document.head.appendChild(styleTag);
+                                }
+
+                                // Récupérer la feuille de style et la règle CSS correspondant au type de siège
+                                const styleSheet = styleTag.sheet;
+                                const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${selected_type}`);
+
+                                // Vérifier si une couleur a déjà été générée pour ce type de siège
+                                let color = seatColors[selected_type];
+                                if (!color) {
+                                    // Générer une nouvelle couleur
+                                    color = random_color();
+                                    seatColors[selected_type] = color;
+                                }
+
+                                // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
+                                if (!rule) {
+                                    styleSheet.insertRule(`.seat.${selected_type} { background-color: ${color}; }`, styleSheet.cssRules.length);
+                                } else {
+                                    rule.style.backgroundColor = color;
+                                }
+                            }
+                        }
                     } else {
                         seat.classList.toggle('seat');
                         seat.classList.toggle('space');
                     }
                 }
-            })
-        })
+            });
+        });
     }
-
 }
+
 
 //remplis le seat-area de siège ou d'espace debout
 function fill_seat(json_dictionnary){
@@ -45,22 +88,24 @@ function fill_seat(json_dictionnary){
     theatre.appendChild(seat_area);
     //va regarder dans le json les seats
     for (const index in json_dictionnary){
-        const row = document.createElement('div');
-        row.classList.add(json_dictionnary[index].class);
-        seat_area.appendChild(row);
-        const select_row = document.createElement('div');
-        select_row.classList.add("select-row");
-        row.appendChild(select_row);
-        if(json_dictionnary[index].seat != null){
-            const all_seat = json_dictionnary[index].seat;
+        if(json_dictionnary[index].class!="none") {
+            const row = document.createElement('div');
+            row.classList.add(json_dictionnary[index].class);
+            seat_area.appendChild(row);
+            const select_row = document.createElement('div');
+            select_row.classList.add("select-row");
+            row.appendChild(select_row);
+            if (json_dictionnary[index].seat != null) {
+                const all_seat = json_dictionnary[index].seat;
 
-            for (const seat of all_seat){
-                const marker_seat = document.createElement('div');
-                const new_seat = seat.split(' ');
-                for (const class_seat of new_seat) {
-                    marker_seat.classList.add(class_seat);
+                for (const seat of all_seat) {
+                    const marker_seat = document.createElement('div');
+                    const new_seat = seat.split(' ');
+                    for (const class_seat of new_seat) {
+                        marker_seat.classList.add(class_seat);
+                    }
+                    row.appendChild(marker_seat);
                 }
-                row.appendChild(marker_seat);
             }
         }
 
@@ -72,7 +117,7 @@ function fill_seat(json_dictionnary){
 //fonction pour choisir le json
 async function prepare_json(url) {
     //on retire ce qu'il y avait dans le seat-area
-    if(url.value!="rien"){
+    if(url.value!="nothing"){
         const seat_area = document.querySelector('.seat-area');
         seat_area.remove();
         //on va chercher ce qu'il y a dans le json
@@ -89,7 +134,7 @@ async function prepare_json(url) {
 //création du json de la page HTML
 function tmp_create(){
     let new_json = [];
-    new_json.push({"nom" : document.querySelector('#id_name').value})
+    new_json.push({"nom" : document.querySelector('#id_name').value, "class" : "none"})
     const seat_area = document.querySelector('.seat-area');
     let row = seat_area.childNodes;
     for (let i=0; i<row.length; i++) {
@@ -108,9 +153,16 @@ function tmp_create(){
                 }
                 else{
                     if(seat.classList[0]!="select-row"){
-                        let tmp_seat= seat.classList[0];
+                        let tmp_seat= "";
+                        let i = 0;
                         seat.classList.forEach(function (clas){
-                            tmp_seat = tmp_seat + " " + clas;
+                            if (i==0){
+                                tmp_seat = clas;
+                            }
+                            else {
+                                tmp_seat = tmp_seat + " " + clas;
+                            }
+                            i++;
                         })
                         array_seat.push(tmp_seat);
                     }
@@ -128,12 +180,11 @@ function tmp_create(){
     return new_json;
 }
 
-//création de la requête et envoi à la fonction python
+//création de la requête et envoi à la fonction python du json
 document.querySelector("#create_json").addEventListener("click", event => {
     //envoie le nouveu json créer au python pour créer un nouveau fichier json dans le dossier static
     //pour la nouvelle configuration
-    if (document.querySelector('#option').classList.length == 0) {
-
+    if (document.querySelector('#option').value == "nothing") {
         let new_json = tmp_create();
         let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
         var request = new Request('/configuration/create_json/', {
@@ -148,6 +199,19 @@ document.querySelector("#create_json").addEventListener("click", event => {
 
 })
 
+//rendre disable l'input submit si c'est le choix --------
+const select = document.querySelector('#config_choice');
+const submit = document.querySelector('#create_json');
+select.addEventListener('change', function (){
+    const value = select.value;
+
+    if(value==='nothing'){
+        submit.disabled = true;
+    }
+    else {
+        submit.disabled = false;
+    }
+})
 
 //obtenir la config
 function get_config(){

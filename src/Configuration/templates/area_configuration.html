@@ -10,6 +10,7 @@
 
 {% block body %}
     <select name="config" id="config_choice" onchange="prepare_json(this)">
+        <option id="option" value="nothing">----------</option>
         {% for configuration in configurations %}
             <option value={{configuration.url_json}} >{{configuration.name}}</option>
         {% endfor %}
@@ -28,7 +29,7 @@
         </div>
         <div id="checkboxList"></div>
 
-        <input id="create_json" type="submit" value="Confirmer">
+        <input id="create_json" type="submit" disabled="true" value="Confirmer">
     </form>
     <br>
     <a href="{% url 'Event:creation' %}">Revenir vers la création</a>
