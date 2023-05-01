@@ -25,6 +25,7 @@ function clickable_seats_and_spaces(){
     }
 }
 
+
 //créer un élément au dessus qui permet de sélectionner une ligne entière
 function clickable_select_row() {
     const select_rows = document.querySelectorAll('.select-row');
@@ -74,9 +75,9 @@ function clickable_select_row() {
 
                                 // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
                                 if (!rule) {
-                                    styleSheet.insertRule(`.seat.${selected_type} { background-color: ${color}; }`, styleSheet.cssRules.length);
+                                    styleSheet.insertRule(`.seat.${selected_type} { color: ${color}; }`, styleSheet.cssRules.length);
                                 } else {
-                                    rule.style.backgroundColor = color;
+                                    rule.style.color = color;
                                 }
                             }
                         }
@@ -90,6 +91,33 @@ function clickable_select_row() {
     }
 }
 
+function create_seat_svg() {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewbox', "0 0 32 32");
+    create_path_svg(svg, "M9,29H5c-1.1,0-2-0.9-2-2V17c0-1.7,1.3-3,3-3h0c1.7,0,3,1.3,3,3V29z");
+    create_path_svg(svg, "M27,29h-4V17c0-1.7,1.3-3,3-3h0c1.7,0,3,1.3,3,3v10C29,28.1,28.1,29,27,29z");
+    create_rect_svg(svg, 9, 19, 14, 10)
+    create_rect_svg(svg, 9, 9, 14, 10)
+    create_path_svg(svg, "M6,14V7.8C6,5.7,7.7,4,9.8,4h12.3C24.3,4,26,5.7,26,7.8V14");
+    return svg
+}
+
+function create_path_svg(parent,  d) {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.classList.add("seat-style");
+    parent.appendChild(path)
+}
+
+function create_rect_svg(parent, x, y, width, height) {
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", y);
+    rect.setAttribute("width", width);
+    rect.setAttribute("height", height);
+    rect.classList.add("seat-style");
+    parent.appendChild(rect)
+}
 
 //remplis le seat-area de siège ou d'espace debout
 function fill_seat(json_dictionnary){
@@ -110,12 +138,12 @@ function fill_seat(json_dictionnary){
                 const all_seat = json_dictionnary[index].seat;
 
                 for (const seat of all_seat) {
-                    const marker_seat = document.createElement('div');
+                    const svg_seat = create_seat_svg()
                     const new_seat = seat.split(' ');
                     for (const class_seat of new_seat) {
-                        marker_seat.classList.add(class_seat);
+                        svg_seat.classList.add(class_seat);
                     }
-                    row.appendChild(marker_seat);
+                    row.appendChild(svg_seat);
                 }
             }
             if(json_dictionnary[index].class=="standing-zone"){
@@ -343,9 +371,9 @@ function set_place_type(seat) {
 
                 // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
                 if (!rule) {
-                    styleSheet.insertRule(`.seat.${selected_type} { background-color: ${color}; }`, styleSheet.cssRules.length);
+                    styleSheet.insertRule(`.seat.${selected_type} { color: ${color}; }`, styleSheet.cssRules.length);
                 } else {
-                    rule.style.backgroundColor = color;
+                    rule.style.color = color;
                 }
             }
         }
