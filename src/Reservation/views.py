@@ -1,5 +1,6 @@
 import os.path
 
+from CollegeBook.utils import findRowId
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail,EmailMessage
 from django.template.loader import render_to_string
@@ -12,9 +13,7 @@ from .forms import ReservationForm
 from CollegeBook.settings import MEDIA_ROOT
 
 from reportlab.pdfgen import canvas
-import reportlab
-import qrcode
-import json
+import reportlab, qrcode, json
 
 def seat_selection(request, representation_id):
     representation = Representation.objects.get(pk = representation_id)
@@ -32,6 +31,13 @@ def process_price(request, representation_id):
 
     return JsonResponse({'total_price':total_price, 'selected_seats':selected_seats})
 
+def check_availability(request,representation_id):
+    seatID = request.POST.get("seatID") 
+    url = request.POST.get("currentRoom")
+    with open(url,'r') as f:
+        data = json.load(f)
+    seatID_Json = findRowId(seatID[0])
+        
 def representation_reservation(request, representation_id):
     if request.method == 'POST':
         form = ReservationForm(request.POST)

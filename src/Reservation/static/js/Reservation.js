@@ -1,75 +1,9 @@
 let selectedSeatsIDs = [];
 const csrfToken = getCookie('csrftoken');
-
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
-  
-
-function fill_seat(json_dictionnary){
-    let charcode = 65;
-    const seat_area = document.createElement('div');
-    seat_area.classList.add('seat-area');
-    const theatre = document.querySelector('.theatre');
-    theatre.appendChild(seat_area);
-    //va regarder dans le json les seats
-    for (const index in json_dictionnary){
-        const row = document.createElement('div');
-        row.classList.add(json_dictionnary[index].class);
-        seat_area.appendChild(row);
-        if(json_dictionnary[index].seat != null){
-            let placeNumber = 1;
-            const all_seat = json_dictionnary[index].seat;
-
-            for (const seat of all_seat){
-                const marker_seat = document.createElement('div');
-                const new_seat = seat.split(' ');
-                const seat_id = String.fromCharCode(charcode) + String(placeNumber);
-                for (const class_seat of new_seat) {
-                    marker_seat.classList.add(class_seat);
-                    if (class_seat == "seat"){
-                        marker_seat.id = seat_id;
-                        marker_seat.onclick = function(){
-                            changeStatus(this.id);
-                        };
-                        placeNumber = placeNumber + 1;
-                    } 
-                }
-                row.appendChild(marker_seat);
-            }
-            charcode = charcode+1;
-        }
-
-    }
-}
-
-async function prepare_json(url) {
-    console.log(url)
-    //on retire ce qu'il y avait dans le seat-area
-    const seat_area = document.querySelector('.seat-area');
-    seat_area.remove();
-    //on va chercher ce qu'il y a dans le json
-    const requestURL = url;
-    const request = new Request(requestURL);
-    const response = await fetch(request);
-    const seat = await response.json();
-
-    fill_seat(seat);
-}
+const currentRoom = "";
 
 function changeStatus(seatID){
+    //checkAvailability(seatID)
     let seat = document.getElementById(seatID);
     if(seat.className == "seat"){
         if(canBeSelected(seatID)){
@@ -205,4 +139,91 @@ function updateSeats(){
         }
     }
 
+}
+
+
+function checkAvailability(seatID){
+    $.ajax({
+        url:"check_availability/",
+        type:"POST",
+        data:{seatID: seatID, currentRoom: currentRoom},
+        dataType:"json",
+        headers:{
+            'X-CSRFToken': csrfToken
+        },
+        success: function(response){
+            const price = response.total_price;
+            const places = response.selected_seats;
+            $("#price").text("Prix total : " + price + " €");
+            $("#places").text("Siège(s) sélectionné(s) : " + places);
+        }
+    });
+}
+
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  
+
+function fill_seat(json_dictionnary){
+    let charcode = 65;
+    const seat_area = document.createElement('div');
+    seat_area.classList.add('seat-area');
+    const theatre = document.querySelector('.theatre');
+    theatre.appendChild(seat_area);
+    //va regarder dans le json les seats
+    for (const index in json_dictionnary){
+        const row = document.createElement('div');
+        row.classList.add(json_dictionnary[index].class);
+        seat_area.appendChild(row);
+        if(json_dictionnary[index].seat != null){
+            let placeNumber = 1;
+            const all_seat = json_dictionnary[index].seat;
+
+            for (const seat of all_seat){
+                const marker_seat = document.createElement('div');
+                const new_seat = seat.split(' ');
+                const seat_id = String.fromCharCode(charcode) + String(placeNumber);
+                for (const class_seat of new_seat) {
+                    marker_seat.classList.add(class_seat);
+                    if (class_seat == "seat"){
+                        marker_seat.id = seat_id;
+                        marker_seat.onclick = function(){
+                            changeStatus(this.id);
+                        };
+                        placeNumber = placeNumber + 1;
+                    } 
+                }
+                row.appendChild(marker_seat);
+            }
+            charcode = charcode+1;
+        }
+
+    }
+}
+
+async function prepare_json(url) {
+    currentRoom = url;
+    //on retire ce qu'il y avait dans le seat-area
+    const seat_area = document.querySelector('.seat-area');
+    seat_area.remove();
+    //on va chercher ce qu'il y a dans le json
+    const requestURL = url;
+    const request = new Request(requestURL);
+    const response = await fetch(request);
+    const seat = await response.json();
+
+    fill_seat(seat);
 }
