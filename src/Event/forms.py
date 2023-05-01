@@ -6,6 +6,7 @@ from tagify.fields import TagField
 
 from Event.models import Event, Representation, Price, CodePromo
 from pathlib import Path
+from Configuration.models import Config
 
 
 
