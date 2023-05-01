@@ -6,18 +6,17 @@ from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
-from Reservation.models import Reservation, SeatingTicket, StandingTicket, Ticket
+from Reservation.models import Reservation, SeatingTicket, StandingTicket, Ticket, AbstractTicket, FoodTicket, DrinkTicket
 from Event.models import Price
 from CollegeBook.utils import stripe_id_creation, create_ticket_pdf
 from CollegeBook.settings import MEDIA_ROOT
-
 from django.core.mail import send_mail,EmailMessage
 from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
 import reportlab
 import qrcode
 import os
-
+from unidecode import unidecode
 from .templates import *
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -134,18 +133,18 @@ def webhook(request):
         reservation = Reservation.objects.get(checkout_session=event['data']['object']['id'])
         reservation.paid = True
         reservation.save()
-
+        date = str(reservation.representation.date).split(' ')[0]
         email = EmailMessage(
             'Reservation',
             'Vous avez reserver un Ticket pour la representation de %s pour la date du %s' % (
-            reservation.representation.event.name, reservation.representation.date),
+            reservation.representation.event.name, date),
             'collegebooktest@gmail.com',
             ['%s' % reservation.email],
             headers={"Reply-To": 'collegebooktest@gmail.com'})
 
         selected_seats = [ ticket.seat_number for ticket in Ticket.objects.filter(reservation_id=reservation.id) ]
         prefix_mail = reservation.email.split("@")[0].replace('.', ' ')
-        date = str(reservation.representation.date).split(' ')[0]
+    
         qr_path = MEDIA_ROOT / 'QR'
         ticket_path = MEDIA_ROOT / 'Ticket'
         pdf_path = os.path.join(ticket_path, f'{date}_{prefix_mail}_Tickets.pdf')
@@ -155,59 +154,32 @@ def webhook(request):
             os.mkdir(qr_path)
         pdf = canvas.Canvas(pdf_path)
         print("here1")
-        for i in range(len(selected_seats)):
-            print("here")
-            # y = 150
-            # x = 50
-            # d = i + 1
-            # data = 'https://www.youtube.com/%d' % d
-            # img = qrcode.make(data)
-            # ticket_name = f'{date}_{prefix_mail}_Ticket_Place_{selected_seats[i]}.png'
-            # img.save(qr_path / ticket_name)
-            # pdf.drawString(x, y, "Tickets place %s" % selected_seats[i])
-            # y = + 200
-            # pdf.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-            # pdf.showPage()
-            pdf = create_ticket_pdf(pdf, selected_seats[i], i+1,  reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
-            print("done 3")
+        
+        seating_tickets = SeatingTicket.objects.filter(reservation = reservation)
+        standing_tickets = StandingTicket.objects.filter(reservation = reservation)
+        food_tickets = FoodTicket.objects.filter(reservation = reservation)
+        drink_tickets = DrinkTicket.objects.filter(reservation = reservation)
+        
+        for ticket in seating_tickets:
+            code = ticket.code 
+            trigramme = ticket.seat_number
+            pdf = create_ticket_pdf(pdf, trigramme, code,  reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
 
-        drink_number = reservation.drink_number
-        if drink_number > 0:
-            for i in range(drink_number):
-                pdf = create_ticket_pdf(pdf, "Boisson", i+1, reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
-                # print("done 1")
-                # y = 150
-                # x = 50
-                # d = i + 1
-                # data = 'https://www.youtube.com/%d' % d
-                # img = qrcode.make(data)
-                # ticket_name = f'{date}_{prefix_mail}_Ticket_Boisson_n°{d}.png'
-                # img.save(qr_path / ticket_name)
-                # pdf.drawString(x, y, "Ticket Boisson")
-                # y = + 200
-                # pdf.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-                # pdf.showPage()
+        for ticket in standing_tickets:
+            code = ticket.code 
+            pdf = create_ticket_pdf(pdf, "Debout", code,  reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
+        
+        for ticket in food_tickets:
+            code = ticket.code 
+            pdf = create_ticket_pdf(pdf, "Nourriture", code,  reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
 
-        food_number = reservation.food_number
-        if food_number > 0:
-            for i in range(food_number):
-                pdf = create_ticket_pdf(pdf, "Nourriture", i+1, reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
-                print("done 2")
-                # y = 150
-                # x = 50
-                # d = i + 1
-                # data = 'https://www.youtube.com/%d' % d
-                # img = qrcode.make(data)
-                # ticket_name = f'{date}_{prefix_mail}_Ticket_Nourriture_n°{d}.png'
-                # img.save(qr_path / ticket_name)
-                # pdf.drawString(x, y, "Ticket Nourriture")
-                # y = + 200
-                # pdf.drawImage(qr_path / ticket_name, 100, y, mask='auto')
-                # pdf.showPage()
-
+        for ticket in drink_tickets:
+            code = ticket.code 
+            pdf = create_ticket_pdf(pdf, "Boisson", code,  reservation.first_name,reservation.last_name,reservation.representation.event.name,reservation.representation.date)
+            
         pdf.save()
         email.attach_file(pdf_path)
         email.send()
-        # email.attach_file('Tickets Nourriture n° %d.png' %d)
+       
         print("mail send")
     return HttpResponse(status=200)
