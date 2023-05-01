@@ -1,4 +1,5 @@
 from datetime import datetime
+import stripe,shutil,os
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -76,7 +77,6 @@ def delete_representation(request, representation_id):
         form = ConfirmForm()
         event = Representation.objects.get(pk=representation_id)
         return render(request, 'delete_representation.html', {"form": form, "event": event})
-
 
 @login_required
 def event_update(request, event_id):

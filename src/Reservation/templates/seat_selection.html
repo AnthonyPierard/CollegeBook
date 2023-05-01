@@ -1,17 +1,27 @@
-{% extends "default.html" %}
-{%  load static %}
+{% extends 'defaultConfiguration.html' %}
+{% load static %}
 
 {% block body %}
     <h1>Choisissez vos places</h1>
-    {% include "selectable_configuration.html" %}
-    <div class="row">
-        <div class="col-sm-10">
+    <div class="full-area">
+        <div class="theatre">
+            <div class="seat-area">
+            </div>
 
         </div>
-{#        <div class="col-sm-2">#}
-{#            <a href="{% url 'Reservation:representation_reservation' representation.id %}">Confirmer</a>#}
-{#        </div>#}
         <script src="{% static 'js/Reservation.js' %}"></script>
+        <script>
+            let url = "{{url}}";
+            window.addEventListener("load", prepare_json(url));
+        </script>
+        <div class = "details">
+            <div class="detailstext">
+                <h2>Détails de la réservation:</h2>
+                <p id = "price">Prix : </p>
+                <p id = "places">Places : </p>
+            </div>
+                <a href="{% url 'Reservation:representation_reservation' representation.id %}" class="button">Valider</a>
+        </div>
     </div>
-    <a href="{% url 'Reservation:representation_reservation' representation.id %}" class="button">Valider</a>
 {% endblock %}
+

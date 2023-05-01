@@ -4,4 +4,10 @@ src/db.sqlite3
 src/CollegeBook/Media/
 src/env/
 src/Configuration/static/json/
+src/Media/Images/
+src/polls/__pycache__/
+src/polls/migrations/__pycache__/
+src/CollegeBookSite/__pycache__/
+src/Event/static/json/
+venv/
 *.pyc

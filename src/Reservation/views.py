@@ -1,21 +1,36 @@
 import os.path
 
 from django.shortcuts import render, redirect
+from django.core.mail import send_mail,EmailMessage
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 from Event.models import Representation, Event, Price
-from Configuration.models import Place
+from Configuration.models import Place, Config
 from .models import Reservation, Ticket, SeatingTicket, StandingTicket
 from .forms import ReservationForm
 from django.utils import timezone
 from CollegeBook.settings import MEDIA_ROOT
 import qrcode
+import json
 
 def seat_selection(request, representation_id):
-    representation = Representation.objects.get(pk=representation_id)
+    representation = Representation.objects.get(pk = representation_id)
     if representation.date <= timezone.now():
         return redirect('Event:display')
+    eventID = representation.event_id
+    event = Event.objects.get(pk = eventID)
+    configurationID = event.configuration_id
+    configuration = Config.objects.get(pk = configurationID)
+    url = "/static/json/"+event.name+"/"+str(representation.id)+".json"
+    return render(request, 'seat_selection.html', {"representation" : representation, "url":url})
 
-    return render(request, 'seat_selection.html', {"representation" : representation})
+def process_price(request, representation_id):
+    selected_seats = request.POST.getlist("selected_seats_ID[]")
+    price = Place.objects.get(event_id=representation_id, type="Classic").price
+    total_price = len(selected_seats) * price
+
+    return JsonResponse({'total_price':total_price, 'selected_seats':selected_seats})
 
 def representation_reservation(request, representation_id):
     representation = Representation.objects.get(pk=representation_id)

@@ -16,3 +16,24 @@ organiser. L'application va permettre de :
 ## Technologies et libraires
 L'application est développée en Django avec une base de données SQLite. \
 La gestion des paiements est réalisée avec Stripe. 
+
+## WINDOWS
+
+To launch the project :
+```bash
+
+python -m venv env
+./env/Scripts/activate
+pip install -r requirements.txt
+```
+Then, run restore_BD.sh under 
+
+## LINUX
+To launch the project : 
+```bash
+python -m venv env
+source ./env/bin/activate
+pip install -r unix_requirements.txt
+sh restore_BD.sh
+python ./src/manage.py runserver
+```
