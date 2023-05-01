@@ -131,6 +131,32 @@ def publish_event(request, event_id):
             },
             id=stripe_id_creation(place.type, event.name)
         )
+
+    promotions = CodePromo.objects.filter(event_id=event.id)
+    applies_to = [str(stripe_id_creation(element.type, event.name)) for element in
+                  list(Price.objects.filter(event_id=event.id)) + list(
+                      Place.objects.filter(configuration_id=event.configuration_id))]
+
+    print(applies_to)
+
+    for promotion in promotions:
+        if promotion.percentage:
+            stripe.Coupon.create(
+                id= stripe_id_creation(promotion.code, event.name),
+                name= promotion.code,
+                percent_off=promotion.percentage,
+                duration="forever",
+                applies_to=applies_to
+            )
+        if promotion.amount:
+            stripe.Coupon.create(
+                id=stripe_id_creation(promotion.code, event.name),
+                name= promotion.code,
+                amount_off=int(promotion.amount * 100),
+                currency="eur",
+                duration="forever",
+                applies_to=applies_to
+            )
     return redirect('Account:events', request.user.id)
 
 @login_required()
