@@ -1,9 +1,20 @@
+const edition_mode = document.getElementsByName("mode");
+let selected_mode = "";
+
+edition_mode.forEach((mode) => {
+  mode.addEventListener('change', function() {
+    if (mode.checked) {
+      selected_mode = mode.value;
+    }
+  });
+});
+
 //rends les sièges clickables
 function clickable_seats_and_spaces(){
     const seats_and_spaces = document.querySelectorAll('.seat, .space');
     for (const element of seats_and_spaces) {
         element.addEventListener('click', (event) => {
-            if (!element.classList.contains('space') && event.ctrlKey) {
+            if (!element.classList.contains('space') && selected_mode === "assignation") {
                 set_place_type(element);
                 console.log("OK")
             } else {
@@ -24,7 +35,7 @@ function clickable_select_row() {
 
             all_seat.forEach(function(seat) {
                 if (seat.classList[0] !== "select-row") {
-                    if (!seat.classList.contains('space') && event.ctrlKey) {
+                    if (!seat.classList.contains('space') && selected_mode === "assignation") {
                         const types = document.querySelectorAll("#checkboxList input[type='checkbox']");
                         let selected_type = "";
 
