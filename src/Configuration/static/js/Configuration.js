@@ -131,9 +131,23 @@ function fill_seat(json_dictionnary){
             const row = document.createElement('div');
             row.classList.add(json_dictionnary[index].class);
             seat_area.appendChild(row);
-            const select_row = document.createElement('div');
-            select_row.classList.add("select-row");
-            row.appendChild(select_row);
+            if(row.classList.contains("seat-row")){
+                const select_row = document.createElement('div');
+                const select_row_svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                const select_row_path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                select_row_svg.setAttribute("width","16")
+                select_row_svg.setAttribute("height","16")
+                select_row_svg.setAttribute("fill","currentColor")
+                select_row_svg.setAttribute("viewBox","0 0 16 16")
+                select_row_svg.classList.add("bi")
+                select_row_svg.classList.add("bi-arrow-down-circle-fill")
+                select_row_path.setAttribute("d","M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z")
+                select_row_svg.appendChild(select_row_path)
+                select_row.appendChild(select_row_svg)
+                select_row.classList.add("select-row");
+                row.appendChild(select_row);
+            }
+
             if (json_dictionnary[index].seat != null) {
                 const all_seat = json_dictionnary[index].seat;
 
@@ -247,7 +261,6 @@ document.querySelector("#create_json").addEventListener("click", event => {
         fetch(request)
             .then(response => response.json())
     }
-
 })
 
 //rendre disable l'input submit si c'est le choix --------

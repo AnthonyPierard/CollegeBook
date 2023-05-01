@@ -28,11 +28,12 @@
     justify-content: flex-start;
 }
 
-.seat-row, none-row {
+.seat-row, .none-row {
     width: 10%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -41,8 +42,10 @@
     flex-direction: column;
     min-width: 55px;
 }
+
 .none-row {
-    background-color: grey
+    background-color: grey;
+    min-width: 20px;
 }
 
 .standing-zone{
@@ -111,14 +114,17 @@
 }
 
 .select-row {
-    width: 0;
+    width: 100%;
     height: 0;
 
-    border-right: 16px solid transparent;
-    border-left: 16px solid transparent;
-
-    border-top: 20px solid #f7df6c;
-    /*position: relative;*/
-    /*top: -25px;*/
+    display: flex;
+    justify-content: center;
+    position: relative;
+    top: -30px;
     cursor: pointer;
+}
+
+.select-row svg {
+    transform: scale(1.5);
+    color: #268085;
 }
