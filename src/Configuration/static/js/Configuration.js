@@ -118,6 +118,17 @@ function fill_seat(json_dictionnary){
                     row.appendChild(marker_seat);
                 }
             }
+            if(json_dictionnary[index].class=="standing-zone"){
+                const nbr_place = document.querySelector("#nbr_place");
+                const input_nbr_place = document.createElement('input');
+                input_nbr_place.type="number";
+                input_nbr_place.id="value_place";
+                console.log(json_dictionnary[index]);
+                console.log(json_dictionnary[index].nbr_place);
+                input_nbr_place.value=json_dictionnary[index].nbr_place;
+                nbr_place.innerHTML = "Nombre de place debout :";
+                nbr_place.appendChild(input_nbr_place);
+            }
         }
 
     }
@@ -150,7 +161,8 @@ function tmp_create(){
     let row = seat_area.childNodes;
     for (let i=0; i<row.length; i++) {
         if(row[i].classList[0] == "standing-zone"){
-            new_json.push({"class" : "standing-zone"});
+            const nbr_place = document.querySelector("#value_place").value;
+            new_json.push({"class" : "standing-zone", "nbr_place" : nbr_place});
         }
         else if(row[i].classList[0] == "seat-row"){
             let tmp_json = {"class" : "seat-row"};

@@ -1,5 +1,6 @@
 [
   {
-    "class" : "standing-zone"
+    "class" : "standing-zone",
+    "nbr_place" : 300
   }
 ]

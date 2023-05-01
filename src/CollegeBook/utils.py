@@ -1,5 +1,4 @@
 from Configuration.models import Config, Place
-<<<<<<< HEAD
 from reportlab.pdfgen import canvas
 import qrcode
 import cv2
@@ -10,10 +9,7 @@ from unidecode import unidecode
 from datetime import datetime
 from .settings import TIME_ZONE
 import pytz
-=======
 import stripe
-
->>>>>>> Webhook
 
 def stripe_id_creation(product_type, event_name):
     stripe_id = product_type.lower() + ''.join([element.capitalize() for element in event_name.split(' ')])
