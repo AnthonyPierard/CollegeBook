@@ -192,5 +192,4 @@ def delete_event_draft(request, event_id):
     if event.state == 'DRF':
         Representation.objects.filter(event=event_id).delete()
         event.delete()
-    # TODO delete stripe products
     return redirect('Account:events', request.user.id)

@@ -1,10 +1,18 @@
-* {
+
+*{
     list-style: none;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 *::selection {
     background-color: rgba(38, 128, 133, 0.7);
     color: black;
+}
+
+:root {
+    --input-height: 40px;
+    --input-margin: 15px;
+    --main-color: #268085;
 }
 
 body {
@@ -36,8 +44,7 @@ a {
 }
 
 .title {
-    color: #268085;
-    font-family: 'Noto Sans', sans-serif;
+    color: var(--main-color);
     margin: 1% 0;
 }
 
@@ -52,8 +59,7 @@ a {
     justify-content: space-between;
     align-items: center;
     border-radius: 10px;
-    background-color: #268085;
-    font-family: 'Noto Sans', sans-serif;
+    background-color: var(--main-color);
 }
 
 .nav-bar .nav-ul {
@@ -98,7 +104,7 @@ a {
 
 .button {
     width: auto;
-    background-color: #268085;
+    background-color: var(--main-color);
     border-radius: 5px;
     padding: 9px 14px;
     color: #fff;
@@ -181,7 +187,6 @@ a {
     border-collapse: collapse;
     border-radius: 10px 10px 0 0;
     overflow: hidden;
-    font-family: 'Noto Sans', sans-serif;
     box-shadow:  0 0 20px rgba(0,0,0,0.05);
 }
 
@@ -191,7 +196,7 @@ a {
 }
 
 .table .link:hover {
-    color: #268085;
+    color: var(--main-color);
 }
 
 .table th, .table td {
@@ -204,7 +209,7 @@ a {
 }
 
 .table thead tr {
-    background-color: #268085;
+    background-color: var(--main-color);
     color: #ffffff;
     font-weight: bold;
 }
@@ -219,7 +224,7 @@ a {
 }
 
 .table tbody tr:last-of-type {
-    border-bottom: 2px solid #268085;
+    border-bottom: 2px solid var(--main-color);
 }
 
 .table-svg {
@@ -237,24 +242,25 @@ a {
 }
 
 .ok {
-    border: 2px solid #268085;
-    background-color: #268085;
+    border: 2px solid var(--main-color);
+    background-color: var(--main-color);
 }
 
 .ko {
     border: 2px solid #fc8c0f;
     background-color: #fc8c0f;
 }
-/* #todo forms */
 
+.form * {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.125rem;
+    font-weight: normal;
+}
 .form {
     padding: 0 30px;
     border-radius: 10px;
-    /*border: 2px solid #268085;*/
-    /*background: linear-gradient(to bottom, #9EB2BBFF, #268085);*/
-    font-size: 1.125rem;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: normal;
+    /*border: 2px solid var(--main-color);*/
+    /*background: linear-gradient(to bottom, #9EB2BBFF, var(--main-color));*/
 }
 
 .form form {
@@ -265,7 +271,7 @@ a {
 }
 
 .form form .input-box {
-    margin: 15px 0;
+    margin: var(--input-margin) 0;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -278,7 +284,7 @@ a {
 
 .input-box input:not(input[type="checkbox"], input[type="file"]) {
     width: 100%;
-    height: 40px;
+    height: var(--input-height);
     padding: 0 8px;
     margin-top: 5px;
     border: 1px solid #ccc;
@@ -298,7 +304,7 @@ a {
     margin: 0 10px;
     padding: 0;
     cursor: pointer;
-    accent-color: #268085;
+    accent-color: var(--main-color);
 }
 
 .input-box input:not(input[type="checkbox"]):focus, select:focus {
@@ -310,9 +316,8 @@ input[type="submit"] {
     padding: 15px 40px;
     border-radius: 15px;
     border: none;
-    background-color: #268085;
+    background-color: var(--main-color);
     color: white;
-    font-family: 'Noto Sans', sans-serif;
 }
 
 input[type="submit"]:hover {
@@ -320,7 +325,7 @@ input[type="submit"]:hover {
 }
 
 input[type="file"] {
-    height: 40px;
+    height: var(--input-height);
     margin-top: 5px;
     margin-left: 10px;
 }
@@ -335,22 +340,76 @@ select option::selection::after {
 }
 
 .input-box .insert-data-tag input{
-    height: 40px;
+    height: var(--input-height);
 }
 
-.create-tag {
+tags {
+    width: 100%;
+}
+
+.input-button {
     display: flex;
     width: 100%;
-    gap: 3%
+    min-height: 40px;
+    margin-bottom: var(--input-margin);
+    gap: 2%;
+}
+
+#add-button, .radio {
+    margin-top: auto;
+}
+
+#del-button {
+    margin-bottom: auto;
+}
+
+.input-button button {
+    width: var(--input-height);
+    height: var(--input-height);
+    border: 2px solid var(--main-color);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-button button:hover {
+    filter: brightness(90%);
+}
+
+.input-button button svg {
+    width: 40px;
+    height: 40px;
+    color: var(--main-color);
 }
 
 .input-tag {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     width: 100%;
 }
-.create-tag .radio {
+
+.input-tag input.undisplayed, .input-tag label.undisplayed {
+    display: none;
+}
+
+.radio-divs {
     display: flex;
+    justify-content: space-around;
+    align-items: center;
+    min-width: 20%;
+}
+.radio {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    gap: 10%;
+}
+
+input[type="radio"] {
+    transform: scale(1.5);
 }
 
 .input-box .errorlist {

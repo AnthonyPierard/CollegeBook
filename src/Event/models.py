@@ -20,7 +20,7 @@ class Event(models.Model):
     image = models.ImageField("Image(s) de l'événement(s)", upload_to="Images/", blank=True, null=True)
     duration = models.TimeField("Durée de l'événement", default='02:00')
     state = models.CharField("Etat de l'event brouillon/actif/archivé", choices=STATES, max_length=3, default="DRF")
-    artiste = models.CharField("Artistes", max_length= 2000)
+    artiste = models.CharField("Artistes", max_length= 70)
 
     configuration = models.ForeignKey(Config, on_delete=models.CASCADE)
 

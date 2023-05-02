@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django import forms
 
-from tagify.fields import TagField
+from tagify.fields import TagField, TagInput
 
 from Event.models import Event, Representation, Price, CodePromo
 
@@ -21,7 +21,7 @@ class EventForm(forms.ModelForm):
         ]
         labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'Description',
                   'image': 'Illustration','user':'Organisateurs',
-                  'configuration': 'Configuration', 'artiste': 'Le(s) Artiste(s)'}
+                  'configuration': 'Configuration', 'artiste': 'Artistes'}
         widgets = {'duration': forms.TimeInput(attrs={'class': 'Time'})}
 
     date = forms.CharField(label='Date de l\'événement', widget=forms.TextInput(attrs={'class': 'MultiDate'}))
@@ -32,7 +32,7 @@ class EventForm(forms.ModelForm):
     food_price = forms.FloatField(label='Prix des tickets nourriture', min_value=0,
                                   widget=forms.NumberInput(attrs={"step": '0.01'}))
 
-    promo_codes = TagField(label='Codes promo', delimiters=';', initial='FICK : 3.00€')
+    promo_codes = forms.CharField(label='Codes promo', max_length=70);
 
     def clean_promo_codes(self, *args, **kwargs):
         data = self.cleaned_data.get("promo_codes")

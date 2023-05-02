@@ -75,19 +75,9 @@ def representation_reservation(request, representation_id):
     if request.method == 'POST':
         form = ReservationForm(request.POST)
         if form.is_valid():
-            # reservation = Reservation()
-            # reservation.email = form.cleaned_data['email']
-            # reservation.last_name = form.cleaned_data["last_name"]
-            # reservation.first_name = form.cleaned_data["first_name"]
-            # reservation.phone = form.cleaned_data["phone"]
-            # reservation.number = 1 #todo rendre l'incrémentation automatique
-            # reservation.representation = Representation.objects.get(pk=representation_id)
             form.save(representation_id)
 
-            reservation = Reservation.objects.filter(email=form.cleaned_data['email'],
-                                                     representation_id=representation_id).last()
-
-            return redirect('Payment:landing', reservation.id)
+            return redirect('Payment:landing', form.instance.pk)
 
     else:
         form = ReservationForm()

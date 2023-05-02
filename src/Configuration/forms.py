@@ -21,7 +21,6 @@ class ConfigForm(forms.ModelForm):
 
         if commit:
             configuration.save()
-            #TODO Afficher les bon types de places dans le tagify pour chaque configuration proposée dans area_configuration
             place_values = self.cleaned_data["place_types"]
             for element in place_values:
                 splitted = element.split(":")
