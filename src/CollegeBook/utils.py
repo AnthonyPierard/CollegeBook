@@ -92,3 +92,21 @@ def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name,
     pdf.drawImage(f"{qr_path}/{ticket_name}", 165, y, mask='auto')
     pdf.showPage()
     return (pdf)
+def findRowId(char):
+    alphabet = {'A': 0,'B': 1,'C': 2,'D': 3,'E': 4,
+                'F': 5,'G': 6,'H': 7,'I': 8,'J': 9,
+                'K': 10,'L': 11,'M': 12,'N': 13,'O': 14,
+                'P': 15,'Q': 16,'R': 17,'S': 18,'T': 19,
+                'U': 20,'V': 21,'W': 22,'X': 23,'Y': 24,
+                'Z': 25
+    }
+
+    return alphabet[char]
+
+def findJsonID(seatList,column):
+    seatCounter = 0
+    for i in range(len(seatList)):
+        if "seat" in deatList[i]:
+            seatCounter += 1
+            if seatCounter == columnID:
+                return i

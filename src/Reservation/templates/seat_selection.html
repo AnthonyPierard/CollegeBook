@@ -12,6 +12,7 @@
         <script src="{% static 'js/Reservation.js' %}"></script>
         <script>
             let url = "{{url}}";
+            const reservationURL = "{% url 'Reservation:representation_reservation' representation.id %}";
             window.addEventListener("load", prepare_json(url));
         </script>
         <div class = "details">
@@ -20,7 +21,7 @@
                 <p id = "price">Prix : </p>
                 <p id = "places">Places : </p>
             </div>
-                <a href="{% url 'Reservation:representation_reservation' representation.id %}" class="button">Valider</a>
+                <a class="button" id="validateButton">Valider</a>
         </div>
     </div>
 {% endblock %}
