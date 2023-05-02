@@ -33,8 +33,11 @@ def event_creation(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('Account:events', request.user.id)
+            try:
+                form.save()
+                return redirect('Account:events', request.user.id)
+            except ValueError as error:
+                return render(request, 'error.html', {'error': error})
     else:
         form = EventForm()
         if not (Config.objects.filter(user=request.user)):
@@ -63,6 +66,7 @@ def delete_representation(request, representation_id):
         event = Representation.objects.get(pk=representation_id)
         return render(request, 'delete_representation.html', {"form": form, "event": event})
 
+
 @login_required
 def event_update(request, event_id):
     if request.method == 'POST':
@@ -90,7 +94,7 @@ def event_update(request, event_id):
         drink_price = Price.objects.get(type="Boisson", event_id=event.id).price
         food_price = Price.objects.get(type="Nourriture", event_id=event.id).price
 
-        form = EventForm(instance=event, initial={"date":dates, "drink_price":drink_price, "food_price":food_price})
+        form = EventForm(instance=event, initial={"date": dates, "drink_price": drink_price, "food_price": food_price})
         return render(request, 'event_modification.html', {"form": form, "event": event})
 
 
@@ -100,7 +104,7 @@ def publish_event(request, event_id):
     event.state = 'ACT'
     event.save()
 
-    #Create stripe products
+    # Create stripe products
     drink_price = Price.objects.get(type="Boisson", event_id=event.id).price
     stripe.Product.create(
         name="Ticket boisson" + " [" + event.name + "]",
@@ -123,7 +127,7 @@ def publish_event(request, event_id):
 
     configuration = Config.objects.get(name=event.configuration)
     places = Place.objects.filter(configuration_id=configuration.id)
-    for place in places :
+    for place in places:
         stripe.Product.create(
             name="Siège " + place.type.capitalize() + " [" + event.name + "]",
             default_price_data={
@@ -133,21 +137,19 @@ def publish_event(request, event_id):
             id=stripe_id_creation(place.type, event.name)
         )
 
-
-    #Create 1 room per representation
+    # Create 1 room per representation
     event_representations = Representation.objects.filter(event_id=event.id)
     path = Path(__file__).resolve().parent
     srcPath = path.parent
     src_file = srcPath.joinpath("Configuration" + configuration.url_json)
-    if not path.joinpath("static/json/"+event.name).exists():
-        path.joinpath("static/json/"+event.name).mkdir(parents=True,exist_ok=True)
+    if not path.joinpath("static/json/" + event.name).exists():
+        path.joinpath("static/json/" + event.name).mkdir(parents=True, exist_ok=True)
     for represent in event_representations:
-        dst_file = path /"static"/"json"/event.name/str(represent.id)
+        dst_file = path / "static" / "json" / event.name / str(represent.id)
         dst_file = dst_file.with_suffix(".json")
         with open(src_file, "rb") as source_file:
             with open(dst_file, "wb") as destination_file:
                 destination_file.write(source_file.read())
-
 
     promotions = CodePromo.objects.filter(event_id=event.id)
     applies_to = [str(stripe_id_creation(element.type, event.name)) for element in
@@ -159,8 +161,8 @@ def publish_event(request, event_id):
     for promotion in promotions:
         if promotion.percentage:
             stripe.Coupon.create(
-                id= stripe_id_creation(promotion.code, event.name),
-                name= promotion.code,
+                id=stripe_id_creation(promotion.code, event.name),
+                name=promotion.code,
                 percent_off=promotion.percentage,
                 duration="forever",
                 applies_to=applies_to
@@ -168,7 +170,7 @@ def publish_event(request, event_id):
         if promotion.amount:
             stripe.Coupon.create(
                 id=stripe_id_creation(promotion.code, event.name),
-                name= promotion.code,
+                name=promotion.code,
                 amount_off=int(promotion.amount * 100),
                 currency="eur",
                 duration="forever",
@@ -176,11 +178,12 @@ def publish_event(request, event_id):
             )
     return redirect('Account:events', request.user.id)
 
+
 @login_required()
-def delete_event_draft(request,event_id):
+def delete_event_draft(request, event_id):
     event = Event.objects.get(pk=event_id)
-    if event.state =='DRF':
+    if event.state == 'DRF':
         Representation.objects.filter(event=event_id).delete()
         event.delete()
-    #TODO delete stripe products
+    # TODO delete stripe products
     return redirect('Account:events', request.user.id)
