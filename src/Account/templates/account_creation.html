@@ -7,26 +7,32 @@
             <div class="input-box">
                 {{ form.first_name.label }}
                 {{ form.first_name }}
+                {{ form.first_name.errors }}
             </div>
             <div class="input-box">
                 {{ form.last_name.label }}
                 {{ form.last_name }}
+                {{ form.last_name.errors }}
             </div>
             <div class="input-box">
                 {{ form.email.label }}
                 {{ form.email }}
+                {{ form.email.errors }}
             </div>
             <div class="input-box">
                 {{ form.password.label }}
                 {{ form.password }}
+                {{ form.password.errors }}
             </div>
             <div class="input-box">
                 {{ form.confirm_password.label }}
                 {{ form.confirm_password }}
+                {{ form.confirm_password.errors }}
             </div>
             <div class="input-box">
                 {{ form.is_staff.label }}
                 {{ form.is_staff }}
+                {{ form.is_staff.errors }}
             </div>
             <input type="submit" value="Créer le compte">
         </form>

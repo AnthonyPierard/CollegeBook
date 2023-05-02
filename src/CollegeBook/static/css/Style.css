@@ -351,12 +351,15 @@ select option::selection::after {
 }
 .create-tag .radio {
     display: flex;
-
 }
 
-.errorList {
-    height: 50px;
-    background-color: red;
+.input-box .errorlist {
+    font-size: 1rem;
+    width: 100%;
+    padding: 0 8px;
+    font-style: italic;
+    text-align: left;
+    color: red;
 }
 
 @media screen and (max-width: 650px) {

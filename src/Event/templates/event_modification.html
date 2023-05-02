@@ -14,48 +14,59 @@
         <div class="input-box">
             {{ form.name.label }}
             {{ form.name }}
+            {{ form.name.errors }}
         </div>
         <div class="input-box">
             {{ form.image.label }}
             {{ form.image }}
+            {{ form.image.errors }}
         </div>
         <div class="input-box">
             {{ form.description.label }}
             {{ form.description }}
+            {{ form.description.errors }}
         </div>
         <div class="input-box">
             {{ form.duration.label }}
             {{ form.duration }}
+            {{ form.duration.errors }}
         </div>
         <div class="input-box">
-                {{form.artiste.label}}
-                {{form.artiste}}
+            {{form.artiste.label}}
+            {{form.artiste}}
+            {{ form.artiste.errors }}
         </div>
         <div class="input-box">
             {{ form.user.label }}
             {{ form.user }}
+            {{ form.user.errors }}
         </div>
         <div class="input-box">
             {{ form.date.label }}
             {{ form.date }}
+            {{ form.date.errors }}
         </div>
         <div class="input-box">
             {{form.configuration.label}}
             {{ form.configuration }}
+            {{ form.configuration.errors }}
         </div>
 
         <a href="{% url 'Config:Configuration' %}">Créer une configuration de salle</a>
         <div class="input-box">
             {{ form.drink_price.label }}
             {{ form.drink_price }}
+            {{ form.drink_price.errors }}
         </div>
         <div class="input-box">
             {{ form.food_price.label }}
             {{ form.food_price }}
+            {{ form.food_price.errors }}
         </div>
         <div class="input-box">
             {{ form.promo_codes.label }}
             {{ form.promo_codes }}
+            {{ form.promo_codes.errors }}
         </div>
         <input type="submit" value="Modifier l'événement">
     </form>

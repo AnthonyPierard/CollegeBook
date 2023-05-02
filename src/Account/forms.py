@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import User
-from .utils import check_password
+from CollegeBook.utils import check_password
 
 
 class UserForm(forms.ModelForm):

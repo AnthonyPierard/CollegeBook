@@ -37,7 +37,11 @@ def event_creation(request):
                 form.save()
                 return redirect('Account:events', request.user.id)
             except ValueError as error:
+
                 return render(request, 'error.html', {'error': error})
+        configurations = Config.objects.filter(user=request.user.id)
+        return render(request, 'event_creation.html', {'form': form, 'configurations': configurations})
+
     else:
         form = EventForm()
         if not (Config.objects.filter(user=request.user)):

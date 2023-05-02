@@ -6,7 +6,6 @@ from tagify.fields import TagField
 
 from Event.models import Event, Representation, Price, CodePromo
 
-
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
@@ -33,20 +32,19 @@ class EventForm(forms.ModelForm):
     food_price = forms.FloatField(label='Prix des tickets nourriture', min_value=0,
                                   widget=forms.NumberInput(attrs={"step": '0.01'}))
 
-    promo_codes = TagField(label='Codes promo', delimiters=';', initial='FIRST : 3.00€;MAI : 5.00%')
+    promo_codes = TagField(label='Codes promo', delimiters=';', initial='FICK : 3.00€')
 
-    # def clean_promo_codes(self, *args, **kwargs):
-    #     form_codes = [ code.split(":")[0].replace(" ", "") for code in self.cleaned_data["promo_codes"]]
-    #     codes = CodePromo.objects.all()
-    #
-    #     if codes:
-    #         for code in codes:
-    #             if code.code in form_codes:
-    #                 raise forms.ValidationError(f"Le code promo {code.code} existe déjà")
+    def clean_promo_codes(self, *args, **kwargs):
+        data = self.cleaned_data.get("promo_codes")
+        form_codes = [ code.split(":")[0].replace(" ", "") for code in data]
+        codes = CodePromo.objects.all()
 
-    def clean_name(self):
-        if self.cleaned_data["name"] == "ma":
-            raise forms.ValidationError("Erreur")
+        if codes:
+            for code in codes:
+                if code.code in form_codes:
+                    raise forms.ValidationError(f"Le code promo {code.code} exitse déjà")
+        return data
+
     def save(self, commit=True):
         event = super(EventForm, self).save(commit=False)
 
