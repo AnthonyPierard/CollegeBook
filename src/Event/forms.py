@@ -35,6 +35,18 @@ class EventForm(forms.ModelForm):
 
     promo_codes = TagField(label='Codes promo', delimiters=';', initial='FIRST : 3.00€;MAI : 5.00%')
 
+    # def clean_promo_codes(self, *args, **kwargs):
+    #     form_codes = [ code.split(":")[0].replace(" ", "") for code in self.cleaned_data["promo_codes"]]
+    #     codes = CodePromo.objects.all()
+    #
+    #     if codes:
+    #         for code in codes:
+    #             if code.code in form_codes:
+    #                 raise forms.ValidationError(f"Le code promo {code.code} existe déjà")
+
+    def clean_name(self):
+        if self.cleaned_data["name"] == "ma":
+            raise forms.ValidationError("Erreur")
     def save(self, commit=True):
         event = super(EventForm, self).save(commit=False)
 
