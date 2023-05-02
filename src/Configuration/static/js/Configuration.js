@@ -292,6 +292,27 @@ function get_config(){
     return selectedValue;
 
 }
+/* Pour plus tard créer les checkbox via cette fonction
+function create_checkbox(place){
+    const checkboxList = document.getElementById('checkboxList');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.name = "choice";
+    checkbox.value = place;
+    checkboxList.appendChild(checkbox);
+
+    const label = document.createElement('label');
+    label.appendChild(document.createTextNode(place));
+    checkboxList.appendChild(label);
+
+    checkbox.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('input[name=choice]');
+    checkboxes.forEach((cb) => {
+      if (cb !== checkbox) {
+        cb.checked = false;
+      }
+    });
+}*/
 
 let nbr_cat = 0;
 //récuperer les types de places dans le tagify
@@ -307,15 +328,24 @@ function get_place_types(){
             checkboxList.removeChild(checkboxList.firstChild);
         }
 
-        const sold = document.createElement('input');
-        sold.type = 'checkbox';
-        sold.name = "choice";
-        sold.value = "sold";
-        checkboxList.appendChild(sold);
-        const sold_label = document.createElement('label');
-        sold_label.appendChild(document.createTextNode("sold"));
-        checkboxList.appendChild(sold_label);
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = "choice";
+        checkbox.value = "sold";
+        checkboxList.appendChild(checkbox);
 
+        const label = document.createElement('label');
+        label.appendChild(document.createTextNode("sold"));
+        checkboxList.appendChild(label);
+
+        checkbox.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('input[name=choice]');
+            checkboxes.forEach((cb) => {
+                if (cb !== checkbox) {
+                    cb.checked = false;
+                }
+            });
+        });
         allPlaces.forEach((place) => {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
