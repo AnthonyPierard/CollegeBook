@@ -31,7 +31,7 @@ class Event(models.Model):
 
 
 class CodePromo(models.Model):
-    code = models.CharField("Le code à introduire", max_length=20, unique=True)
+    code = models.CharField("Le code à introduire", max_length=20)
     amount = models.FloatField("Montant fixe de réduction", blank=True, default=0)
     percentage = models.FloatField("Pourcentage de reduction sur le prix total", blank=True, default=0)
 
