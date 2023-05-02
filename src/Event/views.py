@@ -34,7 +34,7 @@ def event_creation(request):
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('Event:display')
+            return redirect('Account:events', request.user.id)
     else:
         form = EventForm()
         if not (Config.objects.filter(user=request.user)):
