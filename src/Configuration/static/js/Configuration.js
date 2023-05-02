@@ -429,3 +429,14 @@ function set_place_type(seat) {
         }
     }
 }
+
+function set_checkbox_color(){
+    const checkboxes = document.querySelectorAll('#checkboxList input[type="checkbox"]');
+
+    checkboxes.forEach((checkbox) => {
+        const label = checkbox.nextElementSibling;
+        label.style.color = 'blue'; // ou toute autre règle CSS pour la couleur de texte
+    });
+}
+
+setInterval(set_checkbox_color, 2000);
