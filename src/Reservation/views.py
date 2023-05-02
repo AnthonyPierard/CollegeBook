@@ -52,10 +52,10 @@ def reserve_seats(request,representation_id):
         rowID = findRowId(seatID[0])
         rowID = rowID + rowOffset
         columnID = int(seatID[1:])
-        jsonID = findJsonID(data[rowID]["seat"], columnID)
         while data[rowID]["class"] != "seat-row":
             rowID +=1
             rowOffset += 1
+        jsonID = findJsonID(data[rowID]["seat"], columnID)
         if data[rowID]["seat"][jsonID] == "seat sold":
             seatsReserved = False
             return(JsonResponse({'seatsReserved': seatsReserved}))

@@ -106,7 +106,7 @@ def findRowId(char):
 def findJsonID(seatList,column):
     seatCounter = 0
     for i in range(len(seatList)):
-        if "seat" in deatList[i]:
+        if "seat" in seatList[i]:
             seatCounter += 1
-            if seatCounter == columnID:
+            if seatCounter == column:
                 return i

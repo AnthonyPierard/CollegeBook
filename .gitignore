@@ -10,4 +10,5 @@ src/polls/migrations/__pycache__/
 src/CollegeBookSite/__pycache__/
 src/Event/static/json/
 venv/
+env/
 *.pyc
