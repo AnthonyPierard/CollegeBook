@@ -1,9 +1,15 @@
-{% extends "default.html" %}
+{% extends "defaultValidation.html" %}
 
 {% block body %}
-    <p>Ticket : {{ type_ticket }}</p>
-    <p>Pour la représentation {{ representation.name }} le {{ representation.date }}</p>
-    <p>Réservation au nom de {{ reservation.first_name }} {{ reservation.last_name }}</p>
-
-    <a href="{% url 'Validation:validation' code %}">Validé le ticket</a>
+    <div class="centered">
+        <h1 class="title">Validation de ticket</h1>
+        {% if type_ticket == "DEBOUT" %}
+            <p>Ticket {{ type_ticket }}</p>
+        {% else %}
+            <p>Ticket <strong>{{ type_ticket }}</strong> : Place <strong>{{ seat_number }}</strong></p>
+        {% endif %}
+        <p>Pour la représentation <strong>{{ representation.name }}</strong> le <strong>{{ representation.date }}</strong></p>
+        <p>Réservation au nom de <strong>{{ reservation.first_name }} {{ reservation.last_name }}</strong></p>
+        <a class="button" href="{% url 'Validation:validation' code %}">Valider le ticket</a>
+    </div>
 {% endblock %}

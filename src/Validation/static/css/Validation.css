@@ -1,0 +1,26 @@
+.title {
+    font-size: 2rem;
+}
+
+svg {
+    margin: 5%;
+    width: 50%;
+    height: 50%;
+}
+
+.valid-svg {
+    color: green;
+}
+
+.unvalid-svg {
+    color: red;
+}
+
+@media screen and (width > 650px) {
+    svg {
+        margin: 5%;
+        width: 15%;
+        height: 15%;
+    }
+}
+

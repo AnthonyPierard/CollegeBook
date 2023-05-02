@@ -362,6 +362,16 @@ select option::selection::after {
     color: red;
 }
 
+.centered {
+    text-align: center;
+    margin-top: 20vh;
+}
+
+.centered p {
+    margin: 20px 0;
+    font-size: 1.063rem;
+}
+
 @media screen and (max-width: 650px) {
 
     .table thead {

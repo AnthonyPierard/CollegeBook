@@ -60,8 +60,8 @@ class ExtraTicket(AbstractTicket):
 
 
 class FoodTicket(ExtraTicket):
-    seat_number = models.CharField("Trigramme du siège", max_length=3)
+    pass
 
 
 class DrinkTicket(ExtraTicket):
-    seat_number = models.CharField("Trigramme du siège", max_length=3)
+    pass
