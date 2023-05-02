@@ -164,8 +164,7 @@ def publish_event(request, event_id):
                 id=stripe_id_creation(promotion.code, event.name),
                 name=promotion.code,
                 percent_off=promotion.percentage,
-                duration="forever",
-                applies_to=applies_to
+                duration="forever"
             )
         if promotion.amount:
             stripe.Coupon.create(
@@ -173,8 +172,7 @@ def publish_event(request, event_id):
                 name=promotion.code,
                 amount_off=int(promotion.amount * 100),
                 currency="eur",
-                duration="forever",
-                applies_to=applies_to
+                duration="forever"
             )
     return redirect('Account:events', request.user.id)
 
