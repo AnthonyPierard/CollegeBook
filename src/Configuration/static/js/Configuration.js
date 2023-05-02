@@ -17,7 +17,7 @@ function clickable_seats_and_spaces(){
             if (!element.classList.contains('space') && selected_mode === "assignation") {
                 set_place_type(element);
                 console.log("OK")
-            } else {
+            } else if (selected_mode == "suppression"){
                 element.classList.toggle('seat');
                 element.classList.toggle('space');
             }
@@ -81,7 +81,7 @@ function clickable_select_row() {
                                 }
                             }
                         }
-                    } else {
+                    } else if (selected_mode === "suppression"){
                         seat.classList.toggle('seat');
                         seat.classList.toggle('space');
                     }
@@ -353,42 +353,40 @@ function set_place_type(seat) {
         }
     });
 
-    seat.addEventListener('click', function() {
-        const seat_classes = seat.classList;
-        seat_classes.forEach((seat_class) => {
-            if (seat_class !== "seat" && seat_class !== "space") {
-                seat.classList.remove(seat_class);
-            }
-        });
-        if (selected_type != "") {
-            if (!seat.classList.contains(selected_type)) {
-                seat.classList.add(selected_type);
-
-                let styleTag = document.querySelector('style');
-                if (!styleTag) {
-                    styleTag = document.createElement('style');
-                    document.head.appendChild(styleTag);
-                }
-
-                // Récupérer la feuille de style et la règle CSS correspondant au type de siège
-                const styleSheet = styleTag.sheet;
-                const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${selected_type}`);
-
-                // Vérifier si une couleur a déjà été générée pour ce type de siège
-                let color = seatColors[selected_type];
-                if (!color) {
-                    // Générer une nouvelle couleur
-                    color = random_color();
-                    seatColors[selected_type] = color;
-                }
-
-                // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
-                if (!rule) {
-                    styleSheet.insertRule(`.seat.${selected_type} { color: ${color}; }`, styleSheet.cssRules.length);
-                } else {
-                    rule.style.color = color;
-                }
-            }
+    const seat_classes = seat.classList;
+    seat_classes.forEach((seat_class) => {
+        if (seat_class !== "seat" && seat_class !== "space") {
+            seat.classList.remove(seat_class);
         }
     });
+    if (selected_type != "") {
+        if (!seat.classList.contains(selected_type)) {
+            seat.classList.add(selected_type);
+
+            let styleTag = document.querySelector('style');
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                document.head.appendChild(styleTag);
+            }
+
+            // Récupérer la feuille de style et la règle CSS correspondant au type de siège
+            const styleSheet = styleTag.sheet;
+            const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${selected_type}`);
+
+            // Vérifier si une couleur a déjà été générée pour ce type de siège
+            let color = seatColors[selected_type];
+            if (!color) {
+                // Générer une nouvelle couleur
+                color = random_color();
+                seatColors[selected_type] = color;
+            }
+
+            // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
+            if (!rule) {
+                styleSheet.insertRule(`.seat.${selected_type} { color: ${color}; }`, styleSheet.cssRules.length);
+            } else {
+                rule.style.color = color;
+            }
+        }
+    }
 }
