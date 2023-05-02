@@ -18,8 +18,8 @@ class ReservationForm(forms.ModelForm):
         ]
         labels = {'email': 'Email', 'last_name': 'Nom', 'first_name': 'Prénom', 'phone': 'Numéro de téléphone',
                   'note': 'Commentaire', 'drink_number': 'Tickets boissons', 'food_number': 'Tickets nourriture'}
-        widgets = {'drink_number': forms.NumberInput, 'food_number': forms.NumberInput}
-
+        widgets = {'drink_number': forms.NumberInput(attrs = {'min' : '0'}), 'food_number': forms.NumberInput(attrs={'min': '0'})}
+        field_options = {'note': {'required': False}}
     selectedseat = forms.CharField(label='Place Selectionner', max_length=50, required=True)
 
     def save(self, representation_id, commit=True):
