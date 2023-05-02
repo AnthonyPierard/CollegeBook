@@ -151,21 +151,25 @@ function updateSeats(){
 
 }
 function checkSeats() {
+    seatSelected = true;
     return new Promise(function(resolve, reject) {
       // Votre code de vérification ici
         for(seatID in selectedSeatsIDs){
             if (!canBeSelected(selectedSeatsIDs[seatID])) {
+                seatSelected = false
                 reject("Vous ne pouvez pas laissez de place vide entre deux places vendues.\n Vérifier les sièges aux alentours de la place "+ selectedSeatsIDs[seatID]);
             }
         }
-        reserveSeats(function(result){
-            if (!result){
-                reject("Vous avez tenté de sélectionner un siège déjà vendu");
-            }
-            else{
-                resolve();
-            }
-        })
+        if (seatSelected){
+            reserveSeats(function(result){
+                if (!result){
+                    reject("Vous avez tenté de sélectionner un siège déjà vendu");
+                }
+                else{
+                    resolve();
+                }
+            })
+        }
 
     });
   }
