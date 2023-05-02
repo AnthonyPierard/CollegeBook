@@ -10,6 +10,10 @@ import json
 
 
 def add_default_configuration(userId):
+    """
+    :param userId: the id of the current user log
+    :return: create de 4 configurations basic and link them to the user
+    """
     basicSeats = {"Debout": 3.00, "Classic": 4.00, "Vip": 5.00}
     configCreator(config_name="only Seat", json_url="/static/json/onlySeat.json", user_id=userId, seats=basicSeats)
     configCreator(config_name="all Seat", json_url="/static/json/allSeat.json", user_id=userId, seats=basicSeats)
@@ -21,8 +25,13 @@ def add_default_configuration(userId):
 
 @login_required
 def area_configuration(request):
+    """
+    :param request:
+        POST : the information to create a new configurations
+        GET : display the html with the editor of a new configuration
+    :return: area_configuration.html
+    """
     if request.method == 'POST':
-        print(request.POST.get('config'))
         form = ConfigForm(request.POST)
         if form.is_valid():
             form.save(user=request.user)
@@ -38,6 +47,11 @@ def area_configuration(request):
 
 
 def create_json(request):
+    """
+    :param request:
+        POST : the json with the information about a configuration (all the information about seats or standing place)
+    :return: area_configuration
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         goodName = data[0]['nom'].replace(" ", "_")

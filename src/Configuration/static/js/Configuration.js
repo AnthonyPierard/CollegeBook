@@ -307,6 +307,15 @@ function get_place_types(){
             checkboxList.removeChild(checkboxList.firstChild);
         }
 
+        const sold = document.createElement('input');
+        sold.type = 'checkbox';
+        sold.name = "choice";
+        sold.value = "sold";
+        checkboxList.appendChild(sold);
+        const sold_label = document.createElement('label');
+        sold_label.appendChild(document.createTextNode("sold"));
+        checkboxList.appendChild(sold_label);
+
         allPlaces.forEach((place) => {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
