@@ -354,6 +354,11 @@ select option::selection::after {
 
 }
 
+.errorList {
+    height: 50px;
+    background-color: red;
+}
+
 @media screen and (max-width: 650px) {
 
     .table thead {

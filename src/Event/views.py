@@ -152,30 +152,33 @@ def publish_event(request, event_id):
                 destination_file.write(source_file.read())
 
     promotions = CodePromo.objects.filter(event_id=event.id)
-    applies_to = [str(stripe_id_creation(element.type, event.name)) for element in
+    applies_to = applies_to = [str(stripe_id_creation(element.type, event.name)) for element in
                   list(Price.objects.filter(event_id=event.id)) + list(
                       Place.objects.filter(configuration_id=event.configuration_id))]
 
     print(applies_to)
 
     for promotion in promotions:
+        coupon_id = stripe_id_creation(promotion.code, event.name)
+        coupon_name = f"Bon {promotion.code} [{event.name}]"
         if promotion.percentage:
             stripe.Coupon.create(
-                id=stripe_id_creation(promotion.code, event.name),
-                name=promotion.code,
+                id=coupon_id,
+                name=coupon_name,
                 percent_off=promotion.percentage,
                 duration="forever",
-                applies_to=applies_to
+                applies_to= {"products": applies_to}
             )
         if promotion.amount:
             stripe.Coupon.create(
-                id=stripe_id_creation(promotion.code, event.name),
-                name=promotion.code,
+                id=coupon_id,
+                name=coupon_name,
                 amount_off=int(promotion.amount * 100),
                 currency="eur",
                 duration="forever",
-                applies_to=applies_to
+                applies_to={"products": applies_to}
             )
+        stripe.PromotionCode.create(coupon=coupon_id, code=promotion.code.upper())
     return redirect('Account:events', request.user.id)
 
 
