@@ -20,16 +20,18 @@ class EventForm(forms.ModelForm):
             'artiste',
 
         ]
-        labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'Description', 'image': 'Illustration',
-                  'user': 'Organisateurs', 'configuration' : 'Configuration', 'artiste' : 'Le(s) Artiste(s)'}
-        widgets = {'duration': forms.TimeInput(attrs={'class': 'Time'}), 'user': forms.CheckboxSelectMultiple}
-
+        labels = {'name': 'Nom de l\'événement', 'duration': 'Durée', 'description': 'Description',
+                  'image': 'Illustration','user':'Organisateurs',
+                  'configuration': 'Configuration', 'artiste': 'Le(s) Artiste(s)'}
+        widgets = {'duration': forms.TimeInput(attrs={'class': 'Time'})}
 
     date = forms.CharField(label='Date de l\'événement', widget=forms.TextInput(attrs={'class': 'MultiDate'}))
 
-    drink_price = forms.FloatField(label='Prix des tickets boisson', min_value=0, widget=forms.NumberInput(attrs={"step":'0.01'}))
+    drink_price = forms.FloatField(label='Prix des tickets boisson', min_value=0,
+                                   widget=forms.NumberInput(attrs={"step": '0.01'}))
 
-    food_price = forms.FloatField(label='Prix des tickets nourriture', min_value=0, widget=forms.NumberInput(attrs={"step":'0.01'}))
+    food_price = forms.FloatField(label='Prix des tickets nourriture', min_value=0,
+                                  widget=forms.NumberInput(attrs={"step": '0.01'}))
 
     promo_codes = TagField(label='Codes promo', delimiters=';', initial='FIRST : 3.00€;MAI : 5.00%')
 
@@ -39,7 +41,7 @@ class EventForm(forms.ModelForm):
         if commit:
             event.save()
 
-            #Representations creation in DB
+            # Representations creation in DB
             for user in self.cleaned_data["user"]:
                 event.user.add(user)
             event = Event.objects.get(name=self.cleaned_data['name'])
@@ -48,8 +50,7 @@ class EventForm(forms.ModelForm):
                 for date in dates:
                     date = datetime.strptime(date, '%d-%m-%Y/%H:%M')
                     Representation(date=date, remaining_seats={}, event_id=event.id).save()
-                    #TODO remaining_seats
-
+                    # TODO remaining_seats
 
             codes_value = self.cleaned_data["promo_codes"]
             for element in codes_value:
@@ -57,10 +58,9 @@ class EventForm(forms.ModelForm):
                 code_name = splitted[0].split(' ')[0].upper()
                 code_amount = splitted[1].split(' ')[1]
                 if "€" == code_amount[-1]:
-                    CodePromo(code= code_name, amount= code_amount.replace("€", ""), event_id = event.id).save()
+                    CodePromo(code=code_name, amount=code_amount.replace("€", ""), event_id=event.id).save()
                 elif "%" == code_amount[-1]:
-                    CodePromo(code= code_name, percentage= code_amount.replace("%", ""), event_id = event.id).save()
-
+                    CodePromo(code=code_name, percentage=code_amount.replace("%", ""), event_id=event.id).save()
 
             # #Prices creation
             drink_price = float(self.cleaned_data["drink_price"])

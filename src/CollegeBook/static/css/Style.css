@@ -271,7 +271,7 @@ a {
     flex-wrap: wrap;
 }
 
-.input-box input:not(input[type="checkbox"]) {
+.input-box input:not(input[type="checkbox"]), select {
     outline: none;
     border-radius: 5px;
 }
@@ -301,7 +301,7 @@ a {
     accent-color: #268085;
 }
 
-.input-box input:not(input[type="checkbox"]):focus {
+.input-box input:not(input[type="checkbox"]):focus, select:focus {
     border: 2px solid rgba(38, 128, 133, 0.8);
 }
 
@@ -323,6 +323,35 @@ input[type="file"] {
     height: 40px;
     margin-top: 5px;
     margin-left: 10px;
+}
+
+select:focus {
+    outline: none;
+    border: 2px solid rgba(38, 128, 133, 0.8);
+}
+
+select option::selection::after {
+    background-color: rgba(38, 128, 133, 0.8);
+}
+
+.input-box .insert-data-tag input{
+    height: 40px;
+}
+
+.create-tag {
+    display: flex;
+    width: 100%;
+    gap: 3%
+}
+
+.input-tag {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.create-tag .radio {
+    display: flex;
+
 }
 
 @media screen and (max-width: 650px) {
