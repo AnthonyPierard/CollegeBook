@@ -430,13 +430,37 @@ function set_place_type(seat) {
     }
 }
 
-function set_checkbox_color(){
+function set_checkbox_color() {
     const checkboxes = document.querySelectorAll('#checkboxList input[type="checkbox"]');
 
     checkboxes.forEach((checkbox) => {
         const label = checkbox.nextElementSibling;
-        label.style.color = 'blue'; // ou toute autre règle CSS pour la couleur de texte
+        const labelValue = label.textContent.toLowerCase();
+        if (seatColors.hasOwnProperty(labelValue)) {
+            console.log('GOOOOOD');
+            const color = seatColors[labelValue];
+            label.style.color = color;
+        } else {
+            console.log('NUUUL');
+            console.log(seatColors);
+            console.log(labelValue);
+            console.log(seatColors[labelValue]);
+        }
     });
 }
 
+
 setInterval(set_checkbox_color, 2000);
+
+function set_checkbox_color() {
+    const checkboxes = document.querySelectorAll('#checkboxList input[type="checkbox"]');
+
+    checkboxes.forEach((checkbox) => {
+        const label = checkbox.nextElementSibling;
+        const labelValue = label.textContent.toLowerCase().replace(" ", "");
+        if (seatColors.hasOwnProperty(labelValue)) {
+            const color = seatColors[labelValue.replace(" ", "")];
+            label.style.color = color;
+        }
+    });
+}
