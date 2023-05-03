@@ -32,10 +32,20 @@ class EventForm(forms.ModelForm):
     food_price = forms.FloatField(label='Prix des tickets nourriture', min_value=0,
                                   widget=forms.NumberInput(attrs={"step": '0.01'}))
 
-    promo_codes = forms.CharField(label='Codes promo', max_length=70);
+    promo_codes = forms.CharField(label='Codes promo', max_length=200, required=False)
 
     def clean_promo_codes(self, *args, **kwargs):
         data = self.cleaned_data.get("promo_codes")
+        if data != "":
+            tempList = data.replace("{", "").replace("}", "").replace("[", "").replace("]", "")
+            tempList = tempList.replace('"value":', "").replace('"value":', "")
+            tempList = tempList.split(",")
+            for index, element in enumerate(tempList):
+                if element[0] == " ":
+                    tempList[index] = element[1:]
+                tempList[index] = tempList[index].replace('"', "")
+
+            data = tempList
         form_codes = [ code.split(":")[0].replace(" ", "") for code in data]
         codes = CodePromo.objects.all()
 

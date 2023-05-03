@@ -40,6 +40,9 @@ artistTagInput.setAttribute("readonly", true)
 const artistText = artist.querySelector("#text");
 const artistAddButton = artist.querySelector("#add-button");
 
+if ( artistTagify.getTagElms().length > 0) {
+    artistDiv.classList.remove("undisplayed")
+}
 function addArtist() {
     artistTagify.addTags([artistText.value]);
     artistText.value = "";
@@ -106,6 +109,9 @@ const promoMontant = promo.querySelector("#montant");
 const promoPourcentage = promo.querySelector("#pourcentage");
 const promoAddButton = promo.querySelector("#add-button");
 
+if ( promoTagify.getTagElms().length > 0) {
+    promoDiv.classList.remove("undisplayed")
+}
 function addPromoCode() {
     if (radioMontant.checked) {
         promoTagify.addTags([promoText.value + " : " + promoMontant.value + "€"]);
