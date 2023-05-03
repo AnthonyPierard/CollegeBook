@@ -3,12 +3,19 @@
 {% block body %}
     <div class="centered">
         <h1 class="title">Validation de ticket</h1>
-        {% if type_ticket == "DEBOUT" %}
-            <p>Ticket {{ type_ticket }}</p>
+        {% if type_ticket == "Debout" %}
+            <p>Ticket <strong>{{ type_ticket }}</strong></p>
+        {% elif type_ticket == "Boisson" %}
+            <p>Ticket <strong>{{ type_ticket }}</strong></p>
+            <p>Tickets boisson disponible : <strong>{{ reservation.drink_number }}</strong></p>
+        {% elif type_ticket == "Nourriture" %}
+            <p>Ticket <strong>{{ type_ticket }}</strong></p>
+            <p>Tickets nourriture disponible : <strong>{{ reservation.food_number }}</strong></p>
+
         {% else %}
             <p>Ticket <strong>{{ type_ticket }}</strong> : Place <strong>{{ seat_number }}</strong></p>
         {% endif %}
-        <p>Pour la représentation <strong>{{ representation.name }}</strong> le <strong>{{ representation.date }}</strong></p>
+        <p>Pour la représentation <strong>{{ event_name }}</strong> le <strong>{{ representation.date }}</strong></p>
         <p>Réservation au nom de <strong>{{ reservation.first_name }} {{ reservation.last_name }}</strong></p>
         <a class="button" href="{% url 'Validation:validation' code %}">Valider le ticket</a>
     </div>

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from Reservation.models import SeatingTicket, StandingTicket, FoodTicket, DrinkTicket, AbstractTicket, Reservation, \
     Representation
+from Event.models import Event
 from django.utils import timezone
 
 from datetime import datetime
@@ -34,13 +35,14 @@ def scan_ticket(request, code):
         seat_number = None
     reservation = Reservation.objects.get(pk=ticket.reservation.id)
     representation = Representation.objects.get(pk=reservation.representation.id)
+    event = Event.objects.get(pk=representation.event.id)
     if representation.date.year <= timezone.now().year \
             and representation.date.month <= timezone.now().month and representation.date.day < timezone.now().day:
         error = f"Ticket expiré. Valable pour le {representation.date.strftime('%d/%m/%Y')}"
         return render(request, 'ticket_error.html', {'error_str': error})
     return render(request, 'scan_tickets.html',
                   {'type_ticket': type_ticket, 'seat_number': seat_number, 'reservation': reservation, 'representation': representation,
-                   'code': code})
+                   'code': code, 'event_name':event.name})
 
 
 @login_required()
