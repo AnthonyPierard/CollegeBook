@@ -27,10 +27,9 @@ class ReservationForm(forms.ModelForm):
         if commit:
             reservation.representation = Representation.objects.get(pk=representation_id)
             reservation.save()
-            for i in range(self.cleaned_data["drink_number"]):
+            if self.cleaned_data["drink_number"] > 0:
                 DrinkTicket.create(reservation_id=reservation.id)
-
-            for j in range(self.cleaned_data["food_number"]):
+            if self.cleaned_data["food_number"] > 0:
                 FoodTicket.create(reservation_id=reservation.id)
 
             selected_seats = self.cleaned_data["selectedseat"]
