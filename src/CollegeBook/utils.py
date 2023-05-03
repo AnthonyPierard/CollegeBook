@@ -35,7 +35,15 @@ def configCreator(config_name, json_url, user_id, seats):
         seat = Place(type=key, price=seats[key], configuration_id=configuration.id)
         seat.save()
 
-
+def clean_tagify_string(data):
+    tempList = data.replace("{", "").replace("}", "").replace("[", "").replace("]", "")
+    tempList = tempList.replace('"value":', "").replace('"value":', "")
+    tempList = tempList.split(",")
+    for index, element in enumerate(tempList):
+        if element[0] == " ":
+            tempList[index] = element[1:]
+        tempList[index] = tempList[index].replace('"', "")
+    return tempList
 def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name, date):
     # pdf = canvas.Canvas('test.pdf')
 

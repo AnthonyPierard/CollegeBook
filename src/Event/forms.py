@@ -4,6 +4,7 @@ from django import forms
 
 from tagify.fields import TagField, TagInput
 
+from CollegeBook.utils import clean_tagify_string
 from Event.models import Event, Representation, Price, CodePromo
 
 class EventForm(forms.ModelForm):
@@ -37,15 +38,7 @@ class EventForm(forms.ModelForm):
     def clean_promo_codes(self, *args, **kwargs):
         data = self.cleaned_data.get("promo_codes")
         if data != "":
-            tempList = data.replace("{", "").replace("}", "").replace("[", "").replace("]", "")
-            tempList = tempList.replace('"value":', "").replace('"value":', "")
-            tempList = tempList.split(",")
-            for index, element in enumerate(tempList):
-                if element[0] == " ":
-                    tempList[index] = element[1:]
-                tempList[index] = tempList[index].replace('"', "")
-
-            data = tempList
+            data = clean_tagify_string(data)
         form_codes = [ code.split(":")[0].replace(" ", "") for code in data]
         codes = CodePromo.objects.all()
 
@@ -53,6 +46,10 @@ class EventForm(forms.ModelForm):
             for code in codes:
                 if code.code in form_codes:
                     raise forms.ValidationError(f"Le code promo {code.code} exitse déjà")
+        return data
+    def clean_artiste(self):
+        data = self.cleaned_data["artiste"]
+        data = ' ,'.join(clean_tagify_string(data))
         return data
 
     def save(self, commit=True):
