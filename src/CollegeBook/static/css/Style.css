@@ -343,8 +343,9 @@ select option::selection::after {
     height: var(--input-height);
 }
 
-tags {
+.tagify {
     width: 100%;
+    border: 0px;
 }
 
 .input-button {
@@ -390,7 +391,7 @@ tags {
     width: 100%;
 }
 
-.input-tag input.undisplayed, .input-tag label.undisplayed {
+.input-tag.undisplayed, .input-button.undisplayed {
     display: none;
 }
 

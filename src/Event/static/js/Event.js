@@ -32,44 +32,47 @@ function  filterItems() {
 //Tagify for artists&
 const artist = document.querySelector("#artist");
 const artistInput = artist.querySelector("input[name='artiste']")
+const artistDiv = artist.querySelector("#artist-div");
 const artistTagify = new Tagify(artistInput);
 const artistTagInput = artist.querySelector("span");
 artistTagInput.removeAttribute("contenteditable")
 artistTagInput.setAttribute("readonly", true)
 const artistText = artist.querySelector("#text");
 const artistAddButton = artist.querySelector("#add-button");
-artistAddButton.addEventListener('click', () => {
+
+function addArtist() {
     artistTagify.addTags([artistText.value]);
     artistText.value = "";
     artistText.focus()
+}
+
+artistAddButton.addEventListener('click', () => {
+    addArtist();
 });
+
+artistText.addEventListener('keydown', function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addArtist();
+    }
+});
+
+artistTagify.on('add', () => {
+    artistDiv.classList.remove("undisplayed")
+})
+
+artistTagify.on('remove', () => {
+    if ( artistTagify.getTagElms().length === 0) {
+        artistDiv.classList.add("undisplayed")
+    }
+})
+
+
 const artistDeleteButton = artist.querySelector("#del-button");
 artistDeleteButton.addEventListener('click', () => {
     artistTagify.removeAllTags();
     artistText.focus();
-});
-
-//Tagify for promo codes
-const promo = document.querySelector("#promo");
-const promoInput = promo.querySelector("input[name='promo_codes']");
-const promoTagify = new Tagify(promoInput);
-const promoTagInput = promo.querySelector("span");
-promoTagInput.removeAttribute("contenteditable")
-promoTagInput.setAttribute("readonly", true)
-
-const promoText = promo.querySelector("#nom");
-const promoAddButton = promo.querySelector("#add-button");
-
-promoAddButton.addEventListener('click', () => {
-    promoTagify.addTags([promoText.value]);
-    promoText.value = "";
-    promoText.focus()
-});
-
-const promoDeleteButton = promo.querySelector("#del-button");
-promoDeleteButton.addEventListener('click', () => {
-    promoTagify.removeAllTags();
-    promoText.focus();
+    artistDiv.classList.add("undisplayed")
 });
 
 //Gestion des inputs radio
@@ -87,5 +90,67 @@ radioMontant.addEventListener('change', () => {
 radioPourcentage.addEventListener('change', () => {
     divMontant.classList.add("undisplayed");
     divPourcentage.classList.remove("undisplayed");
+})
 
+//Tagify for promo codes
+const promo = document.querySelector("#promo");
+const promoInput = promo.querySelector("input[name='promo_codes']");
+const promoDiv = promo.querySelector("#promo-div");
+const promoTagify = new Tagify(promoInput);
+const promoTagInput = promo.querySelector("span");
+promoTagInput.removeAttribute("contenteditable");
+promoTagInput.setAttribute("readonly", true);
+
+const promoText = promo.querySelector("#nom");
+const promoMontant = promo.querySelector("#montant");
+const promoPourcentage = promo.querySelector("#pourcentage");
+const promoAddButton = promo.querySelector("#add-button");
+
+function addPromoCode() {
+    if (radioMontant.checked) {
+        promoTagify.addTags([promoText.value + " : " + promoMontant.value + "€"]);
+        promoMontant.value = "";
+    } else if (radioPourcentage.checked) {
+        promoTagify.addTags([promoText.value + " : " + promoPourcentage.value + "%"]);
+        promoPourcentage.value = "";
+    }
+    promoText.value = "";
+    promoText.focus()
+}
+
+promoAddButton.addEventListener('click', () => {
+    addPromoCode();
+});
+
+promoMontant.addEventListener('keydown', function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addPromoCode();
+    }
+});
+
+promoPourcentage.addEventListener('keydown', function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addPromoCode();
+    }
+});
+
+
+const promoDeleteButton = promo.querySelector("#del-button");
+promoDeleteButton.addEventListener('click', () => {
+    promoTagify.removeAllTags();
+    promoText.focus();
+    promoDiv.classList.add("undisplayed")
+});
+
+promoTagify.on('add', () => {
+    console.log("yes")
+    promoDiv.classList.remove("undisplayed")
+})
+
+promoTagify.on('remove', () => {
+    if ( promoTagify.getTagElms().length === 0) {
+        promoDiv.classList.add("undisplayed")
+    }
 })

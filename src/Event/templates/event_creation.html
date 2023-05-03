@@ -43,7 +43,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="input-button">
+                <div id="artist-div" class="input-button undisplayed">
                     {{ form.artiste }}
                     <button id="del-button" type="button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -89,15 +89,15 @@
                     </div>
                     <div id="montant-zone" class="input-tag">
                         <label id="montant-label">Montant du code promo</label>
-                        <input id="montant" type="number" step="0.01">
+                        <input id="montant" type="number" step="0.01" min="0.01">
                     </div>
-                    <div id="pourcentage-zone" class="input-tag">
+                    <div id="pourcentage-zone" class="input-tag undisplayed">
                         <label id="pourcentage-label">Pourcentage du code promo</label>
-                        <input id="pourcentage" type="number" step="1">
+                        <input id="pourcentage" type="number" step="1"  min="1" max="100">
                     </div>
                     <div class="radio-divs">
                         <div class="radio">
-                            <input type="radio" id="promo_type1" name="promo_type" value="Montant">
+                            <input type="radio" id="promo_type1" name="promo_type" value="Montant" checked>
                             <label for="promo_type1">Montant</label>
                         </div>
                         <div class="radio">
@@ -111,7 +111,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="input-button">
+                <div id="promo-div" class="input-button undisplayed">
                     {{ form.promo_codes }}
                     <button id="del-button" type="button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
