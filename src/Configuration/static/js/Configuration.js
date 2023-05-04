@@ -1,5 +1,29 @@
 const edition_mode = document.getElementsByName("mode");
 let selected_mode = "";
+const seatColors = {};
+const style = document.createElement('style');
+
+function defineColors() {
+    setColor("sold")
+    const places = document.getElementsByName("place_types");
+    let placeValues = places[0].value;
+    let allPlaces = placeValues.split(";");
+    for (let place of allPlaces) {
+        place = place.split(":")[0].replace(" ", "").toLowerCase();
+        setColor(place)
+    }
+}
+
+function setColor(placeType) {
+    if (!seatColors[placeType]) {
+            color = random_color();
+            seatColors[placeType] = color;
+            style.innerHTML = `.${placeType} { color: ${color}; }`;
+            document.getElementsByTagName('head')[0].appendChild(style);
+        }
+}
+
+defineColors()
 
 edition_mode.forEach((mode) => {
   mode.addEventListener('change', function() {
@@ -379,7 +403,6 @@ function random_color(){
     return '#' + ('000000' + hex).slice(-6);
 }
 
-const seatColors = {};
 
 // attribuer un type à un siège
 function set_place_type(seat) {
