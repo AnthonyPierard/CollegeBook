@@ -2,32 +2,32 @@ const searchBar = document.querySelector("#search-input");
 
 const tagifies = document.querySelectorAll(".tagify__input");
     for (const tagify of tagifies) {
-        tagify.setAttribute("data-placeholder", "")
+        tagify.setAttribute("data-placeholder", "");
     }
 
 
-searchBar.addEventListener('input', function() {
-    filterItems(this.value);
-});
-
-function  filterItems() {
-    // Récupération de toutes les lignes du corps du tableau
-    const selectUser = document.querySelector('select[name="user"]')
-    const options = selectUser.querySelectorAll('option');
-
-    // Parcours de toutes les lignes du corps du tableau pour vérifier si la ligne doit être affichée ou non
-    options.forEach(function(option) {
-        const email = option.textContent.toLowerCase();
-
-        if (email.indexOf(searchBar.value.toLowerCase()) === -1 ) {
-            // Masquer la ligne si elle ne correspond pas à la chaîne de recherche
-            option.style.display = 'none';
-        } else {
-            // Afficher la ligne si elle correspond à la chaîne de recherche
-            option.style.display = '';
-        }
-    });
-}
+// searchBar.addEventListener('input', function() {
+//     filterItems(this.value);
+// });
+//
+// function  filterItems() {
+//     // Récupération de toutes les lignes du corps du tableau
+//     const selectUser = document.querySelector('select[name="user"]')
+//     const options = selectUser.querySelectorAll('option');
+//
+//     // Parcours de toutes les lignes du corps du tableau pour vérifier si la ligne doit être affichée ou non
+//     options.forEach(function(option) {
+//         const email = option.textContent.toLowerCase();
+//
+//         if (email.indexOf(searchBar.value.toLowerCase()) === -1 ) {
+//             // Masquer la ligne si elle ne correspond pas à la chaîne de recherche
+//             option.style.display = 'none';
+//         } else {
+//             // Afficher la ligne si elle correspond à la chaîne de recherche
+//             option.style.display = '';
+//         }
+//     });
+// }
 
 //Tagify for artists&
 const artist = document.querySelector("#artist");
@@ -37,12 +37,10 @@ const artistTagify = new Tagify(artistInput);
 const artistTagInput = artist.querySelector("span");
 artistTagInput.removeAttribute("contenteditable")
 artistTagInput.setAttribute("readonly", true)
+
 const artistText = artist.querySelector("#text");
 const artistAddButton = artist.querySelector("#add-button");
 
-if ( artistTagify.getTagElms().length > 0) {
-    artistDiv.classList.remove("undisplayed")
-}
 function addArtist() {
     artistTagify.addTags([artistText.value]);
     artistText.value = "";
@@ -60,22 +58,11 @@ artistText.addEventListener('keydown', function(event) {
     }
 });
 
-artistTagify.on('add', () => {
-    artistDiv.classList.remove("undisplayed")
-})
-
-artistTagify.on('remove', () => {
-    if ( artistTagify.getTagElms().length === 0) {
-        artistDiv.classList.add("undisplayed")
-    }
-})
-
 
 const artistDeleteButton = artist.querySelector("#del-button");
 artistDeleteButton.addEventListener('click', () => {
     artistTagify.removeAllTags();
     artistText.focus();
-    artistDiv.classList.add("undisplayed")
 });
 
 //Gestion des inputs radio
@@ -109,9 +96,6 @@ const promoMontant = promo.querySelector("#montant");
 const promoPourcentage = promo.querySelector("#pourcentage");
 const promoAddButton = promo.querySelector("#add-button");
 
-if ( promoTagify.getTagElms().length > 0) {
-    promoDiv.classList.remove("undisplayed")
-}
 function addPromoCode() {
     if (radioMontant.checked) {
         promoTagify.addTags([promoText.value + " : " + promoMontant.value + "€"]);
@@ -124,21 +108,30 @@ function addPromoCode() {
     promoText.focus()
 }
 
+function arePromoInputsFilled() {
+    return !(promoText.value === "" || (radioMontant.checked && promoMontant.value ==="") || (radioPourcentage.checked && promoPourcentage.value ===""))
+}
 promoAddButton.addEventListener('click', () => {
-    addPromoCode();
+    if (arePromoInputsFilled()) {
+        addPromoCode();
+    }
 });
 
 promoMontant.addEventListener('keydown', function(event) {
     if (event.key === "Enter") {
-        event.preventDefault();
-        addPromoCode();
+        if (arePromoInputsFilled()) {
+            event.preventDefault();
+            addPromoCode();
+        }
     }
 });
 
 promoPourcentage.addEventListener('keydown', function(event) {
     if (event.key === "Enter") {
-        event.preventDefault();
-        addPromoCode();
+        if (arePromoInputsFilled()) {
+            event.preventDefault();
+            addPromoCode();
+        }
     }
 });
 
@@ -147,16 +140,8 @@ const promoDeleteButton = promo.querySelector("#del-button");
 promoDeleteButton.addEventListener('click', () => {
     promoTagify.removeAllTags();
     promoText.focus();
-    promoDiv.classList.add("undisplayed")
 });
 
-promoTagify.on('add', () => {
-    console.log("yes")
-    promoDiv.classList.remove("undisplayed")
-})
+new MultiSelectTag('id_user')
 
-promoTagify.on('remove', () => {
-    if ( promoTagify.getTagElms().length === 0) {
-        promoDiv.classList.add("undisplayed")
-    }
-})
+

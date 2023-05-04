@@ -38,7 +38,10 @@ class CodePromo(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{}___{}".format(self.code, self.event.name)
+        if self.amount:
+            return f"{self.code} : {self.amount}€"
+        elif self.percentage:
+            return f"{self.code} : {self.percentage}%"
 
 
 class Representation(models.Model):

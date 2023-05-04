@@ -97,8 +97,15 @@ def event_update(request, event_id):
         # food_price = get_stripe_product_price(product_type="nourriture", event_name=event.name)
         drink_price = Price.objects.get(type="Boisson", event_id=event.id).price
         food_price = Price.objects.get(type="Nourriture", event_id=event.id).price
+        codes = CodePromo.objects.filter(event_id=event.id)
+        promo_codes = ""
+        for code in codes:
+            promo_codes += str(code) + ","
+        if promo_codes[-1] == ",":
+            promo_codes = promo_codes[:-1]
 
-        form = EventForm(instance=event, initial={"date": dates, "drink_price": drink_price, "food_price": food_price})
+
+        form = EventForm(instance=event, initial={"date": dates, "drink_price": drink_price, "food_price": food_price, "promo_codes":promo_codes})
         return render(request, 'event_modification.html', {"form": form, "event": event})
 
 

@@ -37,14 +37,26 @@ class EventForm(forms.ModelForm):
 
     def clean_promo_codes(self, *args, **kwargs):
         data = self.cleaned_data.get("promo_codes")
+        name = self.cleaned_data.get("name")
+        codes = CodePromo.objects.all()
+        for code in codes:
+            print(code)
+        try:
+            event = Event.objects.get(name=name)
+            codes = codes.exclude(event_id=event.id)
+            for code in codes:
+                print(code)
+        except Exception:
+            pass
+
         if data != "":
             data = clean_tagify_string(data)
         form_codes = [ code.split(":")[0].replace(" ", "") for code in data]
-        codes = CodePromo.objects.all()
 
         if codes:
             for code in codes:
                 if code.code in form_codes:
+                    print("erreur")
                     raise forms.ValidationError(f"Le code promo {code.code} exitse déjà")
         return data
     def clean_artiste(self):

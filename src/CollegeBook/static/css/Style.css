@@ -5,7 +5,7 @@
 }
 
 *::selection {
-    background-color: rgba(38, 128, 133, 0.7);
+    background-color: var(--selection-color);
     color: black;
 }
 
@@ -13,6 +13,7 @@
     --input-height: 40px;
     --input-margin: 15px;
     --main-color: #268085;
+    --selection-color: rgba(38, 128, 133, 0.7);
 }
 
 body {
@@ -282,7 +283,7 @@ a {
     border-radius: 5px;
 }
 
-.input-box input:not(input[type="checkbox"], input[type="file"]) {
+.input-box input:not(input[type="checkbox"], input[type="file"]), select {
     width: 100%;
     height: var(--input-height);
     padding: 0 8px;
@@ -290,9 +291,13 @@ a {
     border: 1px solid #ccc;
 }
 
+#id_image {
+    margin: 0;
+    width: 100%;
+}
 
 .input-box::selection, .input-box input::selection {
-    background-color: rgba(38, 128, 133, 0.5);
+    background-color: var(--selection-color);
     color: black;
 }
 
@@ -308,12 +313,12 @@ a {
 }
 
 .input-box input:not(input[type="checkbox"]):focus, select:focus {
-    border: 2px solid rgba(38, 128, 133, 0.8);
+    border: 2px solid var(--selection-color);
 }
 
 input[type="submit"] {
     margin: 10px auto;
-    padding: 15px 40px;
+    padding: 2vh 4vw;
     border-radius: 15px;
     border: none;
     background-color: var(--main-color);
@@ -332,11 +337,11 @@ input[type="file"] {
 
 select:focus {
     outline: none;
-    border: 2px solid rgba(38, 128, 133, 0.8);
+    border: 2px solid var(--selection-color);
 }
 
 select option::selection::after {
-    background-color: rgba(38, 128, 133, 0.8);
+    background-color: var(--selection-color);
 }
 
 .input-box .insert-data-tag input{
@@ -345,15 +350,14 @@ select option::selection::after {
 
 .tagify {
     width: 100%;
-    border: 0px;
 }
 
 .input-button {
     display: flex;
     width: 100%;
-    min-height: 40px;
-    margin-bottom: var(--input-margin);
-    gap: 2%;
+    min-height: var(--input-height);
+    margin-top: var(--input-margin);
+    gap: 1vw;
 }
 
 #add-button, .radio {
@@ -379,38 +383,59 @@ select option::selection::after {
 }
 
 .input-button button svg {
-    width: 40px;
-    height: 40px;
+    width: var(--input-height);
+    height: var(--input-height);
     color: var(--main-color);
 }
 
 .input-tag {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    /*flex-wrap: wrap;*/
     width: 100%;
 }
 
-.input-tag.undisplayed, .input-button.undisplayed {
+/* Surcharge sur le css de la librairie multiselect*/
+.mult-select-tag {
+    box-sizing: border-box;
+}
+
+.mult-select-tag .item-container {
+    border-radius: 3px;
+    border: none;
+    background-color: #e5e5e5;
+    color: black;
+}
+
+.mult-select-tag .item-label {
+    color: black;
+    font-size: 1.125rem;
+}
+
+
+
+.drawer.rounded ul li:hover{
+    background-color: rgba(30, 30, 30, 0.1);
+}
+
+.input-tag.undisplayed {
     display: none;
 }
 
 .radio-divs {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    min-width: 20%;
+    gap: 1vw;
 }
+
 .radio {
-    display:flex;
-    justify-content: center;
+    display: flex;
     align-items: center;
-    text-align: left;
-    gap: 10%;
+    gap: 0.5vw;
 }
 
 input[type="radio"] {
-    transform: scale(1.5);
+    max-width: 15px;
 }
 
 .input-box .errorlist {
@@ -455,5 +480,30 @@ input[type="radio"] {
         content: attr(data-label);
         text-align: start;
         font-weight: bold;
+    }
+
+    #promo .input-button {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    #promo .tagify {
+        width: calc(98% - 40px);
+    }
+}
+
+@media screen and (max-width: 370px) {
+    #promo .radio-divs{
+        flex-direction: column;
+        gap: 0;
+    }
+
+    #promo #add-button {
+        margin: auto 0;
+    }
+
+    .mult-select-tag .wrapper .body.rounded btn-container {
+        position: relative;
+        left: -40px;
     }
 }
