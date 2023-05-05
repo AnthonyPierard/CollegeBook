@@ -7,7 +7,7 @@ from Configuration.models import Config
 from CollegeBook.settings import TIME_ZONE
 from zoneinfo import ZoneInfo
 import pytz
-
+from django.core.validators import RegexValidator
 
 class Event(models.Model):
     STATES =[
@@ -15,7 +15,7 @@ class Event(models.Model):
         ("ACT", "Active"),
         ("ARC", "Archived")
     ]
-    name = models.CharField("Nom de l'événement", max_length=200, unique=True)
+    name = models.CharField("Nom de l'événement", max_length=200, unique=True, validators=[RegexValidator(r'^[a-zA-Z0-9À-ÿ ]+$')])
     description = models.CharField("Description de l'événement", max_length=1000)
     image = models.ImageField("Image(s) de l'événement(s)", upload_to="Images/", blank=True, null=True)
     duration = models.TimeField("Durée de l'événement", default='02:00')

@@ -11,10 +11,10 @@
 <div class="form">
     <form action="" method="post" enctype='multipart/form-data'>
         {% csrf_token %}
-        <div class="input-box">
-                {{ form.name.label }}
-                {{ form.name }}
-                {{ form.name.errors }}
+            <div class="input-box">
+                <label for="name">Nom :</label>
+                <input type="text" id="name" name="name">
+                <div id="name-errors"></div>
             </div>
             <div class="input-box">
                 {{ form.image.label }}
@@ -125,4 +125,24 @@
         <input type="submit" value="Modifier l'événement">
     </form>
 </div>
+<script>
+    // Récupérer le champ name
+    var nameField = document.getElementById("name");
+
+    // Ajouter un gestionnaire d'événement pour la saisie de texte
+    nameField.addEventListener("input", function() {
+        // Récupérer la valeur du champ name
+        var nameValue = nameField.value;
+
+        // Valider la saisie de texte avec une expression régulière
+        var regex = /^[a-zA-Z0-9À-ÿ ]*$/; // Autoriser les lettres majuscules et minuscules, les chiffres et les espaces
+        if (!regex.test(nameValue)) {
+            // Si la saisie est invalide, afficher un message d'erreur
+            document.getElementById("name-errors").innerHTML = "Veuillez saisir uniquement des lettres, des chiffres et des espaces";
+        } else {
+            // Sinon, effacer les messages d'erreur
+            document.getElementById("name-errors").innerHTML = "";
+        }
+    });
+</script>
 {% endblock %}
