@@ -7,7 +7,8 @@ from unidecode import unidecode
 from CollegeBook.settings import MEDIA_ROOT
 from Event.models import *
 from Reservation.models import *
-
+import os
+import shutil
 
 def check_password(form):
     password = form.cleaned_data.get('password')
@@ -40,6 +41,24 @@ def clean_tagify_string(data):
             tempList[index] = element[1:]
         tempList[index] = tempList[index].replace('"', "")
     return tempList
+
+
+def empty_folder(folder_path):
+   
+    # Vérifier si le dossier existe
+    if os.path.exists(folder_path):
+        # Parcourir tous les éléments dans le dossier
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            # Si l'élément est un dossier, appeler la fonction récursivement pour le vider
+            if os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+            # Si l'élément est un fichier, le supprimer
+            else:
+                os.remove(file_path)
+    else:
+        print(f"Le dossier {folder_path} n'existe pas.")
+
 def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name, date):
     # pdf = canvas.Canvas('test.pdf')
 

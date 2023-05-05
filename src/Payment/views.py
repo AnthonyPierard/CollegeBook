@@ -11,7 +11,7 @@ from reportlab.pdfgen import canvas
 from unidecode import unidecode
 
 from CollegeBook.settings import MEDIA_ROOT
-from CollegeBook.utils import stripe_id_creation, create_ticket_pdf
+from CollegeBook.utils import stripe_id_creation, create_ticket_pdf, empty_folder
 from Event.models import Price
 from Reservation.models import Reservation, SeatingTicket, StandingTicket, Ticket, FoodTicket, \
     DrinkTicket
@@ -192,6 +192,7 @@ def webhook(request):
         pdf.save()
         email.attach_file(pdf_path)
         email.send()
-
+        empty_folder(qr_path)
+        empty_folder(ticket_path)
         print("mail send")
     return HttpResponse(status=200)
