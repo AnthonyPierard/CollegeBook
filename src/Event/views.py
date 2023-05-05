@@ -12,7 +12,9 @@ from Configuration.models import Place
 from Configuration.views import add_default_configuration
 from Event.models import Event, Representation, Config, CodePromo, Price
 from .forms import EventForm, ConfirmForm
-
+from Reservation.models import Reservation
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 def events_display(request):
     all_event = Event.objects.filter(state='ACT')
@@ -62,8 +64,23 @@ def delete_representation(request, representation_id):
         if form.is_valid():
             choice = form.cleaned_data['choice']
             if choice == "1":
-                Representation.objects.filter(pk=representation_id).delete()
-                # TODO avertir les personnes qui ont réserver via un mail.
+                    reservations = Reservation.objects.filter(representation = representation)                   
+                    for reservation in reservations:
+                        mail_content = "La representation de l'evenement %s,  le %s à malheureusement été annulée, vous pouvez contacter l'adresse @ pour plus d'information " %  (reservation.representation.event.name, reservation.representation.date)
+                        html = render_to_string('email.html', 
+                                                { 'name' : "monsieur/madame %s" %reservation.last_name ,
+                                                'email': reservation.email,
+                                                'content' : mail_content,
+                                                })
+                        send_mail('Reservation Ticket %s' %  reservation.representation.event.name,
+                                'Vous avez reserver un Ticket pour la representation de %s' %  reservation.representation.event.name,
+                                'collegebooktest@gmail.com',
+                                ['%s' % reservation.email ]  ,
+                                fail_silently=False,
+                                html_message= html
+                                )
+                    Representation.objects.filter(pk=representation_id).delete()
+                
         return redirect('Account:events', request.user.id)
     else:
         form = ConfirmForm()
@@ -84,7 +101,7 @@ def event_update(request, event_id):
 
             form.save()
 
-        return redirect('Event:display')
+        return redirect('Account:events', request.user.id)
     else:
         event = Event.objects.get(pk=event_id)
         representations = Representation.objects.filter(event_id=event.id)
