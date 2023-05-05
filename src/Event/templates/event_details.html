@@ -1,27 +1,23 @@
 {% extends "defaultEvent.html" %}
 
 {% block body %}
-    <div class="row">
-      <div class="col-sm-3">
-        {% if event.image.url is not null %}
-            <img src="{{ event.image.url }}" alt="{{event.name}}" style="max-width :250px; max-height: 500px;">
-        {% endif %}
-      </div>
-      <div class="col-sm-9">
-        <div class="row">
-          <div class="col-8 col-sm-6">
-            <h1>{{event.name}}</h1>
-          </div>
-          <div class="col-4 col-sm-6">
-            {{event.artiste}}
-          </div>
+    <div class="event-summary">
+        <div class="event-infos">
+            <div id="name">
+                <h1 class="title">{{ event.name }}</h1>
+            </div>
+            <div id="description">
+                {{ event.description }}
+            </div>
+            <div id="artiste">
+                <strong>Artistes: </strong>{{ event.artiste }}
+            </div>
         </div>
-        <div class="row">
-          <div class="col">
-            {{event.description}}
-          </div>
+        <div class="event-image">
+            {% if event.image.url is not null %}
+                <img src="{{ event.image.url }}" alt="{{ event.name }}">
+            {% endif %}
         </div>
-      </div>
     </div>
 
     <h2 class="title">Liste des représentations</h2>
