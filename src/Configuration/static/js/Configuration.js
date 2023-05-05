@@ -8,6 +8,7 @@ function defineColors() {
     const places = document.getElementsByName("place_types");
     let placeValues = places[0].value;
     let allPlaces = placeValues.split(";");
+    console.log(seatColors)
     for (let place of allPlaces) {
         place = place.split(":")[0].replace(" ", "").toLowerCase();
         setColor(place)
@@ -15,11 +16,22 @@ function defineColors() {
 }
 
 function setColor(placeType) {
-    if (!seatColors[placeType]) {
+    let color = seatColors[placeType];
+    let styleTag = document.querySelector('style');
+    if (!styleTag) {
+        styleTag = document.createElement('style');
+        document.head.appendChild(styleTag);
+    }
+    const styleSheet = styleTag.sheet;
+    const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${placeType}`);
+    if (!color) {
             color = random_color();
             seatColors[placeType] = color;
-            style.innerHTML = `.seat.${placeType} { color: ${color}; }`;
-            document.getElementsByTagName('head')[0].appendChild(style);
+            if (!rule) {
+                styleSheet.insertRule(`.seat.${placeType} { color: ${color}; }`, styleSheet.cssRules.length);
+            } else {
+                rule.style.color = color;
+            }
         }
 }
 
