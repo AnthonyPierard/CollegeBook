@@ -1,11 +1,10 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from Reservation.models import SeatingTicket, StandingTicket, FoodTicket, DrinkTicket, AbstractTicket, Reservation, \
-    Representation
-from Event.models import Event
+from django.shortcuts import render
 from django.utils import timezone
 
-from datetime import datetime
+from Event.models import Event
+from Reservation.models import SeatingTicket, FoodTicket, DrinkTicket, AbstractTicket, Reservation, \
+    Representation
 
 
 # Create your views here.

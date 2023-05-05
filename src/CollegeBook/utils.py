@@ -1,16 +1,12 @@
-from Configuration.models import Config, Place
-from reportlab.pdfgen import canvas
-import qrcode
 import cv2
-from django import forms
-from Reservation.models import *
-from Event.models import *
-from CollegeBook.settings import MEDIA_ROOT
-from unidecode import unidecode
-from datetime import datetime
-from .settings import TIME_ZONE
-import pytz
+import qrcode
 import stripe
+from django import forms
+from unidecode import unidecode
+
+from CollegeBook.settings import MEDIA_ROOT
+from Event.models import *
+from Reservation.models import *
 
 
 def check_password(form):

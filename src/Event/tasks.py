@@ -1,10 +1,11 @@
-from .models import Representation, Event
-from django.utils import timezone
 from datetime import datetime, timedelta
+
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from .models import Event, Representation
+from django.utils import timezone
+
 from Reservation.models import Reservation
+from .models import Event, Representation
 
 
 def check_event_is_archived():

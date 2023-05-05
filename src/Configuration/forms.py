@@ -1,6 +1,8 @@
 from django import forms
 from tagify.fields import TagField
 from .models import Config, Place
+
+
 class ConfigForm(forms.ModelForm):
     class Meta:
         model = Config
@@ -11,7 +13,6 @@ class ConfigForm(forms.ModelForm):
 
     place_types = TagField(label='Types de places', delimiters=';',
                            initial='Debout : 3.00€;Classic : 4.00€;Vip : 5.00€')
-
 
     def save(self, user, commit=True):
         configuration = super(ConfigForm, self).save(commit=False)
@@ -24,7 +25,7 @@ class ConfigForm(forms.ModelForm):
             place_values = self.cleaned_data["place_types"]
             for element in place_values:
                 splitted = element.split(":")
-                if(len(splitted)>1):
+                if (len(splitted) > 1):
                     place_type = splitted[0].split(' ')[0]
                     place_price = splitted[1].split(' ')[1].replace("€", "")
 

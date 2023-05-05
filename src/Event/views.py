@@ -1,17 +1,17 @@
 from datetime import datetime
-import stripe
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from unidecode import unidecode
-from Account.models import User
-from Configuration.models import Place
-from .forms import EventForm, UpdateDateEventForm, ConfirmForm
-from django.utils import timezone
-from CollegeBook.utils import stripe_id_creation, get_stripe_product_price
-from Event.models import Event, Representation, Config, CodePromo, Price
-from Configuration.views import add_default_configuration
 from pathlib import Path
+
+import stripe
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from unidecode import unidecode
+
+from CollegeBook.utils import stripe_id_creation
+from Configuration.models import Place
+from Configuration.views import add_default_configuration
+from Event.models import Event, Representation, Config, CodePromo, Price
+from .forms import EventForm, ConfirmForm
 
 
 def events_display(request):
