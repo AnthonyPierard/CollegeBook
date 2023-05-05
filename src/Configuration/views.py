@@ -1,12 +1,11 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 
 from CollegeBook.utils import configCreator
 from .forms import ConfigForm
 from .models import Config
-
-import json
 
 
 def add_default_configuration(userId):
