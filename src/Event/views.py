@@ -46,9 +46,18 @@ def event_creation(request):
 
     else:
         form = EventForm()
-        if not (Config.objects.filter(user=request.user)):
+        if not (Config.objects.filter(user=1)):
             add_default_configuration(request.user)
-        configurations = Config.objects.filter(user=request.user.id)
+        print(request.user.id)
+        if request.user.id == 1:
+            configurations = Config.objects.filter(user=1)
+            print(configurations)
+        else:
+            configurations_default = Config.objects.filter(user=1)
+            configurations_user = Config.objects.filter(user=request.user.id)
+            configurations = configurations_default.union(configurations_user)
+
+
         return render(request, 'event_creation.html', {'form': form, 'configurations': configurations})
 
 
