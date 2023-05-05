@@ -1,7 +1,7 @@
 [
   {
     "class" : "seat-row",
-    "seat" : ["space", "space", "space", "seat", "seat", "seat", "seat", "seat", "seat", "seat", "space", "space", "seat", "seat", "seat", "seat", "seat", "seat", "seat", "space", "space", "space"]
+    "seat" : ["space", "space", "space", "seat classic", "seat classic", "seat", "seat", "seat", "seat", "seat", "space", "space", "seat", "seat", "seat", "seat", "seat", "seat", "seat", "space", "space", "space"]
   },
   {
     "class" : "seat-row",
