@@ -16,23 +16,41 @@ function defineColors() {
 }
 
 function setColor(placeType) {
-    let color = seatColors[placeType];
-    let styleTag = document.querySelector('style');
-    if (!styleTag) {
-        styleTag = document.createElement('style');
-        document.head.appendChild(styleTag);
+  let color = seatColors[placeType];
+  let styleTag = document.querySelector('style');
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    document.head.appendChild(styleTag);
+  }
+  const styleSheet = styleTag.sheet;
+  const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${placeType}`);
+  if (!color) {
+    color = getDistinctColor();
+    seatColors[placeType] = color;
+    if (!rule) {
+      styleSheet.insertRule(`.seat.${placeType} { color: ${color}; }`, styleSheet.cssRules.length);
+    } else {
+      rule.style.color = color;
     }
-    const styleSheet = styleTag.sheet;
-    const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${placeType}`);
-    if (!color) {
-            color = random_color();
-            seatColors[placeType] = color;
-            if (!rule) {
-                styleSheet.insertRule(`.seat.${placeType} { color: ${color}; }`, styleSheet.cssRules.length);
-            } else {
-                rule.style.color = color;
-            }
-        }
+  }
+}
+
+function getDistinctColor() {
+  let color;
+  do {
+    color = random_color();
+  } while (Object.values(seatColors).some(c => colorDiff(c, color) < 200));
+  return color;
+}
+
+function colorDiff(c1, c2) {
+  const r1 = parseInt(c1.substr(1, 2), 16);
+  const g1 = parseInt(c1.substr(3, 2), 16);
+  const b1 = parseInt(c1.substr(5, 2), 16);
+  const r2 = parseInt(c2.substr(1, 2), 16);
+  const g2 = parseInt(c2.substr(3, 2), 16);
+  const b2 = parseInt(c2.substr(5, 2), 16);
+  return Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
 }
 
 defineColors()
@@ -344,6 +362,36 @@ function get_config(){
     return selectedValue;
 
 }
+
+//recevoir les types depuis le json
+function get_file_types(){
+    const current_config = get_config().replaceAll("/", "_");
+    const xhr = new XMLHttpRequest();
+
+    // Configurez la requête avec la méthode GET et l'URL de la vue Django
+    xhr.open('GET', `get_place_types/${current_config}`);
+
+    // Définissez l'en-tête de la requête pour spécifier que nous voulons recevoir des données JSON
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    // Attachez une fonction de rappel pour traiter la réponse lorsque la requête est terminée
+    xhr.onload = function() {
+        // Vérifiez que la requête s'est terminée avec succès
+        if (xhr.status === 200) {
+          // Parsez la réponse JSON en un objet JavaScript
+          const djangoModel = JSON.parse(xhr.responseText);
+          // Utilisez l'objet DjangoModel ici comme vous le souhaitez
+          console.log(djangoModel);
+        } else {
+        console.log(xhr.status)
+        console.log('Erreur lors de la récupération de l\'objet Django.');
+        }
+    };
+
+    // Envoyez la requête
+    xhr.send();
+}
+
 /* Pour plus tard créer les checkbox via cette fonction
 function create_checkbox(place){
     const checkboxList = document.getElementById('checkboxList');
@@ -540,3 +588,9 @@ function set_checkbox_color() {
         }
     });
 }
+
+document.addEventListener('keydown', function(event) {
+  if (event.ctrlKey) {
+    get_file_types();
+  }
+});
