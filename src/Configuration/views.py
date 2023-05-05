@@ -38,9 +38,14 @@ def area_configuration(request):
         return render(request, 'area_configuration.html', {'configurations': configurations, 'form': form})
 
     else:
-        if not (Config.objects.filter(user=request.user)):
+        if not (Config.objects.filter(user=1)):
             add_default_configuration(request.user)
-        configurations = Config.objects.filter(user=request.user.id)
+        if request.user.id==1:
+            configurations = Config.objects.filter(user=1)
+        else :
+            configurations_default = Config.objects.filter(user=1)
+            configurations_user = Config.objects.filter(user= request.user.id)
+            configurations = configurations_default.union(configurations_user)
         form = ConfigForm()
         return render(request, 'area_configuration.html', {'configurations': configurations, 'form': form})
 

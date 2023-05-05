@@ -54,8 +54,17 @@ function clickable_seats_and_spaces(){
                 set_place_type(element);
                 console.log("OK")
             } else if (selected_mode == "suppression"){
-                element.classList.toggle('seat');
-                element.classList.toggle('space');
+                if(element.classList.length>1){
+                    element.classList.forEach(function (classe){
+                        element.classList.remove(classe);
+                        element.classList.add('space');
+                    })
+                }
+                else{
+                    element.classList.remove('space');
+                    element.classList.add('seat');
+                    element.classList.add('classic');
+                }
             }
         });
     }
@@ -118,8 +127,17 @@ function clickable_select_row() {
                             }
                         }
                     } else if (selected_mode === "suppression"){
-                        seat.classList.toggle('seat');
-                        seat.classList.toggle('space');
+                        if(seat.classList.length>1){
+                            seat.classList.forEach(function (classe){
+                                seat.classList.remove(classe);
+                                seat.classList.add('space');
+                            })
+                        }
+                        else{
+                            seat.classList.remove('space');
+                            seat.classList.add('seat');
+                            seat.classList.add('classic');
+                        }
                     }
                 }
             });
@@ -201,8 +219,6 @@ function fill_seat(json_dictionnary){
                 const input_nbr_place = document.createElement('input');
                 input_nbr_place.type="number";
                 input_nbr_place.id="value_place";
-                console.log(json_dictionnary[index]);
-                console.log(json_dictionnary[index].nbr_place);
                 input_nbr_place.value=json_dictionnary[index].nbr_place;
                 nbr_place.innerHTML = "Nombre de place debout :";
                 nbr_place.appendChild(input_nbr_place);
@@ -356,7 +372,12 @@ function get_place_types(){
     const places = document.getElementsByName("place_types");
     let placeValues = places[0].value;
     let allPlaces = placeValues.split(";");
-    let nbr_cat_now = allPlaces.length;
+    let nbr_cat_now;
+    if(allPlaces[0].length === 0){
+        nbr_cat_now = 0;
+    } else {
+        nbr_cat_now = allPlaces.length;
+    }
     if(nbr_cat!=nbr_cat_now){
         const checkboxList = document.getElementById('checkboxList');
 
@@ -364,24 +385,44 @@ function get_place_types(){
             checkboxList.removeChild(checkboxList.firstChild);
         }
 
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.name = "choice";
-        checkbox.value = "sold";
-        checkboxList.appendChild(checkbox);
+        const sold_checkbox = document.createElement('input');
+        sold_checkbox.type = 'checkbox';
+        sold_checkbox.name = "choice";
+        sold_checkbox.value = "sold";
+        checkboxList.appendChild(sold_checkbox);
 
-        const label = document.createElement('label');
-        label.appendChild(document.createTextNode("sold"));
-        checkboxList.appendChild(label);
+        const sold_label = document.createElement('label');
+        sold_label.appendChild(document.createTextNode("sold"));
+        checkboxList.appendChild(sold_label);
 
-        checkbox.addEventListener('click', () => {
+        sold_checkbox.addEventListener('click', () => {
             const checkboxes = document.querySelectorAll('input[name=choice]');
             checkboxes.forEach((cb) => {
-                if (cb !== checkbox) {
+                if (cb !== sold_checkbox) {
                     cb.checked = false;
                 }
             });
         });
+
+        const classic_checkbox = document.createElement('input');
+        classic_checkbox.type = 'checkbox';
+        classic_checkbox.name = "choice";
+        classic_checkbox.value = "classic";
+        checkboxList.appendChild(classic_checkbox);
+
+        const classic_label = document.createElement('label');
+        classic_label.appendChild(document.createTextNode("classic"));
+        checkboxList.appendChild(classic_label);
+
+        classic_checkbox.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('input[name=choice]');
+            checkboxes.forEach((cb) => {
+                if (cb !== classic_checkbox) {
+                    cb.checked = false;
+                }
+            });
+        });
+
         allPlaces.forEach((place) => {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';

@@ -51,7 +51,7 @@ class Representation(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.event.name + " le " + str(datetime.makenaive(self.date).strftime('%d/%m/%Y à %H:%M'))
+        return self.event.name + " le " #+ str(datetime.makenaive(self.date).strftime('%d/%m/%Y à %H:%M'))
 
 
 @receiver(pre_save, sender=Representation)
