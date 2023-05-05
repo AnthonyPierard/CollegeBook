@@ -18,7 +18,7 @@ function setColor(placeType) {
     if (!seatColors[placeType]) {
             color = random_color();
             seatColors[placeType] = color;
-            style.innerHTML = `.${placeType} { color: ${color}; }`;
+            style.innerHTML = `.seat.${placeType} { color: ${color}; }`;
             document.getElementsByTagName('head')[0].appendChild(style);
         }
 }
