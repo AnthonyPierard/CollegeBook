@@ -281,6 +281,8 @@ document.querySelector("#create_json").addEventListener("click", event => {
             headers: {'X-CSRFToken': csrfTokenValue, 'Content-Type': 'application/json'},
             body: JSON.stringify(new_json),
         });
+        const input_name_config = document.querySelector("#id_name");
+        input_name_config.value = "";
 
         fetch(request)
             .then(response => response.json())
@@ -316,6 +318,7 @@ function get_config(){
     return selectedValue;
 
 }
+
 /* Pour plus tard créer les checkbox via cette fonction
 function create_checkbox(place){
     const checkboxList = document.getElementById('checkboxList');
