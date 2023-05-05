@@ -1,11 +1,12 @@
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from CollegeBook.utils import configCreator
 from .forms import ConfigForm
-from .models import Config
+from .models import Config, Place
 
 
 def add_default_configuration(userId):
@@ -65,3 +66,13 @@ def create_json(request):
             json.dump(data, fi)
 
         return redirect("Config:Configuration")
+
+
+def get_place_types(request, config_name):
+    target_config = Config.objects.get(url_json=config_name.replace("_", "/"))
+    types = Place.objects.filter(configuration=target_config)
+    place_types = [type.type for type in types]
+    data = {
+        'place_types': place_types,
+    }
+    return JsonResponse(data)
