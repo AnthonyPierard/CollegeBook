@@ -101,8 +101,9 @@ def event_update(request, event_id):
         promo_codes = ""
         for code in codes:
             promo_codes += str(code) + ","
-        if promo_codes[-1] == ",":
-            promo_codes = promo_codes[:-1]
+        if promo_codes:
+            if promo_codes[-1] == ",":
+                promo_codes = promo_codes[:-1]
 
 
         form = EventForm(instance=event, initial={"date": dates, "drink_price": drink_price, "food_price": food_price, "promo_codes":promo_codes})
