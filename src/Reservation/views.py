@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 from django.http import JsonResponse
-
+from unidecode import unidecode
 from pathlib import Path
 
 from Event.models import Representation, Event, Price
@@ -25,7 +25,7 @@ def seat_selection(request, representation_id):
     event = Event.objects.get(pk=eventID)
     configurationID = event.configuration_id
     configuration = Config.objects.get(pk=configurationID)
-    url = "/static/json/" + event.name + "/" + str(representation.id) + ".json"
+    url = "/static/json/" + unidecode(event.name) + "/" + str(representation.id) + ".json"
     return render(request, 'seat_selection.html', {"representation": representation, "url": url})
 
 
