@@ -3,7 +3,7 @@ import stripe
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-
+from unidecode import unidecode
 from Account.models import User
 from Configuration.models import Place
 from .forms import EventForm, UpdateDateEventForm, ConfirmForm
@@ -104,8 +104,8 @@ def event_update(request, event_id):
         if promo_codes[-1] == ",":
             promo_codes = promo_codes[:-1]
 
-
-        form = EventForm(instance=event, initial={"date": dates, "drink_price": drink_price, "food_price": food_price, "promo_codes":promo_codes})
+        form = EventForm(instance=event, initial={"date": dates, "drink_price": drink_price, "food_price": food_price,
+                                                  "promo_codes": promo_codes})
         return render(request, 'event_modification.html', {"form": form, "event": event})
 
 
@@ -118,34 +118,34 @@ def publish_event(request, event_id):
     # Create stripe products
     drink_price = Price.objects.get(type="Boisson", event_id=event.id).price
     stripe.Product.create(
-        name="Ticket boisson" + " [" + event.name + "]",
+        name="Ticket boisson" + " [" + unidecode(event.name) + "]",
         default_price_data={
             'unit_amount': int(drink_price * 100),
             'currency': 'eur'
         },
-        id=stripe_id_creation("boisson", event.name)
+        id=stripe_id_creation("boisson", unidecode(event.name))
     )
 
     food_price = Price.objects.get(type="Nourriture", event_id=event.id).price
     stripe.Product.create(
-        name="Ticket nourriture" + " [" + event.name + "]",
+        name="Ticket nourriture" + " [" + unidecode(event.name) + "]",
         default_price_data={
             'unit_amount': int(food_price * 100),
             'currency': 'eur'
         },
-        id=stripe_id_creation("nourriture", event.name)
+        id=stripe_id_creation("nourriture", unidecode(event.name))
     )
 
     configuration = Config.objects.get(name=event.configuration)
     places = Place.objects.filter(configuration_id=configuration.id)
     for place in places:
         stripe.Product.create(
-            name="Siège " + place.type.capitalize() + " [" + event.name + "]",
+            name="Siège " + place.type.capitalize() + " [" + unidecode(event.name) + "]",
             default_price_data={
                 'unit_amount': int(float(place.price) * 100),
                 'currency': 'eur'
             },
-            id=stripe_id_creation(place.type, event.name)
+            id=stripe_id_creation(place.type, unidecode(event.name))
         )
 
     # Create 1 room per representation
@@ -153,32 +153,32 @@ def publish_event(request, event_id):
     path = Path(__file__).resolve().parent
     srcPath = path.parent
     src_file = srcPath.joinpath("Configuration" + configuration.url_json)
-    if not path.joinpath("static/json/" + event.name).exists():
-        path.joinpath("static/json/" + event.name).mkdir(parents=True, exist_ok=True)
+    if not path.joinpath("static/json/" + unidecode(event.name)).exists():
+        path.joinpath("static/json/" + unidecode(event.name)).mkdir(parents=True, exist_ok=True)
     for represent in event_representations:
-        dst_file = path / "static" / "json" / event.name / str(represent.id)
+        dst_file = path / "static" / "json" / unidecode(event.name) / str(represent.id)
         dst_file = dst_file.with_suffix(".json")
         with open(src_file, "rb") as source_file:
             with open(dst_file, "wb") as destination_file:
                 destination_file.write(source_file.read())
 
     promotions = CodePromo.objects.filter(event_id=event.id)
-    applies_to = applies_to = [str(stripe_id_creation(element.type, event.name)) for element in
-                  list(Price.objects.filter(event_id=event.id)) + list(
-                      Place.objects.filter(configuration_id=event.configuration_id))]
+    applies_to = applies_to = [str(stripe_id_creation(element.type, unidecode(event.name))) for element in
+                               list(Price.objects.filter(event_id=event.id)) + list(
+                                   Place.objects.filter(configuration_id=event.configuration_id))]
 
     print(applies_to)
 
     for promotion in promotions:
-        coupon_id = stripe_id_creation(promotion.code, event.name)
-        coupon_name = f"Bon {promotion.code} [{event.name}]"
+        coupon_id = stripe_id_creation(promotion.code, unidecode(event.name))
+        coupon_name = f"Bon {promotion.code} [{unidecode(event.name)}]"
         if promotion.percentage:
             stripe.Coupon.create(
                 id=coupon_id,
                 name=coupon_name,
                 percent_off=promotion.percentage,
                 duration="forever",
-                applies_to= {"products": applies_to}
+                applies_to={"products": applies_to}
             )
         if promotion.amount:
             stripe.Coupon.create(

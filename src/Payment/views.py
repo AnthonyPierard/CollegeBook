@@ -29,7 +29,7 @@ class CreateCheckoutSessionView(View):
         reservation = Reservation.objects.get(id=self.kwargs["representation_id"])
         if reservation.paid:
             return redirect('Payment:paid')
-        event_name = reservation.representation.event.name
+        event_name = unidecode(reservation.representation.event.name)
         tickets = Ticket.objects.filter(reservation_id=reservation.id)
         tickets_quantity = dict()
         for ticket in tickets:
