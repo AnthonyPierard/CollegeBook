@@ -41,7 +41,7 @@ class ReservationForm(forms.ModelForm):
                     StandingTicket.create(type_id=place.id, reservation_id=reservation.id)
                 else:
                     # TODO changer le debout
-                    place = Place.objects.get(type="Debout",
+                    place = Place.objects.get(type="Classic",
                                               configuration_id=reservation.representation.event.configuration_id)
                     SeatingTicket.create(seat_number=element, type_id=place.id, reservation_id=reservation.id)
         return reservation

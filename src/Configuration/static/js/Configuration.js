@@ -392,7 +392,7 @@ function get_place_types(){
         checkboxList.appendChild(sold_checkbox);
 
         const sold_label = document.createElement('label');
-        sold_label.appendChild(document.createTextNode("sold"));
+        sold_label.appendChild(document.createTextNode("réserver"));
         checkboxList.appendChild(sold_label);
 
         sold_checkbox.addEventListener('click', () => {
@@ -411,7 +411,7 @@ function get_place_types(){
         checkboxList.appendChild(classic_checkbox);
 
         const classic_label = document.createElement('label');
-        classic_label.appendChild(document.createTextNode("classic"));
+        classic_label.appendChild(document.createTextNode("classique"));
         checkboxList.appendChild(classic_label);
 
         classic_checkbox.addEventListener('click', () => {
@@ -540,3 +540,11 @@ function set_checkbox_color() {
         }
     });
 }
+
+//event listener qui regarde si un tag part alors les seat redeviennent classic
+/*const places = document.querySelector(".tagify");
+const places1 = document.getElementsByName("place_types");
+const tagify = new Tagify(places);
+tagify.on('remove', (e) =>{
+    console.log("quelque chose à été retirer");
+});*/
