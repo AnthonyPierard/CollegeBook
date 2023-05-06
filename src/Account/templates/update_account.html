@@ -8,14 +8,17 @@
                 <div class="input-box">
                     {{ form.first_name.label }}
                     {{ form.first_name }}
+                    {{ form.first_name.errors }}
                 </div>
                 <div class="input-box">
                     {{ form.last_name.label }}
                     {{ form.last_name }}
+                    {{ form.last_name.errors }}
                 </div>
                 <div class="input-box">
                     {{ form.email.label }}
                     {{ form.email }}
+                    {{ form.email.errors }}
                 </div>
                 <input type="submit" value="Modifier le compte">
             </form>

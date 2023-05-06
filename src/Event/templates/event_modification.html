@@ -11,53 +11,138 @@
 <div class="form">
     <form action="" method="post" enctype='multipart/form-data'>
         {% csrf_token %}
-        <div class="input-box">
-            {{ form.name.label }}
-            {{ form.name }}
-        </div>
-        <div class="input-box">
-            {{ form.image.label }}
-            {{ form.image }}
-        </div>
-        <div class="input-box">
-            {{ form.description.label }}
-            {{ form.description }}
-        </div>
-        <div class="input-box">
-            {{ form.duration.label }}
-            {{ form.duration }}
-        </div>
-        <div class="input-box">
-                {{form.artiste.label}}
-                {{form.artiste}}
-        </div>
-        <div class="input-box">
-            {{ form.user.label }}
-            {{ form.user }}
-        </div>
-        <div class="input-box">
-            {{ form.date.label }}
-            {{ form.date }}
-        </div>
-        <div class="input-box">
-            {{form.configuration.label}}
-            {{ form.configuration }}
-        </div>
+            <div class="input-box">
+                <label for="name">Nom :</label>
+                <input type="text" id="name" name="name">
+                <div id="name-errors"></div>
+            </div>
+            <div id="image" class="input-box">
+                {{ form.image.label }}
+                {{ form.image }}
+                {{ form.image.errors }}
+            </div>
+            <div class="input-box">
+                {{ form.description.label }}
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+            <div class="input-box">
+                {{ form.duration.label }}
+                {{ form.duration }}
+                {{ form.duration.errors }}
+            </div>
+            <div id="artist" class="input-box">
+                <div class="input-button">
+                    <div class="input-tag">
+                        <label>Ajouter un artiste</label>
+                        <input id="text" type="text">
+                    </div>
 
-        <a href="{% url 'Config:Configuration' %}">Créer une configuration de salle</a>
-        <div class="input-box">
-            {{ form.drink_price.label }}
-            {{ form.drink_price }}
-        </div>
-        <div class="input-box">
-            {{ form.food_price.label }}
-            {{ form.food_price }}
-        </div>
-        <div class="input-box">
-            {{ form.promo_codes.label }}
-            {{ form.promo_codes }}
-        </div>
+                    <button id="add-button" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="artist-div" class="input-button">
+                    {{ form.artiste }}
+                    <button id="del-button" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                        </svg>
+                    </button>
+                </div>
+                {{ form.artiste.errors }}
+            </div>
+            <div class="input-box">
+                {{ form.user.label }}
+                {{ form.user }}
+                {{ form.user.errors }}
+            </div>
+            <div class="input-box">
+                {{ form.date.label }}
+                {{ form.date }}
+                {{ form.date.errors }}
+            </div>
+            <div class="input-box">
+                {{form.configuration.label}}
+                {{ form.configuration }}
+                {{ form.configuration.errors }}
+            </div>
+
+            <a href="{% url 'Config:Configuration' %}">Créer une configuration de salle</a>
+            <div class="input-box">
+                {{ form.drink_price.label }}
+                {{ form.drink_price }}
+                {{ form.drink_price.errors }}
+            </div>
+            <div class="input-box">
+                {{ form.food_price.label }}
+                {{ form.food_price }}
+                {{ form.food_price.errors }}
+            </div>
+            <div id="promo" class="input-box">
+                <div class="input-button">
+                    <div class="input-tag">
+                        <label label="nom">Nom du code promo</label>
+                        <input id="nom" type="text">
+                    </div>
+                    <div id="montant-zone" class="input-tag">
+                        <label id="montant-label">Montant du code promo</label>
+                        <input id="montant" type="number" step="0.01" min="0.01">
+                    </div>
+                    <div id="pourcentage-zone" class="input-tag undisplayed">
+                        <label id="pourcentage-label">Pourcentage du code promo</label>
+                        <input id="pourcentage" type="number" step="1"  min="1" max="100">
+                    </div>
+                    <div class="radio-divs">
+                        <div class="radio">
+                            <input type="radio" id="promo_type1" name="promo_type" value="Montant" checked>
+                            <label for="promo_type1">Montant</label>
+                        </div>
+                        <div class="radio">
+                            <input type="radio" id="promo_type2" name="promo_type" value="Pourcentage">
+                            <label for="promo_type2">Pourcentage</label>
+                        </div>
+                    </div>
+                    <button id="add-button" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="promo-div" class="input-button undisplayed">
+                    {{ form.promo_codes }}
+                    <button id="del-button" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                {{ form.promo_codes.errors }}
+            </div>
         <input type="submit" value="Modifier l'événement">
     </form>
 </div>
+<script>
+    // Récupérer le champ name
+    var nameField = document.getElementById("name");
+
+    // Ajouter un gestionnaire d'événement pour la saisie de texte
+    nameField.addEventListener("input", function() {
+        // Récupérer la valeur du champ name
+        var nameValue = nameField.value;
+
+        // Valider la saisie de texte avec une expression régulière
+        var regex = /^[a-zA-Z0-9À-ÿ ]*$/; // Autoriser les lettres majuscules et minuscules, les chiffres et les espaces
+        if (!regex.test(nameValue)) {
+            // Si la saisie est invalide, afficher un message d'erreur
+            document.getElementById("name-errors").innerHTML = "Veuillez saisir uniquement des lettres, des chiffres et des espaces";
+        } else {
+            // Sinon, effacer les messages d'erreur
+            document.getElementById("name-errors").innerHTML = "";
+        }
+    });
+</script>
 {% endblock %}

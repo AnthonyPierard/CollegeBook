@@ -1,12 +1,9 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from time import sleep
-from .models import Event, Representation
-from Account.models import User
 
-from CollegeBook.tests import BaseTest
 from Account.tests import AccountTest
+from CollegeBook.tests import BaseTest
 
 
 class EventTest(StaticLiveServerTestCase):

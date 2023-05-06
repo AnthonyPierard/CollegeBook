@@ -1,12 +1,12 @@
+import json
+
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 
 from CollegeBook.utils import configCreator
 from .forms import ConfigForm
-from .models import Config
-
-import json
+from .models import Config, Place
 
 
 def add_default_configuration(userId):
@@ -14,7 +14,7 @@ def add_default_configuration(userId):
     :param userId: the id of the current user log
     :return: create de 4 configurations basic and link them to the user
     """
-    basicSeats = {"Debout": 3.00, "Classic": 4.00, "Vip": 5.00}
+    basicSeats = {"Debout": 3.00, "Classic": 5.00}
     configCreator(config_name="only Seat", json_url="/static/json/onlySeat.json", user_id=userId, seats=basicSeats)
     configCreator(config_name="all Seat", json_url="/static/json/allSeat.json", user_id=userId, seats=basicSeats)
     configCreator(config_name="only standing", json_url="/static/json/onlyStanding.json", user_id=userId,
@@ -36,12 +36,18 @@ def area_configuration(request):
         if form.is_valid():
             form.save(user=request.user)
         configurations = Config.objects.filter(user=request.user.id)
+        form = ConfigForm()
         return render(request, 'area_configuration.html', {'configurations': configurations, 'form': form})
 
     else:
-        if not (Config.objects.filter(user=request.user)):
+        if not (Config.objects.filter(user=1)):
             add_default_configuration(request.user)
-        configurations = Config.objects.filter(user=request.user.id)
+        if request.user.id==1:
+            configurations = Config.objects.filter(user=1)
+        else :
+            configurations_default = Config.objects.filter(user=1)
+            configurations_user = Config.objects.filter(user= request.user.id)
+            configurations = configurations_default.union(configurations_user)
         form = ConfigForm()
         return render(request, 'area_configuration.html', {'configurations': configurations, 'form': form})
 
@@ -61,3 +67,13 @@ def create_json(request):
             json.dump(data, fi)
 
         return redirect("Config:Configuration")
+
+
+def get_place_types(request, config_name):
+    target_config = Config.objects.get(url_json=config_name.replace("_", "/"))
+    types = Place.objects.filter(configuration=target_config)
+    place_types = [type.type for type in types]
+    data = {
+        'place_types': place_types,
+    }
+    return JsonResponse(data)

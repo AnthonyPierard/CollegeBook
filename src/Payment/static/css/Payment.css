@@ -26,11 +26,6 @@ button[type="submit"] {
     margin-bottom: 35px;
 }
 
-.centered {
-    text-align: center;
-    margin-top: 20vh;
-}
-
 @media screen and (max-width: 850px){
     .summary-area {
         max-width: 90%;

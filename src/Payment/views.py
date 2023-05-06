@@ -1,24 +1,20 @@
+import os
+
 import stripe
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.conf import settings
-from django.http import JsonResponse, HttpResponse
+from django.core.mail import EmailMessage
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView
-from Reservation.models import Reservation, SeatingTicket, StandingTicket, Ticket, AbstractTicket, FoodTicket, \
-    DrinkTicket
-from Event.models import Price
-from CollegeBook.utils import stripe_id_creation, create_ticket_pdf
-from CollegeBook.settings import MEDIA_ROOT
-from django.core.mail import send_mail, EmailMessage
-from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
-import reportlab
-import qrcode
-import os
 from unidecode import unidecode
-from .templates import *
+
+from CollegeBook.settings import MEDIA_ROOT
+from CollegeBook.utils import stripe_id_creation, create_ticket_pdf, empty_folder
+from Event.models import Price
+from Reservation.models import Reservation, SeatingTicket, StandingTicket, Ticket, FoodTicket, \
+    DrinkTicket
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -29,7 +25,7 @@ class CreateCheckoutSessionView(View):
         reservation = Reservation.objects.get(id=self.kwargs["representation_id"])
         if reservation.paid:
             return redirect('Payment:paid')
-        event_name = reservation.representation.event.name
+        event_name = unidecode(reservation.representation.event.name)
         tickets = Ticket.objects.filter(reservation_id=reservation.id)
         tickets_quantity = dict()
         for ticket in tickets:
@@ -196,6 +192,7 @@ def webhook(request):
         pdf.save()
         email.attach_file(pdf_path)
         email.send()
-
+        empty_folder(qr_path)
+        empty_folder(ticket_path)
         print("mail send")
     return HttpResponse(status=200)

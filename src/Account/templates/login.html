@@ -8,10 +8,12 @@
                 <div class="input-box">
                     {{ form.email.label }}
                     {{ form.email }}
+                    {{ form.email.errors }}
                 </div>
                 <div class="input-box">
                     {{ form.password.label }}
                     {{ form.password }}
+                    {{ form.password.errors }}
                 </div>
                 <input type="submit" value="Se connecter">
             </form>

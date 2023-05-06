@@ -1,20 +1,16 @@
-import os.path
-
-from django.shortcuts import render, redirect
-from django.core.mail import send_mail, EmailMessage
-from django.template.loader import render_to_string
-from django.http import JsonResponse
-
 from pathlib import Path
 
-from Event.models import Representation, Event, Price
-from Configuration.models import Place, Config
-from .models import Reservation, Ticket, SeatingTicket, StandingTicket
-from .forms import ReservationForm
+import json
+import qrcode
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.utils import timezone
-from CollegeBook.settings import MEDIA_ROOT
+from unidecode import unidecode
+
 from CollegeBook.utils import findRowId, findJsonID
-import qrcode,json
+from Configuration.models import Place, Config
+from Event.models import Representation, Event, Price
+from .forms import ReservationForm
 
 
 def seat_selection(request, representation_id):
@@ -25,7 +21,7 @@ def seat_selection(request, representation_id):
     event = Event.objects.get(pk=eventID)
     configurationID = event.configuration_id
     configuration = Config.objects.get(pk=configurationID)
-    url = "/static/json/" + event.name + "/" + str(representation.id) + ".json"
+    url = "/static/json/" + unidecode(event.name) + "/" + str(representation.id) + ".json"
     return render(request, 'seat_selection.html', {"representation": representation, "url": url})
 
 
@@ -75,19 +71,9 @@ def representation_reservation(request, representation_id):
     if request.method == 'POST':
         form = ReservationForm(request.POST)
         if form.is_valid():
-            # reservation = Reservation()
-            # reservation.email = form.cleaned_data['email']
-            # reservation.last_name = form.cleaned_data["last_name"]
-            # reservation.first_name = form.cleaned_data["first_name"]
-            # reservation.phone = form.cleaned_data["phone"]
-            # reservation.number = 1 #todo rendre l'incrémentation automatique
-            # reservation.representation = Representation.objects.get(pk=representation_id)
             form.save(representation_id)
 
-            reservation = Reservation.objects.filter(email=form.cleaned_data['email'],
-                                                     representation_id=representation_id).last()
-
-            return redirect('Payment:landing', reservation.id)
+            return redirect('Payment:landing', form.instance.pk)
 
     else:
         form = ReservationForm()

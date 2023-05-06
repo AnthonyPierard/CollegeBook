@@ -1,16 +1,20 @@
-from Configuration.models import Config, Place
-from reportlab.pdfgen import canvas
-import qrcode
 import cv2
-from Reservation.models import *
-from Event.models import *
-from CollegeBook.settings import MEDIA_ROOT
-from unidecode import unidecode
-from datetime import datetime
-from .settings import TIME_ZONE
-import pytz
+import qrcode
 import stripe
+from django import forms
+from unidecode import unidecode
 
+from CollegeBook.settings import MEDIA_ROOT
+from Event.models import *
+from Reservation.models import *
+import os
+import shutil
+
+def check_password(form):
+    password = form.cleaned_data.get('password')
+    confirm_password = form.cleaned_data.get('confirm_password')
+    if password != confirm_password:
+        raise forms.ValidationError('La confirmation du mot de passe n\'est pas correcte')
 def stripe_id_creation(product_type, event_name):
     stripe_id = product_type.lower() + ''.join([element.capitalize() for element in event_name.split(' ')])
     return stripe_id
@@ -28,6 +32,32 @@ def configCreator(config_name, json_url, user_id, seats):
         seat = Place(type=key, price=seats[key], configuration_id=configuration.id)
         seat.save()
 
+def clean_tagify_string(data):
+    tempList = data.replace("{", "").replace("}", "").replace("[", "").replace("]", "")
+    tempList = tempList.replace('"value":', "").replace('"value":', "")
+    tempList = tempList.split(",")
+    for index, element in enumerate(tempList):
+        if element[0] == " ":
+            tempList[index] = element[1:]
+        tempList[index] = tempList[index].replace('"', "")
+    return tempList
+
+
+def empty_folder(folder_path):
+   
+    # Vérifier si le dossier existe
+    if os.path.exists(folder_path):
+        # Parcourir tous les éléments dans le dossier
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            # Si l'élément est un dossier, appeler la fonction récursivement pour le vider
+            if os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+            # Si l'élément est un fichier, le supprimer
+            else:
+                os.remove(file_path)
+    else:
+        print(f"Le dossier {folder_path} n'existe pas.")
 
 def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name, date):
     # pdf = canvas.Canvas('test.pdf')

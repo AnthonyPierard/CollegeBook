@@ -7,7 +7,7 @@ from Configuration.models import Config
 from CollegeBook.settings import TIME_ZONE
 from zoneinfo import ZoneInfo
 import pytz
-
+from django.core.validators import RegexValidator
 
 class Event(models.Model):
     STATES =[
@@ -15,12 +15,12 @@ class Event(models.Model):
         ("ACT", "Active"),
         ("ARC", "Archived")
     ]
-    name = models.CharField("Nom de l'événement", max_length=200, unique=True)
+    name = models.CharField("Nom de l'événement", max_length=200, unique=True, validators=[RegexValidator(r'^[a-zA-Z0-9À-ÿ ]+$')])
     description = models.CharField("Description de l'événement", max_length=1000)
     image = models.ImageField("Image(s) de l'événement(s)", upload_to="Images/", blank=True, null=True)
     duration = models.TimeField("Durée de l'événement", default='02:00')
     state = models.CharField("Etat de l'event brouillon/actif/archivé", choices=STATES, max_length=3, default="DRF")
-    artiste = models.CharField("Artistes", max_length= 2000)
+    artiste = models.CharField("Artistes", max_length= 70)
 
     configuration = models.ForeignKey(Config, on_delete=models.CASCADE)
 
@@ -31,14 +31,17 @@ class Event(models.Model):
 
 
 class CodePromo(models.Model):
-    code = models.CharField("Le code à introduire", max_length=20)
+    code = models.CharField("Le code à introduire", max_length=20, unique=True)
     amount = models.FloatField("Montant fixe de réduction", blank=True, default=0)
     percentage = models.FloatField("Pourcentage de reduction sur le prix total", blank=True, default=0)
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{}___{}".format(self.code, self.event.name)
+        if self.amount:
+            return f"{self.code} : {self.amount}€"
+        elif self.percentage:
+            return f"{self.code} : {self.percentage}%"
 
 
 class Representation(models.Model):
@@ -48,7 +51,7 @@ class Representation(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.event.name + " le " + str(datetime.makenaive(self.date).strftime('%d/%m/%Y à %H:%M'))
+        return self.event.name + " le " #+ str(datetime.makenaive(self.date).strftime('%d/%m/%Y à %H:%M'))
 
 
 @receiver(pre_save, sender=Representation)

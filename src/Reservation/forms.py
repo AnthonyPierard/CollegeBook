@@ -27,10 +27,9 @@ class ReservationForm(forms.ModelForm):
         if commit:
             reservation.representation = Representation.objects.get(pk=representation_id)
             reservation.save()
-            for i in range(self.cleaned_data["drink_number"]):
+            if self.cleaned_data["drink_number"] > 0:
                 DrinkTicket.create(reservation_id=reservation.id)
-
-            for j in range(self.cleaned_data["food_number"]):
+            if self.cleaned_data["food_number"] > 0:
                 FoodTicket.create(reservation_id=reservation.id)
 
             selected_seats = self.cleaned_data["selectedseat"]
@@ -42,7 +41,7 @@ class ReservationForm(forms.ModelForm):
                     StandingTicket.create(type_id=place.id, reservation_id=reservation.id)
                 else:
                     # TODO changer le debout
-                    place = Place.objects.get(type="Debout",
+                    place = Place.objects.get(type="Classic",
                                               configuration_id=reservation.representation.event.configuration_id)
                     SeatingTicket.create(seat_number=element, type_id=place.id, reservation_id=reservation.id)
         return reservation

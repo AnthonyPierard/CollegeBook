@@ -7,32 +7,39 @@
             <div class="input-box">
                 {{ form.email.label }}
                 {{ form.email }}
+                {{ form.email.errors }}
             </div>
             <div class="input-box">
                 {{ form.last_name.label }}
                 {{ form.last_name }}
+                {{ form.last_name.errors }}
             </div>
             <div class="input-box">
                 {{ form.first_name.label }}
                 {{ form.first_name }}
+                {{ form.first_name.errors }}
             </div>
             <div class="input-box">
                 {{ form.phone.label }}
                 {{ form.phone }}
+                {{ form.phone.errors }}
             </div>
             <div class="input-box">
                 {{ form.note.label }}
                 {{ form.note }}
+                {{ form.note.errors }}
             </div>
             <div class="input-box">
                 {{ form.drink_number.label }}
                 {{ form.drink_number }}
+                {{ form.drink_number.errors }}
             </div>
             <div>  <p>Prix du ticket : {{drink_price.price}}</p>
                    </div>
             <div class="input-box">
                 {{ form.food_number.label }}
                 {{ form.food_number }}
+                {{ form.food_number.errors }}
             </div>
             <div>  <p>Prix du ticket : {{food_price.price}}</p>
             </div>

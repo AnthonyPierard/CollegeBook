@@ -1,18 +1,19 @@
 let selectedSeatsIDs = [];
 let csrfToken = getCookie('csrftoken');
 //TODO: sieges en bord de seat-none
+//TODO: Récupérer tous les types de siege  de cette config
 function changeStatus(seatID){
     let seat = document.getElementById(seatID);
     if(seat.className.baseVal == "seat" || seat.className.baseVal == "seat vip" || seat.className.baseVal == "seat classic" || seat.className.baseVal == "seat debout"){
         seat.className.baseVal = "seat selected";
         selectedSeatsIDs.push(seatID);
         updatePrice(true);
-        //TODO : Deux groupes de siege avec espace au milieu
     }
     else if (seat.className.baseVal == "seat selected"){
         selectedSeatsIDs = selectedSeatsIDs.filter(function(id){
             return id !== seatID;
         })  
+        //TODO : le repasser dans sa classe de base
         updatePrice(false);
     }
     else if (seat.className.baseVal == "seat sold"){

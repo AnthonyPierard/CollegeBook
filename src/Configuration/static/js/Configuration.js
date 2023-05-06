@@ -1,5 +1,115 @@
 const edition_mode = document.getElementsByName("mode");
 let selected_mode = "";
+const seatColors = {};
+const style = document.createElement('style');
+
+//Tagify for seatType
+const seatType = document.querySelector("#seat_types");
+const seatTypeInput = seatType.querySelector("#id_place_types")
+const promoMontant = seatType.querySelector("#montant");
+const seatTypeTagify = new Tagify(seatTypeInput);
+const seatTypeTagInput = seatType.querySelector("span");
+seatTypeTagInput.removeAttribute("contenteditable")
+seatTypeTagInput.setAttribute("readonly", true)
+
+const seatTypeText = seatType.querySelector("#text");
+const seatTypeAddButton = seatType.querySelector("#add-button");
+
+
+create_checkbox_element("sold");
+create_checkbox_element("classic");
+defineColors()
+
+function addSeatType() {
+    if( seatTypeText.value && promoMontant.value){
+        seatTypeTagify.addTags([seatTypeText.value + " : " + promoMontant.value + "€"]);
+        seatTypeText.value = "";
+        promoMontant.value = "";
+        seatTypeText.focus()
+    }
+}
+
+seatTypeAddButton.addEventListener('click', () => {
+    addSeatType();
+    defineColors();
+});
+
+seatTypeText.addEventListener('keydown', function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addSeatType();
+    }
+});
+
+promoMontant.addEventListener('keydown', function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addSeatType();
+    }
+});
+
+const seatTypeDeleteButton = seatType.querySelector("#del-button");
+seatTypeDeleteButton.addEventListener('click', () => {
+    seatTypeTagify.removeAllTags();
+    seatTypeText.focus();
+});
+
+function defineColors() {
+    if (!seatColors["sold"]){
+        setColor("sold")
+        setColor("classic")
+    }
+
+    if (seatTypeTagify.value) {
+        for(const tag of seatTypeTagify.value){
+            const type= tag.value.split(":")[0].replace(" ", "").toLowerCase();
+            if(!seatColors[tag.value]){
+                setColor(type)
+            }
+        }
+    }
+    console.log(seatColors)
+}
+
+function setColor(placeType) {
+  let color = seatColors[placeType];
+  let styleTag = document.querySelector('style');
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    document.head.appendChild(styleTag);
+  }
+  const styleSheet = styleTag.sheet;
+  const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${placeType}`);
+  if (!color) {
+    color = getDistinctColor();
+    seatColors[placeType] = color;
+    if (!rule) {
+      styleSheet.insertRule(`.seat.${placeType} { color: ${color}; }`, styleSheet.cssRules.length);
+    } else {
+      rule.style.color = color;
+    }
+  }
+}
+
+function getDistinctColor() {
+  let color;
+  do {
+    color = random_color();
+  } while (Object.values(seatColors).some(c => colorDiff(c, color) < 200));
+  return color;
+}
+
+function colorDiff(c1, c2) {
+  const r1 = parseInt(c1.substr(1, 2), 16);
+  const g1 = parseInt(c1.substr(3, 2), 16);
+  const b1 = parseInt(c1.substr(5, 2), 16);
+  const r2 = parseInt(c2.substr(1, 2), 16);
+  const g2 = parseInt(c2.substr(3, 2), 16);
+  const b2 = parseInt(c2.substr(5, 2), 16);
+  return Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
+}
+
+defineColors()
 
 edition_mode.forEach((mode) => {
   mode.addEventListener('change', function() {
@@ -16,10 +126,20 @@ function clickable_seats_and_spaces(){
         element.addEventListener('click', (event) => {
             if (!element.classList.contains('space') && selected_mode === "assignation") {
                 set_place_type(element);
-                console.log("OK")
             } else if (selected_mode == "suppression"){
-                element.classList.toggle('seat');
-                element.classList.toggle('space');
+                if(element.classList.length>1){
+                    const classes = element.classList;
+                    element.classList.remove(classes[0]);
+                    element.classList.remove(classes[0]);
+                    element.classList.add('space');
+
+                }
+                else{
+                    console.log("else")
+                    element.classList.remove('space');
+                    element.classList.add('seat');
+                    element.classList.add('classic');
+                }
             }
         });
     }
@@ -82,8 +202,17 @@ function clickable_select_row() {
                             }
                         }
                     } else if (selected_mode === "suppression"){
-                        seat.classList.toggle('seat');
-                        seat.classList.toggle('space');
+                        if(seat.classList.length>1){
+                            seat.classList.forEach(function (classe){
+                                seat.classList.remove(classe);
+                                seat.classList.add('space');
+                            })
+                        }
+                        else{
+                            seat.classList.remove('space');
+                            seat.classList.add('seat');
+                            seat.classList.add('classic');
+                        }
                     }
                 }
             });
@@ -99,6 +228,8 @@ function create_seat_svg() {
     create_rect_svg(svg, 9, 19, 14, 10)
     create_rect_svg(svg, 9, 9, 14, 10)
     create_path_svg(svg, "M6,14V7.8C6,5.7,7.7,4,9.8,4h12.3C24.3,4,26,5.7,26,7.8V14");
+    svg.setAttribute('height', '32');
+    svg.setAttribute('width', '32');
     return svg
 }
 
@@ -117,6 +248,25 @@ function create_rect_svg(parent, x, y, width, height) {
     rect.setAttribute("height", height);
     rect.classList.add("seat-style");
     parent.appendChild(rect)
+}
+
+function is_class_in_json(class_name, json) {
+    for (const element of json) {
+        if (Object.values(element).includes(class_name)){
+            return true;
+        }
+    }
+    return false;
+}
+
+function reset_info_element(element) {
+    element.classList.add("undisplayed");
+    element.querySelector("input").required = false;
+}
+
+function make_info_element_visible(element) {
+    element.classList.remove("undisplayed");
+    element.querySelector("input").required = true;
 }
 
 //remplis le seat-area de siège ou d'espace debout
@@ -160,19 +310,47 @@ function fill_seat(json_dictionnary){
                     row.appendChild(svg_seat);
                 }
             }
-            if(json_dictionnary[index].class=="standing-zone"){
-                const nbr_place = document.querySelector("#nbr_place");
-                const input_nbr_place = document.createElement('input');
-                input_nbr_place.type="number";
-                input_nbr_place.id="value_place";
-                console.log(json_dictionnary[index]);
-                console.log(json_dictionnary[index].nbr_place);
-                input_nbr_place.value=json_dictionnary[index].nbr_place;
-                nbr_place.innerHTML = "Nombre de place debout :";
-                nbr_place.appendChild(input_nbr_place);
-            }
+            // if(json_dictionnary[index].class=="standing-zone"){
+            //     if (!document.querySelector("#nbr-place")) {
+            //         const basic_infos = document.querySelector('#basic-infos')
+            //         const nbr_place = document.createElement('div')
+            //         const price_place = document.createElement('div')
+            //         const input_nbr_place = document.createElement('input');
+            //         const input_price_place = document.createElement('input');
+            //         nbr_place.id = "nbr-place";
+            //         price_place.id="price_place"
+            //         input_nbr_place.type="number";
+            //         input_nbr_place.step = "1";
+            //         input_nbr_place.min = "1";
+            //         input_nbr_place.id="value_place";
+            //         input_nbr_place.value=json_dictionnary[index].nbr_place;
+            //         input_price_place.type="number";
+            //         input_price_place.step = "0.01";
+            //         input_price_place.min = "0.01";
+            //         nbr_place.innerHTML = "Nombre de places debout";
+            //         price_place.innerHTML = "Prix des places debout";
+            //         price_place.appendChild(input_price_place);
+            //         nbr_place.appendChild(input_nbr_place);
+            //         basic_infos.appendChild(price_place);
+            //         basic_infos.appendChild(nbr_place);
+            //     }
+            // }
         }
+    }
 
+    const classic_price = document.querySelector("#classic-price");
+    const standing_price = document.querySelector("#standing-price");
+    const standing_number = document.querySelector("#standing-number");
+
+    reset_info_element(classic_price)
+    reset_info_element(standing_price)
+    reset_info_element(standing_number)
+    if(is_class_in_json("seat-row", json_dictionnary)) {
+        make_info_element_visible(classic_price);
+    }
+    if(is_class_in_json("standing-zone", json_dictionnary)) {
+        make_info_element_visible(standing_price);
+        make_info_element_visible(standing_number);
     }
     clickable_seats_and_spaces();
     clickable_select_row();
@@ -314,30 +492,74 @@ function create_checkbox(place){
     });
 }*/
 
-let nbr_cat = 0;
-//récuperer les types de places dans le tagify
-function get_place_types(){
-    const places = document.getElementsByName("place_types");
-    let placeValues = places[0].value;
-    let allPlaces = placeValues.split(";");
-    let nbr_cat_now = allPlaces.length;
-    if(nbr_cat!=nbr_cat_now){
-        const checkboxList = document.getElementById('checkboxList');
+//recevoir les types depuis le json
+function get_file_types(){
+    const current_config = get_config().replaceAll("/", "_");
+    const xhr = new XMLHttpRequest();
 
-        while (checkboxList.firstChild) {
-            checkboxList.removeChild(checkboxList.firstChild);
+    // Configurez la requête avec la méthode GET et l'URL de la vue Django
+    xhr.open('GET', `get_place_types/${current_config}`);
+
+    // Définissez l'en-tête de la requête pour spécifier que nous voulons recevoir des données JSON
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    // Attachez une fonction de rappel pour traiter la réponse lorsque la requête est terminée
+    xhr.onload = function() {
+        // Vérifiez que la requête s'est terminée avec succès
+        if (xhr.status === 200) {
+          // Parsez la réponse JSON en un objet JavaScript
+          const djangoModel = JSON.parse(xhr.responseText);
+          // Utilisez l'objet DjangoModel ici comme vous le souhaitez
+          console.log(djangoModel);
+        } else {
+        console.log(xhr.status)
+        console.log('Erreur lors de la récupération de l\'objet Django.');
         }
+    };
 
-        const checkbox = document.createElement('input');
+    // Envoyez la requête
+    xhr.send();
+}
+
+/* Pour plus tard créer les checkbox via cette fonction
+function create_checkbox(place){
+    const checkboxList = document.getElementById('checkboxList');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.name = "choice";
+    checkbox.value = place;
+    checkboxList.appendChild(checkbox);
+
+    const label = document.createElement('label');
+    label.appendChild(document.createTextNode(place));
+    checkboxList.appendChild(label);
+
+    checkbox.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('input[name=choice]');
+    checkboxes.forEach((cb) => {
+      if (cb !== checkbox) {
+        cb.checked = false;
+      }
+    });
+}*/
+
+function create_checkbox_element(name) {
+    const checkbox_div = document.createElement('div');
+    checkbox_div.classList.add('checkbox-div');
+    const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.name = "choice";
-        checkbox.value = "sold";
-        checkboxList.appendChild(checkbox);
+        checkbox.value = name;
+        checkbox_div.appendChild(checkbox)
 
         const label = document.createElement('label');
-        label.appendChild(document.createTextNode("sold"));
-        checkboxList.appendChild(label);
+        label.appendChild(document.createTextNode(name));
+        checkbox_div.appendChild(label);
 
+
+        checkbox_div.appendChild(create_seat_svg());
+
+        checkboxList.appendChild(checkbox_div);
         checkbox.addEventListener('click', () => {
             const checkboxes = document.querySelectorAll('input[name=choice]');
             checkboxes.forEach((cb) => {
@@ -346,26 +568,31 @@ function get_place_types(){
                 }
             });
         });
-        allPlaces.forEach((place) => {
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.name = "choice";
-            checkbox.value = place.split(":")[0];
-            checkboxList.appendChild(checkbox);
+}
+let nbr_cat = 0;
 
-            const label = document.createElement('label');
-            label.appendChild(document.createTextNode(place.split(":")[0]));
-            checkboxList.appendChild(label);
+//récuperer les types de places dans le tagify
+function get_place_types(){
+    // if (seatTypeTagify.value) {
+    //     for(const tag of seatTypeTagify.value){
+    //         const type= tag.value.split(":")[0].replace(" ", "").toLowerCase();
+    //         setColor(type)
+    //     }
+    // }
+    nbr_cat_now = seatTypeTagify.value.length
+    if(nbr_cat!=nbr_cat_now){
+        const checkboxList = document.getElementById('checkboxList');
 
-            checkbox.addEventListener('click', () => {
-            const checkboxes = document.querySelectorAll('input[name=choice]');
-            checkboxes.forEach((cb) => {
-              if (cb !== checkbox) {
-                cb.checked = false;
-              }
-            });
-          });
+        while (checkboxList.firstChild) {
+            checkboxList.removeChild(checkboxList.firstChild);
+        }
+
+        create_checkbox_element("sold");
+        create_checkbox_element("classic");
+        seatTypeTagify.value.forEach((type) => {
+            create_checkbox_element(type.value.split(":")[0]);
         });
+        defineColors();
         nbr_cat = nbr_cat_now;
     }
 
@@ -379,7 +606,6 @@ function random_color(){
     return '#' + ('000000' + hex).slice(-6);
 }
 
-const seatColors = {};
 
 // attribuer un type à un siège
 function set_place_type(seat) {
@@ -389,6 +615,7 @@ function set_place_type(seat) {
     types.forEach((type) => {
         if (type.checked) {
           selected_type = type.value.replace(" ", "").toLowerCase();
+          console.log(selected_type)
         }
     });
 
@@ -429,3 +656,49 @@ function set_place_type(seat) {
         }
     }
 }
+
+// function set_checkbox_color() {
+//     const checkboxes = document.querySelectorAll('#checkboxList input[type="checkbox"]');
+//
+//     checkboxes.forEach((checkbox) => {
+//         const label = checkbox.nextElementSibling;
+//         const labelValue = label.textContent.toLowerCase();
+//         if (seatColors.hasOwnProperty(labelValue)) {
+//             const color = seatColors[labelValue];
+//             label.style.color = color;
+//         } else {
+//             console.log(seatColors);
+//             console.log(labelValue);
+//             console.log(seatColors[labelValue]);
+//         }
+//     });
+// }
+
+
+setInterval(set_checkbox_color, 2000);
+
+function set_checkbox_color() {
+    const checkboxes = document.querySelectorAll('#checkboxList .checkbox-div');
+    checkboxes.forEach((checkbox) => {
+        const label = checkbox.querySelector('label');
+        const labelValue = label.textContent.toLowerCase().replace(" ", "");
+        if (seatColors.hasOwnProperty(labelValue)) {
+            const color = seatColors[labelValue.replace(" ", "")];
+            console.log(checkbox)
+            checkbox.style.color = color;
+        }
+    });
+}
+
+//event listener qui regarde si un tag part alors les seat redeviennent classic
+/*const places = document.querySelector(".tagify");
+const places1 = document.getElementsByName("place_types");
+const tagify = new Tagify(places);
+tagify.on('remove', (e) =>{
+    console.log("quelque chose à été retirer");
+});*/
+document.addEventListener('keydown', function(event) {
+  if (event.ctrlKey) {
+    get_file_types();
+  }
+});

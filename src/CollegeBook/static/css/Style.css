@@ -1,10 +1,19 @@
-* {
+
+*{
     list-style: none;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 *::selection {
-    background-color: rgba(38, 128, 133, 0.7);
+    background-color: var(--selection-color);
     color: black;
+}
+
+:root {
+    --input-height: 40px;
+    --input-margin: 15px;
+    --main-color: #268085;
+    --selection-color: rgba(38, 128, 133, 0.7);
 }
 
 body {
@@ -36,8 +45,7 @@ a {
 }
 
 .title {
-    color: #268085;
-    font-family: 'Noto Sans', sans-serif;
+    color: var(--main-color);
     margin: 1% 0;
 }
 
@@ -52,8 +60,7 @@ a {
     justify-content: space-between;
     align-items: center;
     border-radius: 10px;
-    background-color: #268085;
-    font-family: 'Noto Sans', sans-serif;
+    background-color: var(--main-color);
 }
 
 .nav-bar .nav-ul {
@@ -98,7 +105,7 @@ a {
 
 .button {
     width: auto;
-    background-color: #268085;
+    background-color: var(--main-color);
     border-radius: 5px;
     padding: 9px 14px;
     color: #fff;
@@ -181,7 +188,6 @@ a {
     border-collapse: collapse;
     border-radius: 10px 10px 0 0;
     overflow: hidden;
-    font-family: 'Noto Sans', sans-serif;
     box-shadow:  0 0 20px rgba(0,0,0,0.05);
 }
 
@@ -191,7 +197,7 @@ a {
 }
 
 .table .link:hover {
-    color: #268085;
+    color: var(--main-color);
 }
 
 .table th, .table td {
@@ -204,7 +210,7 @@ a {
 }
 
 .table thead tr {
-    background-color: #268085;
+    background-color: var(--main-color);
     color: #ffffff;
     font-weight: bold;
 }
@@ -219,7 +225,7 @@ a {
 }
 
 .table tbody tr:last-of-type {
-    border-bottom: 2px solid #268085;
+    border-bottom: 2px solid var(--main-color);
 }
 
 .table-svg {
@@ -237,24 +243,25 @@ a {
 }
 
 .ok {
-    border: 2px solid #268085;
-    background-color: #268085;
+    border: 2px solid var(--main-color);
+    background-color: var(--main-color);
 }
 
 .ko {
     border: 2px solid #fc8c0f;
     background-color: #fc8c0f;
 }
-/* #todo forms */
 
+.form * {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.125rem;
+    font-weight: normal;
+}
 .form {
     padding: 0 30px;
     border-radius: 10px;
-    /*border: 2px solid #268085;*/
-    /*background: linear-gradient(to bottom, #9EB2BBFF, #268085);*/
-    font-size: 1.125rem;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: normal;
+    /*border: 2px solid var(--main-color);*/
+    /*background: linear-gradient(to bottom, #9EB2BBFF, var(--main-color));*/
 }
 
 .form form {
@@ -265,7 +272,7 @@ a {
 }
 
 .form form .input-box {
-    margin: 15px 0;
+    margin: var(--input-margin) 0;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -276,17 +283,21 @@ a {
     border-radius: 5px;
 }
 
-.input-box input:not(input[type="checkbox"], input[type="file"]) {
+.input-box input:not(input[type="checkbox"], input[type="file"]), select {
     width: 100%;
-    height: 40px;
+    height: var(--input-height);
     padding: 0 8px;
     margin-top: 5px;
     border: 1px solid #ccc;
 }
 
+#id_image {
+    margin: 0;
+    width: 100%;
+}
 
 .input-box::selection, .input-box input::selection {
-    background-color: rgba(38, 128, 133, 0.5);
+    background-color: var(--selection-color);
     color: black;
 }
 
@@ -298,21 +309,21 @@ a {
     margin: 0 10px;
     padding: 0;
     cursor: pointer;
-    accent-color: #268085;
+    accent-color: var(--main-color);
 }
 
 .input-box input:not(input[type="checkbox"]):focus, select:focus {
-    border: 2px solid rgba(38, 128, 133, 0.8);
+    border: 2px solid var(--selection-color);
 }
 
 input[type="submit"] {
     margin: 10px auto;
-    padding: 15px 40px;
+    padding: 2vh 4vw;
     border-radius: 15px;
     border: none;
-    background-color: #268085;
+    background-color: var(--main-color);
     color: white;
-    font-family: 'Noto Sans', sans-serif;
+    max-width: 100%;
 }
 
 input[type="submit"]:hover {
@@ -320,38 +331,131 @@ input[type="submit"]:hover {
 }
 
 input[type="file"] {
-    height: 40px;
+    height: var(--input-height);
     margin-top: 5px;
     margin-left: 10px;
 }
 
 select:focus {
     outline: none;
-    border: 2px solid rgba(38, 128, 133, 0.8);
+    border: 2px solid var(--selection-color);
 }
 
 select option::selection::after {
-    background-color: rgba(38, 128, 133, 0.8);
+    background-color: var(--selection-color);
 }
 
 .input-box .insert-data-tag input{
-    height: 40px;
+    height: var(--input-height);
 }
 
-.create-tag {
+.tagify {
+    width: 100%;
+}
+
+.input-button {
     display: flex;
     width: 100%;
-    gap: 3%
+    min-height: var(--input-height);
+    margin-top: var(--input-margin);
+    gap: 1vw;
+}
+
+#add-button, .radio {
+    margin-top: auto;
+}
+
+#del-button {
+    margin-bottom: auto;
+}
+
+.input-button button {
+    width: var(--input-height);
+    height: var(--input-height);
+    border: 2px solid var(--main-color);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-button button:hover {
+    filter: brightness(90%);
+}
+
+.input-button button svg {
+    width: var(--input-height);
+    height: var(--input-height);
+    color: var(--main-color);
 }
 
 .input-tag {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    /*flex-wrap: wrap;*/
     width: 100%;
 }
-.create-tag .radio {
-    display: flex;
 
+/* Surcharge sur le css de la librairie multiselect*/
+.mult-select-tag {
+    box-sizing: border-box;
+}
+
+.mult-select-tag .item-container {
+    border-radius: 3px;
+    border: none;
+    background-color: #e5e5e5;
+    color: black;
+}
+
+.mult-select-tag .item-label {
+    color: black;
+    font-size: 1.125rem;
+}
+
+
+
+.drawer.rounded ul li:hover{
+    background-color: rgba(30, 30, 30, 0.1);
+}
+
+.input-tag.undisplayed {
+    display: none;
+}
+
+.radio-divs {
+    display: flex;
+    gap: 1vw;
+}
+
+.radio {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+}
+
+input[type="radio"] {
+    max-width: 15px;
+}
+
+.input-box .errorlist {
+    font-size: 1rem;
+    width: 100%;
+    padding: 0 8px;
+    font-style: italic;
+    text-align: left;
+    color: red;
+}
+
+.centered {
+    text-align: center;
+    margin-top: 20vh;
+}
+
+.centered p {
+    margin: 20px 0;
+    font-size: 1.063rem;
 }
 
 @media screen and (max-width: 650px) {
@@ -377,5 +481,37 @@ select option::selection::after {
         content: attr(data-label);
         text-align: start;
         font-weight: bold;
+    }
+
+    #promo .input-button {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    #promo .tagify {
+        width: calc(98% - 40px);
+    }
+}
+
+@media screen and (max-width: 430px) {
+    input[type="submit"] {
+        font-size: 4vw;
+    }
+}
+
+
+@media screen and (max-width: 370px) {
+    #promo .radio-divs{
+        flex-direction: column;
+        gap: 0;
+    }
+
+    #promo #add-button {
+        margin: auto 0;
+    }
+
+    .mult-select-tag .wrapper .body.rounded btn-container {
+        position: relative;
+        left: -40px;
     }
 }

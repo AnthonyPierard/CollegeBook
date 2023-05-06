@@ -1,5 +1,46 @@
-.event-image {
+.event-pre-image {
     display: block;
     margin: 0 auto;
-    max-width: 50%;
+    width: 70%;
 }
+
+.event-summary {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.event-infos, .event-image {
+    margin: 0;
+    width: 40vh;
+}
+
+.event-infos {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+
+.event-image img {
+    width: 100%;
+}
+
+@media screen and (max-width: 650px) {
+    .event-summary {
+        flex-direction: column;
+    }
+
+    .event-infos, .event-image {
+        margin: 0 auto;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .event-image {
+        width: 100%;
+    }
+}
+
