@@ -11,8 +11,12 @@
         </div>
         <script src="{% static 'js/Reservation.js' %}"></script>
         <script>
-            let url = "{{url}}";
+            const url = "{{url}}";
             const reservationURL = "{% url 'Reservation:representation_reservation' representation.id %}";
+            let seatTypes = JSON.parse('{{ seatTypes|safe}}');
+            for (let i = 0; i< seatTypes.length;i++){
+                seatTypes[i] = "seat "+seatTypes[i].toLowerCase()
+            }
             window.addEventListener("load", prepare_json(url));
         </script>
         <div class = "details">

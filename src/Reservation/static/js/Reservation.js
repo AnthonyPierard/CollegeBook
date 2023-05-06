@@ -1,14 +1,17 @@
 let selectedSeatsIDs = {};
-let configType
+let configType;
 let csrfToken = getCookie('csrftoken');
+const lockedTypes = ["seat sold", "seat selected", "space"];
+
 //TODO: sieges en bord de seat-none
 //TODO: Récupérer tous les types de siege  de cette config
 function changeStatus(seatID){
     let seat = document.getElementById(seatID);
-    if(seat.className.baseVal == "seat" || seat.className.baseVal == "seat vip" || seat.className.baseVal == "seat classic" || seat.className.baseVal == "seat debout"){
+    if(seatTypes.includes(seat.className.baseVal)){
         selectedSeatsIDs[seatID] = seat.className.baseVal;
         seat.className.baseVal = "seat selected";
         updatePrice();
+        console.log(selectedSeatsIDs)
     }
     else if (seat.className.baseVal == "seat selected"){
         seat.className.baseVal = selectedSeatsIDs[seatID];
@@ -31,7 +34,7 @@ function canBeSelected(seatID){
         if (rightSeats.length == 0 || rightSeats[0].className.baseVal == "space"){
             return true;
         }
-        else if (rightSeats[0].className.baseVal == "seat" && (rightSeats[1].className.baseVal == "seat sold" || rightSeats[1].className.baseVal == "seat selected" || rightSeats[1].className.baseVal == "space")){
+        else if (seatTypes.includes(rightSeats[0].className.baseVal) && lockedTypes.includes(rightSeats[1].className.baseVal)){
             return false;
         }
         return true;
@@ -41,23 +44,23 @@ function canBeSelected(seatID){
         if (leftSeats.length == 0 || leftSeats[0].className.baseVal == "space"){
             return true;
         }
-        else if (leftSeats[0].className.baseVal == "seat" && (leftSeats[1].className.baseVal == "seat sold" || leftSeats[1].className.baseVal == "seat selected" || leftSeats[1].className.baseVal == "space")){
+        else if (seatTypes.includes(leftSeats[0].className.baseVal) && lockedTypes.includes(leftSeats[1].className.baseVal)){
             return false;
         }
         return true;
     }
 
     else{
-        if (rightSeats[0].className.baseVal == "seat" && rightSeats.length==1){
+        if (seatTypes.includes(rightSeats[0].className.baseVal) && rightSeats.length==1){
             return false;
         }
-        else if (leftSeats[0].className.baseVal == "seat" && leftSeats.length==1){
+        else if (seatTypes.includes(leftSeats[0].className.baseVal) && leftSeats.length==1){
             return false
         }
-        else if (leftSeats[0].className.baseVal == "seat" && (leftSeats[1].className.baseVal == "seat sold" || leftSeats[1].className.baseVal == "seat selected" || leftSeats[1].className.baseVal == "space")){
+        else if (seatTypes.includes(leftSeats[0].className.baseVal) && lockedTypes.includes(leftSeats[1].className.baseVal)){
             return false;
         }
-        else if (rightSeats[0].className.baseVal == "seat" && (rightSeats[1].className.baseVal == "seat sold" || rightSeats[1].className.baseVal == "seat selected" || rightSeats[1].className.baseVal == "space")){
+        else if (seatTypes.includes(rightSeats[0].className.baseVal) && lockedTypes.includes(rightSeats[1].className.baseVal)){
             return false;
         }
         return true;
@@ -103,7 +106,7 @@ function updatePrice(){
     $.ajax({
         url:"process_price/",
         type:"POST",
-        data:{selectedSeatsID: JSON.stringify(selectedSeatsIDs), roomType : configType},
+        data:{selectedSeatsID: JSON.stringify(selectedSeatsIDs)},
         dataType:"json",
         headers:{
             'X-CSRFToken': csrfToken
@@ -132,7 +135,22 @@ function reserveSeats(callback) {
     });
 }
 
-
+// Code appelé lors du clic sur le bouton "Valider"
+function checkBeforeSubmit() {
+    checkSeats()
+    .then(function() {
+        // Le code suivant sera exécuté si la promesse est résolue
+        // C'est-à-dire si la condition de vérification est vérifiée
+        // Rediriger vers la page suivante
+        window.location.href = reservationURL;
+    })
+    .catch(function(error) {
+        // Le code suivant sera exécuté si la promesse est rejetée
+        // C'est-à-dire si la condition de vérification n'est pas vérifiée
+        // Afficher le message d'erreur
+        alert(error);
+    });
+}
 function checkSeats() {
     seatSelected = true;
     return new Promise(function(resolve, reject) {
@@ -141,7 +159,7 @@ function checkSeats() {
             for(seatID in selectedSeatsIDs){
                 if (!canBeSelected(seatID)) {
                     seatSelected = false
-                    reject("Vous ne pouvez pas laissez de place vide entre deux places vendues.\n Vérifier les sièges aux alentours de la place "+ selectedSeatsIDs[seatID]);
+                    reject("Vous ne pouvez pas laissez de place vide entre deux places vendues.\n Vérifier les sièges aux alentours de la place "+ seatID);
                 }
             }
         }
@@ -155,26 +173,9 @@ function checkSeats() {
                 }
             })
         }
-
+        
     });
-  }
-  
-  // Code appelé lors du clic sur le bouton "Valider"
-  function checkBeforeSubmit() {
-    checkSeats()
-      .then(function() {
-        // Le code suivant sera exécuté si la promesse est résolue
-        // C'est-à-dire si la condition de vérification est vérifiée
-        // Rediriger vers la page suivante
-        window.location.href = reservationURL;
-      })
-      .catch(function(error) {
-        // Le code suivant sera exécuté si la promesse est rejetée
-        // C'est-à-dire si la condition de vérification n'est pas vérifiée
-        // Afficher le message d'erreur
-        alert(error);
-      });
-  }
+}
 
 function getCookie(name) {
     let cookieValue = null;
@@ -183,12 +184,36 @@ function getCookie(name) {
       for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
         if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;
         }
       }
     }
     return cookieValue;
+  }
+
+  async function prepare_json(url) {
+    //on retire ce qu'il y avait dans le seat-area
+    window.addEventListener("load", function() {
+        document.getElementById("validateButton").addEventListener('click',checkBeforeSubmit);
+    });
+    if(url.value!="nothing"){
+        const seat_area = document.querySelector('.seat-area');
+        seat_area.remove();
+        //on va chercher ce qu'il y a dans le json
+        const requestURL = url;
+        const request = new Request(requestURL);
+        const response = await fetch(request);
+        const seat = await response.json();
+        configType = seat[0]["class"]
+        if (configType != "standing-zone"){
+            fill_seat(seat);
+        }
+        else{
+            fill_page(seat)
+        }
+    }
+  
   }
   
 //remplis le seat-area de siège ou d'espace debout
@@ -227,28 +252,26 @@ function fill_seat(json_dictionnary){
                 }
                 charcode = charcode+1;
             }
-            if(json_dictionnary[index].class=="standing-zone"){
-                const nbr_place = document.querySelector("#nbr_place");
-                const input_nbr_place = document.createElement('input');
-                input_nbr_place.type="number";
-                input_nbr_place.id="value_place";
-                input_nbr_place.value=json_dictionnary[index].nbr_place;
-                nbr_place.innerHTML = "Nombre de place debout :";
-                nbr_place.appendChild(input_nbr_place);
-            }
         }
 
     }
 }
 
 function fill_page(json_dictionnary) {
+    let inputLabelText = "Cette représentation ne propose que des places debouts. Veuillez séléctionner le nombre de place que vous souhaitez réserver"
+    let keys = [];
+    if(json_dictionnary[1] != undefined){
+        inputLabelText = "Cette représentation propose aussi des places debouts. Si vous souhaitez réserver des places debouts, entrez directement le nombre dans le champs ci-dessous";
+        fill_seat(json_dictionnary)
+    }
+
     const selectDiv = document.createElement('div');
     selectDiv.classList.add("input-box") 
 
     const theatre = document.querySelector('.theatre');
     theatre.appendChild(selectDiv)
 
-    const inputLabel = document.createTextNode("Cette représentation de propose que des places debout, veuillez séléctionner le nombre de place que vous voulez réserver");
+    const inputLabel = document.createTextNode(inputLabelText);
     
     const inputBox = document.createElement("input");
     inputBox.type = "number";
@@ -258,22 +281,39 @@ function fill_page(json_dictionnary) {
     inputBox.step ="1";
     inputBox.value = "0";
     inputBox.addEventListener('input', function() {
-        const keys = Object.keys(selectedSeatsIDs);
+        if(json_dictionnary[1] != undefined){
+            console.log("pas undefined")
+            keys = []
+            for(let key in selectedSeatsIDs){
+                if (selectedSeatsIDs[key]=="seat debout"){
+                    console.log(key)
+                    keys.push(key)
+                }
+            }
+        }
+        else {
+            console.log("undefined")
+            keys = Object.keys(selectedSeatsIDs);
+        }
         if (inputBox.value > keys.length){
+            console.log("plus petit", inputBox.value, keys.length)
             const seatsOffset = inputBox.value - keys.length;
             for (let i = 0; i < seatsOffset; i++){
-                selectedSeatsIDs["A"+(keys.length+i)] = "Debout";
+                selectedSeatsIDs["Debout"+(keys.length+i)] = "seat debout";
             }
         }
         else if (inputBox.value < keys.length){
+            console.log("plus grand", inputBox.value, keys.length)
             const seatsOffset = keys.length - inputBox.value;
             for (let i = keys.length-1 ; i >= keys.length - seatsOffset; i--){
                 const key = keys[i];
                 delete selectedSeatsIDs[key];
             }
         }
-        updatePrice()
-      });
+        console.log(selectedSeatsIDs)
+        updatePrice();
+    });
+
     const remainingSeats = document.createTextNode("Il reste actuellement "+ json_dictionnary[0]["nbr_place"] + " places disponnibles") 
     
 
@@ -310,28 +350,4 @@ function create_rect_svg(parent, x, y, width, height) {
     rect.setAttribute("height", height);
     rect.classList.add("seat-style");
     parent.appendChild(rect)
-}
-
-async function prepare_json(url) {
-    //on retire ce qu'il y avait dans le seat-area
-    window.addEventListener("load", function() {
-        document.getElementById("validateButton").addEventListener('click',checkBeforeSubmit);
-      });
-    if(url.value!="nothing"){
-        const seat_area = document.querySelector('.seat-area');
-        seat_area.remove();
-        //on va chercher ce qu'il y a dans le json
-        const requestURL = url;
-        const request = new Request(requestURL);
-        const response = await fetch(request);
-        const seat = await response.json();
-        configType = seat[0]["class"]
-        if (configType != "standing-zone"){
-            fill_seat(seat);
-        }
-        else{
-            fill_page(seat)
-        }
-    }
-
 }

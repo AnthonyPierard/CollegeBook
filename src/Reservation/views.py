@@ -22,25 +22,26 @@ def seat_selection(request, representation_id):
     configurationID = event.configuration_id
     configuration = Config.objects.get(pk=configurationID)
     url = "/static/json/" + unidecode(event.name) + "/" + str(representation.id) + ".json"
-    return render(request, 'seat_selection.html', {"representation": representation, "url": url})
+
+
+    places = Place.objects.filter(configuration_id=configurationID)
+    seatTypes = [place.type for place in places]
+    seatTypesJson = json.dumps(seatTypes)
+
+    return render(request, 'seat_selection.html', {"representation": representation, "url": url, "seatTypes":seatTypesJson})
 
 
 def process_price(request, representation_id):
     selected_seats_str = request.POST.get("selectedSeatsID")
-    roomType = request.POST.get("roomType")
     selected_seats = json.loads(selected_seats_str)
     config = Config.objects.get(pk=Event.objects
                                 .get(pk=Representation.objects.
                                      get(pk=representation_id).event.id).configuration.id)
     total_price = 0
-    if roomType != "standing-zone":
-        for seatIDS in selected_seats:
-            seatType = selected_seats[seatIDS].split()[1].capitalize()
-            price = Place.objects.get(configuration=config, type=seatType).price
-            total_price += price
-    else:
-        price = Place.objects.get(configuration=config, type="Debout").price
-        total_price = price * len(list(selected_seats.keys()))
+    for seatIDS in selected_seats:
+        seatType = selected_seats[seatIDS].split()[1].capitalize()
+        price = Place.objects.get(configuration_id=config, type=seatType).price
+        total_price += price
 
     return JsonResponse({'total_price': total_price, 'selected_seats': sorted(list(selected_seats.keys()))})
 
@@ -77,10 +78,8 @@ def reserve_seats(request,representation_id):
                 data[rowID]["seat"][jsonID] = "seat sold"
     
     else:
-        print("\n\n salut \n\n")
         remainingPlaces = data[0]["nbr_place"]
         for i in range(len(selectedSeatsIDs)):
-            print("yo")
             remainingPlaces -= 1
             if remainingPlaces == -1:
                 seatsReserved = False
