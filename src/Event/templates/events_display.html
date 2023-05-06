@@ -5,13 +5,13 @@
     {% for event in all_event %}
         <div class="card mb-3" style="max-width: 100%; height: auto;">
             <div class="row g-0">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     {% if event.image %}
-                        <img class="event-pre-image" src="{{ event.image.url }}" class="img-fluid rounded-start"
+                        <img class="event-pre-image" src="{{ event.image.url }}" class="img-fluid rounded-start" width="300" height="400"
                              alt="{{ event.name }}">
                     {% endif %}
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <div class="card-body">
                         <h5 class="card-title">{{ event.name }}</h5>
                         <p class="card-text">{{ event.description }}</p>
