@@ -9,44 +9,86 @@
 
 
 {% block body %}
-    <select name="config" id="config_choice" onchange="prepare_json(this)">
-        <option id="option" value="nothing">----------</option>
-        {% for configuration in configurations %}
-            <option value={{configuration.url_json}} >{{configuration.name}}</option>
-        {% endfor %}
-    </select>
-    <br>
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            {{ form.name.label }}
-            {{ form.name }}
-        </div>
+    <div class="form">
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-box">
+                <label for="config_choice">Afficher une configuration</label>
+                <select name="config" id="config_choice" onchange="prepare_json(this)">
+                    <option id="option" value="nothing">----------</option>
+                    {% for configuration in configurations %}
+                        <option value={{configuration.url_json}} >{{configuration.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <input id="create_json" type="submit" disabled="true" value="Confirmer">
+            <div class="input-box">
+                {{ form.name.label }}
+                {{ form.name }}
+            </div>
 
-        <div class="input-box">
-            {{ form.place_types.label }}
-            {{ form.place_types }}
-        </div>
-        <div id="checkboxList"></div>
-        <form> <!-- Sert à selectionner le mode d'edition -->
-            <label>
-                <input type="radio" name="mode" value="suppression">
-                    Mode suppression
-            </label>
-            <label>
-                <input type="radio" name="mode" value="assignation">
-                    Mode assignation
-            </label>
+            <div id="basic-infos" class="input-box">
+                <div id="classic-price" class="undisplayed">
+                    {{ form.classic_price.label }}
+                    {{ form.classic_price }}
+                    {{ form.classic_price.errors }}
+                </div>
+                <div id="standing-price" class="undisplayed">
+                    {{ form.standing_price.label }}
+                    {{ form.standing_price }}
+                    {{ form.standing_price.errors }}
+                </div>
+                <div id="standing-number" class="undisplayed">
+                    {{ form.standing_number.label }}
+                    {{ form.standing_number }}
+                    {{ form.standing_number.errors }}
+                </div>
+            </div>
+            <div class="input-box" id="seat_types">
+                <div class="input-button">
+                    <div class="input-tag">
+                        <label>Ajouter un type de place</label>
+                        <input id="text" type="text">
+                    </div>
+                    <div class="input-tag">
+                        <label id="montant-label">Montant du type de place</label>
+                        <input id="montant" type="number" step="0.01" min="0.01">
+                    </div>
+                    <button id="add-button" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="seatTypes-div" class="input-button">
+                    {{ form.place_types }}
+                    <button id="del-button" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="check-boxes" class="input-box">
+                <div id="checkboxList"></div>
+                <div class="radio-divs">
+                    <div class="radio">
+                        <input type="radio" name="mode" value="suppression">
+                        <label>Mode suppression</label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" name="mode" value="assignation">
+                        <label>Mode assignation</label>
+                    </div>
+                </div>
+
+            </div>
+            <input id="create_json" type="submit" disabled="true" value="Créer une nouvelle configuration">
         </form>
+    </div>
 
 
-    </form>
-    <br>
-    <a href="{% url 'Event:creation' %}">Revenir vers la création</a>
-
-    <div id="nbr_place"></div>
     <div class="full-area">
         <div class="theatre">
             <div class="seat-area">

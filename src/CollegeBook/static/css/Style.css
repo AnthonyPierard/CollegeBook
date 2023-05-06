@@ -323,6 +323,7 @@ input[type="submit"] {
     border: none;
     background-color: var(--main-color);
     color: white;
+    max-width: 100%;
 }
 
 input[type="submit"]:hover {
@@ -491,6 +492,13 @@ input[type="radio"] {
         width: calc(98% - 40px);
     }
 }
+
+@media screen and (max-width: 430px) {
+    input[type="submit"] {
+        font-size: 4vw;
+    }
+}
+
 
 @media screen and (max-width: 370px) {
     #promo .radio-divs{

@@ -29,7 +29,7 @@ const tagifies = document.querySelectorAll(".tagify__input");
 //     });
 // }
 
-//Tagify for artists&
+//Tagify for artists
 const artist = document.querySelector("#artist");
 const artistInput = artist.querySelector("input[name='artiste']")
 const artistDiv = artist.querySelector("#artist-div");
@@ -109,7 +109,7 @@ function addPromoCode() {
 }
 
 function arePromoInputsFilled() {
-    return !(promoText.value === "" || (radioMontant.checked && promoMontant.value ==="") || (radioPourcentage.checked && promoPourcentage.value ===""))
+    return promoText.value && (radioMontant.checked && promoMontant.value) || (radioPourcentage.checked && promoPourcentage.value)
 }
 promoAddButton.addEventListener('click', () => {
     if (arePromoInputsFilled()) {

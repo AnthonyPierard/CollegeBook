@@ -16,7 +16,7 @@
                 <input type="text" id="name" name="name">
                 <div id="name-errors"></div>
             </div>
-            <div class="input-box">
+            <div id="image" class="input-box">
                 {{ form.image.label }}
                 {{ form.image }}
                 {{ form.image.errors }}
@@ -44,7 +44,7 @@
                         </svg>
                     </button>
                 </div>
-                <div id="artist-div" class="input-button undisplayed">
+                <div id="artist-div" class="input-button">
                     {{ form.artiste }}
                     <button id="del-button" type="button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
