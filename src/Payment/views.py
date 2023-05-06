@@ -61,6 +61,7 @@ class CreateCheckoutSessionView(View):
                 payment_method_types=['card', 'bancontact', 'sepa_debit'],
                 line_items=line_items,
                 mode='payment',
+                allow_promotion_codes=True,
                 success_url=settings.DOMAIN + 'payment/success/',
                 cancel_url=settings.DOMAIN + 'payment/cancel/',
             )

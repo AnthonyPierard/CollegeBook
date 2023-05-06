@@ -14,7 +14,7 @@ class Reservation(models.Model):
     first_name = models.CharField("Prénom de la personne qui réserve", max_length=50)
     phone = models.CharField("Numéro de tel de la personne qui réserve", max_length=10)
     date = models.DateTimeField("Date de la réservation", default=datetime.now())
-    note = models.CharField("Remarque sur la réservation", max_length=1000)
+    note = models.CharField("Remarque sur la réservation", max_length=1000, blank= True)
     drink_number = models.IntegerField("Ticket boisson pris avec la réservation", default=0)
     food_number = models.IntegerField("Ticket nourriture pris avec la réservation", default=0)
     paid = models.BooleanField("État du payement", default=False)

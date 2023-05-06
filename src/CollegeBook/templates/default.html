@@ -64,28 +64,11 @@
         {% block body %}
         {% endblock %}
     </div>
-    
-{#    <footer class="footer">#}
-{#        <ul>#}
-{#            <li><p class="footer-title">Contact</p></li>#}
-{#            <li><a href="#">Flop</a></li>#}
-{#            <li><a href="#">Ratio</a></li>#}
-{#        </ul>#}
-{#        <ul>#}
-{#            <li><p class="footer-title">Plan du site</p></li>#}
-{#            <li><a href="#">Ratio</a></li>#}
-{#            <li><a href="#">Flop</a></li>#}
-{#        </ul>#}
-{#        <ul>#}
-{#            <li><p class="footer-title">À propos</p></li>#}
-{#            <li><a href="#">Feur</a></li>#}
-{#            <li><a href="#">Quoicoubeh</a></li>#}
-{#        </ul>#}
-{#        #}
-{#    </footer>#}
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         flatpickr("input[class=MultiDate]", {mode:"multiple", enableTime:true, time_24hr:true, dateFormat:"d-m-Y/H:i"});
+        flatpickr("input[class=Time]", {enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true});
     </script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="{% static 'js/Base.js' %}"></script>

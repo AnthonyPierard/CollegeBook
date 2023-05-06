@@ -17,13 +17,14 @@ function clickable_seats_and_spaces(){
             if (!element.classList.contains('space') && selected_mode === "assignation") {
                 set_place_type(element);
                 console.log("OK")
-            } else {
+            } else if (selected_mode == "suppression"){
                 element.classList.toggle('seat');
                 element.classList.toggle('space');
             }
         });
     }
 }
+
 
 //créer un élément au dessus qui permet de sélectionner une ligne entière
 function clickable_select_row() {
@@ -74,13 +75,13 @@ function clickable_select_row() {
 
                                 // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
                                 if (!rule) {
-                                    styleSheet.insertRule(`.seat.${selected_type} { background-color: ${color}; }`, styleSheet.cssRules.length);
+                                    styleSheet.insertRule(`.seat.${selected_type} { color: ${color}; }`, styleSheet.cssRules.length);
                                 } else {
-                                    rule.style.backgroundColor = color;
+                                    rule.style.color = color;
                                 }
                             }
                         }
-                    } else {
+                    } else if (selected_mode === "suppression"){
                         seat.classList.toggle('seat');
                         seat.classList.toggle('space');
                     }
@@ -90,6 +91,33 @@ function clickable_select_row() {
     }
 }
 
+function create_seat_svg() {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewbox', "0 0 32 32");
+    create_path_svg(svg, "M9,29H5c-1.1,0-2-0.9-2-2V17c0-1.7,1.3-3,3-3h0c1.7,0,3,1.3,3,3V29z");
+    create_path_svg(svg, "M27,29h-4V17c0-1.7,1.3-3,3-3h0c1.7,0,3,1.3,3,3v10C29,28.1,28.1,29,27,29z");
+    create_rect_svg(svg, 9, 19, 14, 10)
+    create_rect_svg(svg, 9, 9, 14, 10)
+    create_path_svg(svg, "M6,14V7.8C6,5.7,7.7,4,9.8,4h12.3C24.3,4,26,5.7,26,7.8V14");
+    return svg
+}
+
+function create_path_svg(parent,  d) {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.classList.add("seat-style");
+    parent.appendChild(path)
+}
+
+function create_rect_svg(parent, x, y, width, height) {
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", y);
+    rect.setAttribute("width", width);
+    rect.setAttribute("height", height);
+    rect.classList.add("seat-style");
+    parent.appendChild(rect)
+}
 
 //remplis le seat-area de siège ou d'espace debout
 function fill_seat(json_dictionnary){
@@ -103,19 +131,33 @@ function fill_seat(json_dictionnary){
             const row = document.createElement('div');
             row.classList.add(json_dictionnary[index].class);
             seat_area.appendChild(row);
-            const select_row = document.createElement('div');
-            select_row.classList.add("select-row");
-            row.appendChild(select_row);
+            if(row.classList.contains("seat-row")){
+                const select_row = document.createElement('div');
+                const select_row_svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                const select_row_path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                select_row_svg.setAttribute("width","16")
+                select_row_svg.setAttribute("height","16")
+                select_row_svg.setAttribute("fill","currentColor")
+                select_row_svg.setAttribute("viewBox","0 0 16 16")
+                select_row_svg.classList.add("bi")
+                select_row_svg.classList.add("bi-arrow-down-circle-fill")
+                select_row_path.setAttribute("d","M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z")
+                select_row_svg.appendChild(select_row_path)
+                select_row.appendChild(select_row_svg)
+                select_row.classList.add("select-row");
+                row.appendChild(select_row);
+            }
+
             if (json_dictionnary[index].seat != null) {
                 const all_seat = json_dictionnary[index].seat;
 
                 for (const seat of all_seat) {
-                    const marker_seat = document.createElement('div');
+                    const svg_seat = create_seat_svg()
                     const new_seat = seat.split(' ');
                     for (const class_seat of new_seat) {
-                        marker_seat.classList.add(class_seat);
+                        svg_seat.classList.add(class_seat);
                     }
-                    row.appendChild(marker_seat);
+                    row.appendChild(svg_seat);
                 }
             }
             if(json_dictionnary[index].class=="standing-zone"){
@@ -219,7 +261,6 @@ document.querySelector("#create_json").addEventListener("click", event => {
         fetch(request)
             .then(response => response.json())
     }
-
 })
 
 //rendre disable l'input submit si c'est le choix --------
@@ -251,6 +292,27 @@ function get_config(){
     return selectedValue;
 
 }
+/* Pour plus tard créer les checkbox via cette fonction
+function create_checkbox(place){
+    const checkboxList = document.getElementById('checkboxList');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.name = "choice";
+    checkbox.value = place;
+    checkboxList.appendChild(checkbox);
+
+    const label = document.createElement('label');
+    label.appendChild(document.createTextNode(place));
+    checkboxList.appendChild(label);
+
+    checkbox.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('input[name=choice]');
+    checkboxes.forEach((cb) => {
+      if (cb !== checkbox) {
+        cb.checked = false;
+      }
+    });
+}*/
 
 let nbr_cat = 0;
 //récuperer les types de places dans le tagify
@@ -266,6 +328,24 @@ function get_place_types(){
             checkboxList.removeChild(checkboxList.firstChild);
         }
 
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = "choice";
+        checkbox.value = "sold";
+        checkboxList.appendChild(checkbox);
+
+        const label = document.createElement('label');
+        label.appendChild(document.createTextNode("sold"));
+        checkboxList.appendChild(label);
+
+        checkbox.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('input[name=choice]');
+            checkboxes.forEach((cb) => {
+                if (cb !== checkbox) {
+                    cb.checked = false;
+                }
+            });
+        });
         allPlaces.forEach((place) => {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
@@ -312,42 +392,40 @@ function set_place_type(seat) {
         }
     });
 
-    seat.addEventListener('click', function() {
-        const seat_classes = seat.classList;
-        seat_classes.forEach((seat_class) => {
-            if (seat_class !== "seat" && seat_class !== "space") {
-                seat.classList.remove(seat_class);
-            }
-        });
-        if (selected_type != "") {
-            if (!seat.classList.contains(selected_type)) {
-                seat.classList.add(selected_type);
-
-                let styleTag = document.querySelector('style');
-                if (!styleTag) {
-                    styleTag = document.createElement('style');
-                    document.head.appendChild(styleTag);
-                }
-
-                // Récupérer la feuille de style et la règle CSS correspondant au type de siège
-                const styleSheet = styleTag.sheet;
-                const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${selected_type}`);
-
-                // Vérifier si une couleur a déjà été générée pour ce type de siège
-                let color = seatColors[selected_type];
-                if (!color) {
-                    // Générer une nouvelle couleur
-                    color = random_color();
-                    seatColors[selected_type] = color;
-                }
-
-                // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
-                if (!rule) {
-                    styleSheet.insertRule(`.seat.${selected_type} { background-color: ${color}; }`, styleSheet.cssRules.length);
-                } else {
-                    rule.style.backgroundColor = color;
-                }
-            }
+    const seat_classes = seat.classList;
+    seat_classes.forEach((seat_class) => {
+        if (seat_class !== "seat" && seat_class !== "space") {
+            seat.classList.remove(seat_class);
         }
     });
+    if (selected_type != "") {
+        if (!seat.classList.contains(selected_type)) {
+            seat.classList.add(selected_type);
+
+            let styleTag = document.querySelector('style');
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                document.head.appendChild(styleTag);
+            }
+
+            // Récupérer la feuille de style et la règle CSS correspondant au type de siège
+            const styleSheet = styleTag.sheet;
+            const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${selected_type}`);
+
+            // Vérifier si une couleur a déjà été générée pour ce type de siège
+            let color = seatColors[selected_type];
+            if (!color) {
+                // Générer une nouvelle couleur
+                color = random_color();
+                seatColors[selected_type] = color;
+            }
+
+            // Ajouter une nouvelle règle CSS si elle n'existe pas, sinon mettre à jour la règle existante
+            if (!rule) {
+                styleSheet.insertRule(`.seat.${selected_type} { color: ${color}; }`, styleSheet.cssRules.length);
+            } else {
+                rule.style.color = color;
+            }
+        }
+    }
 }

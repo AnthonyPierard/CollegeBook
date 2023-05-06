@@ -10,7 +10,7 @@ class ConfigForm(forms.ModelForm):
         labels = {'name': 'Nom de la nouvelle configuration'}
 
     place_types = TagField(label='Types de places', delimiters=';',
-                           initial='sold;Debout : 3.00€;Classic : 4.00€;Vip : 5.00€')
+                           initial='Debout : 3.00€;Classic : 4.00€;Vip : 5.00€')
 
 
     def save(self, user, commit=True):
