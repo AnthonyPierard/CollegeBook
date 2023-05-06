@@ -70,13 +70,13 @@ function clickable_seats_and_spaces(){
         element.addEventListener('click', (event) => {
             if (!element.classList.contains('space') && selected_mode === "assignation") {
                 set_place_type(element);
-                console.log("OK")
             } else if (selected_mode == "suppression"){
                 if(element.classList.length>1){
-                    element.classList.forEach(function (classe){
-                        element.classList.remove(classe);
-                        element.classList.add('space');
-                    })
+                    const classes = element.classList;
+                    element.classList.remove(classes[0]);
+                    element.classList.remove(classes[0]);
+                    element.classList.add('space');
+
                 }
                 else{
                     element.classList.remove('space');
