@@ -1,25 +1,23 @@
-let selectedSeatsIDs = [];
+let selectedSeatsIDs = {};
+let configType
 let csrfToken = getCookie('csrftoken');
 //TODO: sieges en bord de seat-none
 //TODO: Récupérer tous les types de siege  de cette config
 function changeStatus(seatID){
     let seat = document.getElementById(seatID);
     if(seat.className.baseVal == "seat" || seat.className.baseVal == "seat vip" || seat.className.baseVal == "seat classic" || seat.className.baseVal == "seat debout"){
+        selectedSeatsIDs[seatID] = seat.className.baseVal;
         seat.className.baseVal = "seat selected";
-        selectedSeatsIDs.push(seatID);
-        updatePrice(true);
+        updatePrice();
     }
     else if (seat.className.baseVal == "seat selected"){
-        selectedSeatsIDs = selectedSeatsIDs.filter(function(id){
-            return id !== seatID;
-        })  
-        //TODO : le repasser dans sa classe de base
-        updatePrice(false);
+        seat.className.baseVal = selectedSeatsIDs[seatID];
+        delete selectedSeatsIDs[seatID];
+        updatePrice();
     }
     else if (seat.className.baseVal == "seat sold"){
         alert("Ce siège a déjà été vendu");
     }
-    updateSeats();
 
 
     sessionStorage.setItem("selectedSeatsIDs", JSON.stringify(selectedSeatsIDs));
@@ -105,7 +103,7 @@ function updatePrice(){
     $.ajax({
         url:"process_price/",
         type:"POST",
-        data:{selectedSeatsID: selectedSeatsIDs},
+        data:{selectedSeatsID: JSON.stringify(selectedSeatsIDs), roomType : configType},
         dataType:"json",
         headers:{
             'X-CSRFToken': csrfToken
@@ -123,7 +121,7 @@ function reserveSeats(callback) {
     $.ajax({
         url: "reserve_seats/",
         type: "POST",
-        data: {selectedSeatsIDs: selectedSeatsIDs, currentRoom: url},
+        data: {selectedSeatsIDs: JSON.stringify(selectedSeatsIDs), currentRoom: url, roomType: configType},
         dataType: "json",
         headers: {
             'X-CSRFToken': csrfToken
@@ -135,29 +133,16 @@ function reserveSeats(callback) {
 }
 
 
-function updateSeats(){
-    const displayedSeats = document.getElementById("places");
-    displayedSeats.innerHTML = "";
-    selectedSeatsIDs.sort();
-
-    for(seatId of selectedSeatsIDs){
-        if (seatId == selectedSeatsIDs[selectedSeatsIDs.length-1]){
-            displayedSeats.innerHTML += seatId;
-        }
-        else {
-            displayedSeats.innerHTML += seatId + ", ";
-        }
-    }
-
-}
 function checkSeats() {
     seatSelected = true;
     return new Promise(function(resolve, reject) {
-      // Votre code de vérification ici
-        for(seatID in selectedSeatsIDs){
-            if (!canBeSelected(selectedSeatsIDs[seatID])) {
-                seatSelected = false
-                reject("Vous ne pouvez pas laissez de place vide entre deux places vendues.\n Vérifier les sièges aux alentours de la place "+ selectedSeatsIDs[seatID]);
+        // Votre code de vérification ici
+        if (configType != "standing-zone"){
+            for(seatID in selectedSeatsIDs){
+                if (!canBeSelected(seatID)) {
+                    seatSelected = false
+                    reject("Vous ne pouvez pas laissez de place vide entre deux places vendues.\n Vérifier les sièges aux alentours de la place "+ selectedSeatsIDs[seatID]);
+                }
             }
         }
         if (seatSelected){
@@ -256,6 +241,49 @@ function fill_seat(json_dictionnary){
     }
 }
 
+function fill_page(json_dictionnary) {
+    const selectDiv = document.createElement('div');
+    selectDiv.classList.add("input-box") 
+
+    const theatre = document.querySelector('.theatre');
+    theatre.appendChild(selectDiv)
+
+    const inputLabel = document.createTextNode("Cette représentation de propose que des places debout, veuillez séléctionner le nombre de place que vous voulez réserver");
+    
+    const inputBox = document.createElement("input");
+    inputBox.type = "number";
+    inputBox.id = "seatSelection";
+    inputBox.min = "0";
+    inputBox.required = true;
+    inputBox.step ="1";
+    inputBox.value = "0";
+    inputBox.addEventListener('input', function() {
+        const keys = Object.keys(selectedSeatsIDs);
+        if (inputBox.value > keys.length){
+            const seatsOffset = inputBox.value - keys.length;
+            for (let i = 0; i < seatsOffset; i++){
+                selectedSeatsIDs["A"+(keys.length+i)] = "Debout";
+            }
+        }
+        else if (inputBox.value < keys.length){
+            const seatsOffset = keys.length - inputBox.value;
+            for (let i = keys.length-1 ; i >= keys.length - seatsOffset; i--){
+                const key = keys[i];
+                delete selectedSeatsIDs[key];
+            }
+        }
+        updatePrice()
+      });
+    const remainingSeats = document.createTextNode("Il reste actuellement "+ json_dictionnary[0]["nbr_place"] + " places disponnibles") 
+    
+
+
+    selectDiv.appendChild(inputLabel)
+    selectDiv.appendChild(inputBox)
+    selectDiv.appendChild(remainingSeats)
+
+}
+
 function create_seat_svg() {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewbox', "0 0 32 32");
@@ -297,8 +325,13 @@ async function prepare_json(url) {
         const request = new Request(requestURL);
         const response = await fetch(request);
         const seat = await response.json();
-
-        fill_seat(seat);
+        configType = seat[0]["class"]
+        if (configType != "standing-zone"){
+            fill_seat(seat);
+        }
+        else{
+            fill_page(seat)
+        }
     }
 
 }

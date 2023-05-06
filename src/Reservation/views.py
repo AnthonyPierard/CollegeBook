@@ -26,40 +26,69 @@ def seat_selection(request, representation_id):
 
 
 def process_price(request, representation_id):
-    selected_seats = request.POST.getlist("selectedSeatsID[]")
+    selected_seats_str = request.POST.get("selectedSeatsID")
+    roomType = request.POST.get("roomType")
+    selected_seats = json.loads(selected_seats_str)
     config = Config.objects.get(pk=Event.objects
                                 .get(pk=Representation.objects.
                                      get(pk=representation_id).event.id).configuration.id)
+    total_price = 0
+    if roomType != "standing-zone":
+        for seatIDS in selected_seats:
+            seatType = selected_seats[seatIDS].split()[1].capitalize()
+            price = Place.objects.get(configuration=config, type=seatType).price
+            total_price += price
+    else:
+        price = Place.objects.get(configuration=config, type="Debout").price
+        total_price = price * len(list(selected_seats.keys()))
 
-    price = Place.objects.get(configuration=config, type="Classic").price
-    total_price = len(selected_seats) * price
-
-    return JsonResponse({'total_price': total_price, 'selected_seats': selected_seats})
+    return JsonResponse({'total_price': total_price, 'selected_seats': sorted(list(selected_seats.keys()))})
 
 def reserve_seats(request,representation_id):
-    selectedSeatsIDs = request.POST.getlist("selectedSeatsIDs[]")
-    rowOffset = 0
+    selectedSeatsIDsSTR = request.POST.get("selectedSeatsIDs")
+    roomType = request.POST.get("roomType")
     url = request.POST.get("currentRoom")
+
+    seatsReserved = True
+    selectedSeatsIDs = json.loads(selectedSeatsIDsSTR)
+    if len(list(selectedSeatsIDs.keys())) == 0:
+        seatsReserved = False
+        return(JsonResponse({'seatsReserved': seatsReserved}))
     path = Path(__file__).resolve().parent.parent
     src_file = path.joinpath("Event" + url)
+
     with open(src_file,'r') as f:
         data = json.load(f)
-    for seatID in selectedSeatsIDs:
-        rowID = findRowId(seatID[0])
-        rowID = rowID + rowOffset
-        columnID = int(seatID[1:])
-        while data[rowID]["class"] != "seat-row":
-            rowID +=1
-            rowOffset += 1
-        jsonID = findJsonID(data[rowID]["seat"], columnID)
-        if data[rowID]["seat"][jsonID] == "seat sold":
-            seatsReserved = False
-            return(JsonResponse({'seatsReserved': seatsReserved}))
-        else:
-            data[rowID]["seat"][jsonID] = "seat sold"
+
+    if roomType != "standing-zone" :
+        rowOffset = 0
+        for seatID in selectedSeatsIDs:
+            rowID = findRowId(seatID[0])
+            rowID = rowID + rowOffset
+            columnID = int(seatID[1:])
+            while data[rowID]["class"] != "seat-row":
+                rowID +=1
+                rowOffset += 1
+            jsonID = findJsonID(data[rowID]["seat"], columnID)
+            if data[rowID]["seat"][jsonID] == "seat sold":
+                seatsReserved = False
+                return(JsonResponse({'seatsReserved': seatsReserved}))
+            else:
+                data[rowID]["seat"][jsonID] = "seat sold"
+    
+    else:
+        print("\n\n salut \n\n")
+        remainingPlaces = data[0]["nbr_place"]
+        for i in range(len(selectedSeatsIDs)):
+            print("yo")
+            remainingPlaces -= 1
+            if remainingPlaces == -1:
+                seatsReserved = False
+                return(JsonResponse({'seatsReserved': seatsReserved}))
+        data[0]["nbr_place"] = remainingPlaces
+
     with open(src_file,'w') as f:
         json.dump(data,f)
-    seatsReserved = True
     return(JsonResponse({'seatsReserved': seatsReserved}))
     
 
