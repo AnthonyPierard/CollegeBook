@@ -161,6 +161,14 @@
     justify-content: space-between;
 }
 
+.checkbox-div {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-div label{
+    margin-right: 5px;
+}
 @media screen and (max-width: 350px) {
     #basic-infos div {
         min-width: 192px;

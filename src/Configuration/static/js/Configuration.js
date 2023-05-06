@@ -228,6 +228,8 @@ function create_seat_svg() {
     create_rect_svg(svg, 9, 19, 14, 10)
     create_rect_svg(svg, 9, 9, 14, 10)
     create_path_svg(svg, "M6,14V7.8C6,5.7,7.7,4,9.8,4h12.3C24.3,4,26,5.7,26,7.8V14");
+    svg.setAttribute('height', '32');
+    svg.setAttribute('width', '32');
     return svg
 }
 
@@ -533,6 +535,9 @@ function create_checkbox_element(name) {
         label.appendChild(document.createTextNode(name));
         checkbox_div.appendChild(label);
 
+
+        checkbox_div.appendChild(create_seat_svg());
+
         checkboxList.appendChild(checkbox_div);
         checkbox.addEventListener('click', () => {
             const checkboxes = document.querySelectorAll('input[name=choice]');
@@ -631,34 +636,35 @@ function set_place_type(seat) {
     }
 }
 
-function set_checkbox_color() {
-    const checkboxes = document.querySelectorAll('#checkboxList input[type="checkbox"]');
-
-    checkboxes.forEach((checkbox) => {
-        const label = checkbox.nextElementSibling;
-        const labelValue = label.textContent.toLowerCase();
-        if (seatColors.hasOwnProperty(labelValue)) {
-            const color = seatColors[labelValue];
-            label.style.color = color;
-        } else {
-            console.log(seatColors);
-            console.log(labelValue);
-            console.log(seatColors[labelValue]);
-        }
-    });
-}
+// function set_checkbox_color() {
+//     const checkboxes = document.querySelectorAll('#checkboxList input[type="checkbox"]');
+//
+//     checkboxes.forEach((checkbox) => {
+//         const label = checkbox.nextElementSibling;
+//         const labelValue = label.textContent.toLowerCase();
+//         if (seatColors.hasOwnProperty(labelValue)) {
+//             const color = seatColors[labelValue];
+//             label.style.color = color;
+//         } else {
+//             console.log(seatColors);
+//             console.log(labelValue);
+//             console.log(seatColors[labelValue]);
+//         }
+//     });
+// }
 
 
 setInterval(set_checkbox_color, 2000);
 
 function set_checkbox_color() {
-    const checkboxes = document.querySelectorAll('#checkboxList .checkbox-div input[type="checkbox"]');
+    const checkboxes = document.querySelectorAll('#checkboxList .checkbox-div');
     checkboxes.forEach((checkbox) => {
-        const label = checkbox.nextElementSibling;
+        const label = checkbox.querySelector('label');
         const labelValue = label.textContent.toLowerCase().replace(" ", "");
         if (seatColors.hasOwnProperty(labelValue)) {
             const color = seatColors[labelValue.replace(" ", "")];
-            label.style.color = color;
+            console.log(checkbox)
+            checkbox.style.color = color;
         }
     });
 }
