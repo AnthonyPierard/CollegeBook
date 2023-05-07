@@ -136,27 +136,21 @@ function reserveSeats(callback) {
 function checkBeforeSubmit() {
     checkSeats()
     .then(function() {
-        // Le code suivant sera exécuté si la promesse est résolue
-        // C'est-à-dire si la condition de vérification est vérifiée
-        // Rediriger vers la page suivante
         window.location.href = reservationURL;
     })
     .catch(function(error) {
-        // Le code suivant sera exécuté si la promesse est rejetée
-        // C'est-à-dire si la condition de vérification n'est pas vérifiée
-        // Afficher le message d'erreur
         alert(error);
     });
 }
 function checkSeats() {
     seatSelected = true;
-    console.log(selectedSeatsIDs)
     return new Promise(function(resolve, reject) {
-        // Votre code de vérification ici
+
         if (configType != "standing-zone"){
             for(seatID in selectedSeatsIDs){
                 if (!seatID.includes("Debout")){
                     if (!canBeSelected(seatID)) {
+                        //TODO: Verifier si pas le choix de laisser siege vide (e.g:9 achats sur une rangée de 10 ou 3 places dispo en tout mais groupe de 2 veut reserver)
                         seatSelected = false
                         reject("Vous ne pouvez pas laissez de place vide entre deux places vendues.\n Vérifier les sièges aux alentours de la place "+ seatID);
                     }
