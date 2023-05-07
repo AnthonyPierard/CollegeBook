@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
+from django.db.models import Q
 
 from Account.forms import UserForm, LoginUserForm, UpdateUserForm
 from Account.models import User
@@ -78,16 +79,15 @@ def user_update_archive(request, user_id):
 @login_required
 def user_events_display(request, user_id):
     user_events_draft = Event.objects.filter(user=user_id,state='DRF')
-    user_events = Event.objects.filter(user=user_id, state='ACT')
-    user_events_archived = Event.objects.filter(user=user_id, state='ARC')
+    user_events = Event.objects.filter(~Q(state='DRF'), user=user_id )
     user_representations = list()
     user_representations_archived = list()
     for event in user_events:
-        representations = Representation.objects.filter(event=event.id)
+        representations = Representation.objects.filter(event=event.id, state='ACT')
         for representation in representations:
             user_representations.append(representation)
-    for event in user_events_archived:
-        representations = Representation.objects.filter(event=event.id)
+    for event in user_events:
+        representations = Representation.objects.filter(event=event.id, state='ARC')
         for representation in representations:
             user_representations_archived.append(representation)
     return render(request, 'user_events_display.html', {'user_representations': user_representations,

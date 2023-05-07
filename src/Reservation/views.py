@@ -15,7 +15,7 @@ from .forms import ReservationForm
 
 def seat_selection(request, representation_id):
     representation = Representation.objects.get(pk=representation_id)
-    if representation.date <= timezone.now():
+    if representation.state != 'ACT' or representation.date <= timezone.now():
         return redirect('Event:display')
     eventID = representation.event_id
     event = Event.objects.get(pk=eventID)
@@ -36,37 +36,37 @@ def process_price(request, representation_id):
 
     return JsonResponse({'total_price': total_price, 'selected_seats': selected_seats})
 
-def reserve_seats(request,representation_id):
+
+def reserve_seats(request, representation_id):
     selectedSeatsIDs = request.POST.getlist("selectedSeatsIDs[]")
     rowOffset = 0
     url = request.POST.get("currentRoom")
     path = Path(__file__).resolve().parent.parent
     src_file = path.joinpath("Event" + url)
-    with open(src_file,'r') as f:
+    with open(src_file, 'r') as f:
         data = json.load(f)
     for seatID in selectedSeatsIDs:
         rowID = findRowId(seatID[0])
         rowID = rowID + rowOffset
         columnID = int(seatID[1:])
         while data[rowID]["class"] != "seat-row":
-            rowID +=1
+            rowID += 1
             rowOffset += 1
         jsonID = findJsonID(data[rowID]["seat"], columnID)
         if data[rowID]["seat"][jsonID] == "seat sold":
             seatsReserved = False
-            return(JsonResponse({'seatsReserved': seatsReserved}))
+            return (JsonResponse({'seatsReserved': seatsReserved}))
         else:
             data[rowID]["seat"][jsonID] = "seat sold"
-    with open(src_file,'w') as f:
-        json.dump(data,f)
+    with open(src_file, 'w') as f:
+        json.dump(data, f)
     seatsReserved = True
-    return(JsonResponse({'seatsReserved': seatsReserved}))
-    
+    return (JsonResponse({'seatsReserved': seatsReserved}))
 
 
 def representation_reservation(request, representation_id):
     representation = Representation.objects.get(pk=representation_id)
-    if representation.date <= timezone.now():
+    if representation.state != 'ACT' or representation.date <= timezone.now():
         return redirect('Event:display')
     if request.method == 'POST':
         form = ReservationForm(request.POST)

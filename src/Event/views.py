@@ -16,6 +16,7 @@ from Reservation.models import Reservation
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+
 def events_display(request):
     all_event = Event.objects.filter(state='ACT')
     return render(request, 'events_display.html', {'all_event': all_event})
@@ -26,7 +27,7 @@ def event_details(request, even_id):
     if event.state != 'ACT':
         return redirect('Event:display')
 
-    representations = Representation.objects.filter(date__gte=datetime.now(), event=event.id)
+    representations = Representation.objects.filter(state='ACT', date__gte=timezone.now(), event=event.id)
     return render(request, 'event_details.html', {"event": event, "representations": representations})
 
 
@@ -57,7 +58,6 @@ def event_creation(request):
             configurations_user = Config.objects.filter(user=request.user.id)
             configurations = configurations_default.union(configurations_user)
 
-
         return render(request, 'event_creation.html', {'form': form, 'configurations': configurations})
 
 
@@ -73,23 +73,26 @@ def delete_representation(request, representation_id):
         if form.is_valid():
             choice = form.cleaned_data['choice']
             if choice == "1":
-                    reservations = Reservation.objects.filter(representation = representation)                   
-                    for reservation in reservations:
-                        mail_content = "La representation de l'evenement %s,  le %s à malheureusement été annulée, vous pouvez contacter l'adresse @ pour plus d'information " %  (reservation.representation.event.name, reservation.representation.date)
-                        html = render_to_string('email.html', 
-                                                { 'name' : "monsieur/madame %s" %reservation.last_name ,
-                                                'email': reservation.email,
-                                                'content' : mail_content,
-                                                })
-                        send_mail('Reservation Ticket %s' %  reservation.representation.event.name,
-                                'Vous avez reserver un Ticket pour la representation de %s' %  reservation.representation.event.name,
-                                'collegebooktest@gmail.com',
-                                ['%s' % reservation.email ]  ,
-                                fail_silently=False,
-                                html_message= html
-                                )
-                    Representation.objects.filter(pk=representation_id).delete()
-                
+                reservations = Reservation.objects.filter(representation=representation)
+                for reservation in reservations:
+                    mail_content = "La representation de l'evenement %s,  le %s à malheureusement été annulée, vous pouvez contacter l'adresse @ pour plus d'information " % (
+                    reservation.representation.event.name, reservation.representation.date)
+                    html = render_to_string('email.html',
+                                            {'name': "monsieur/madame %s" % reservation.last_name,
+                                             'email': reservation.email,
+                                             'content': mail_content,
+                                             })
+                    send_mail('Reservation Ticket %s' % reservation.representation.event.name,
+                              'Vous avez reserver un Ticket pour la representation de %s' % reservation.representation.event.name,
+                              'collegebooktest@gmail.com',
+                              ['%s' % reservation.email],
+                              fail_silently=False,
+                              html_message=html
+                              )
+                rep = Representation.objects.get(pk=representation_id)
+                rep.state = "ARC"
+                rep.save()
+
         return redirect('Account:events', request.user.id)
     else:
         form = ConfirmForm()
@@ -139,6 +142,10 @@ def event_update(request, event_id):
 @login_required()
 def publish_event(request, event_id):
     event = Event.objects.get(pk=event_id)
+    reps = Representation.objects.filter(event=event)
+    for rep in reps:
+        rep.state = 'ACT'
+        rep.save()
     event.state = 'ACT'
     event.save()
 
