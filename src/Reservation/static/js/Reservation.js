@@ -4,14 +4,13 @@ let csrfToken = getCookie('csrftoken');
 const lockedTypes = ["seat sold", "seat selected", "space"];
 
 //TODO: sieges en bord de seat-none
-//TODO: Récupérer tous les types de siege  de cette config
+//TODO: Récupérer standing-zone créé
 function changeStatus(seatID){
     let seat = document.getElementById(seatID);
     if(seatTypes.includes(seat.className.baseVal)){
         selectedSeatsIDs[seatID] = seat.className.baseVal;
         seat.className.baseVal = "seat selected";
         updatePrice();
-        console.log(selectedSeatsIDs)
     }
     else if (seat.className.baseVal == "seat selected"){
         seat.className.baseVal = selectedSeatsIDs[seatID];
@@ -22,7 +21,7 @@ function changeStatus(seatID){
         alert("Ce siège a déjà été vendu");
     }
 
-
+    console.log(Object.keys(selectedSeatsIDs))
     sessionStorage.setItem("selectedSeatsIDs", JSON.stringify(Object.keys(selectedSeatsIDs)));
 }
 

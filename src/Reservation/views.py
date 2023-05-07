@@ -39,7 +39,7 @@ def process_price(request, representation_id):
                                      get(pk=representation_id).event.id).configuration.id)
     total_price = 0
     for seatIDS in selected_seats:
-        seatType = selected_seats[seatIDS].split()[1].capitalize()
+        seatType = selected_seats[seatIDS].split()[1]
         price = Place.objects.get(configuration_id=config, type=seatType).price
         total_price += price
 

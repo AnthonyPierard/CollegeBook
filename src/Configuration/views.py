@@ -14,7 +14,7 @@ def add_default_configuration(userId):
     :param userId: the id of the current user log
     :return: create de 4 configurations basic and link them to the user
     """
-    basicSeats = {"Debout": 3.00, "Classic": 5.00}
+    basicSeats = {"debout": 3.00, "classic": 5.00}
     configCreator(config_name="only Seat", json_url="/static/json/onlySeat.json", user_id=userId, seats=basicSeats)
     configCreator(config_name="all Seat", json_url="/static/json/allSeat.json", user_id=userId, seats=basicSeats)
     configCreator(config_name="only standing", json_url="/static/json/onlyStanding.json", user_id=userId,

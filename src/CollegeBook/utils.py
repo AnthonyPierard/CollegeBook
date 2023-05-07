@@ -102,7 +102,7 @@ def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name,
     cv2.imwrite(f"{qr_path}/{ticket_name}", img_reshape)
     pdf.setFont("Helvetica", 16)
 
-    if type_ticket == "Nourriture" or type_ticket == "Boisson" or type_ticket == "Debout":
+    if type_ticket == "Nourriture" or type_ticket == "Boisson" or type_ticket == "debout":
         pdf.drawString(165, 707, "Tickets %s" % type_ticket)
     else:
         pdf.drawString(165, 707, "Ticket place n°%s" % type_ticket)

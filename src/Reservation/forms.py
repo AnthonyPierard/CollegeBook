@@ -35,13 +35,13 @@ class ReservationForm(forms.ModelForm):
             selected_seats = self.cleaned_data["selectedseat"]
             selected_seats = selected_seats.split(",")
             for element in selected_seats:
-                if element == "Debout":
-                    place = Place.objects.get(type="Debout",
+                if element == "debout":
+                    place = Place.objects.get(type="debout",
                                               configuration_id=reservation.representation.event.configuration_id)
                     StandingTicket.create(type_id=place.id, reservation_id=reservation.id)
                 else:
                     # TODO changer le debout
-                    place = Place.objects.get(type="Classic",
+                    place = Place.objects.get(type="classic",
                                               configuration_id=reservation.representation.event.configuration_id)
                     SeatingTicket.create(seat_number=element, type_id=place.id, reservation_id=reservation.id)
         return reservation

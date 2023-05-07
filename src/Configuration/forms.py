@@ -31,9 +31,9 @@ class ConfigForm(forms.ModelForm):
             standing_price = self.cleaned_data["standing_price"]
 
             if classic_price:
-                Place(type="Classique", price=classic_price, configuration_id=configuration.id).save()
+                Place(type="classic", price=classic_price, configuration_id=configuration.id).save()
             if standing_price:
-                Place(type="Debout", price=standing_price, configuration_id=configuration.id).save()
+                Place(type="debout", price=standing_price, configuration_id=configuration.id).save()
 
             place_values = self.cleaned_data["place_types"]
             if place_values:
@@ -41,7 +41,7 @@ class ConfigForm(forms.ModelForm):
                 for element in cleaned_values:
                     splitted = element.split(":")
                     if len(splitted) > 1:
-                        place_type = splitted[0].split(' ')[0]
+                        place_type = splitted[0].split(' ')[0].lower()
                         place_price = splitted[1].split(' ')[1].replace("€", "")
 
                         # Places creation in DB

@@ -27,7 +27,7 @@ def scan_ticket(request, code):
     elif type_ticket == SeatingTicket:
         type_ticket = "Assis"
     else:
-        type_ticket = "Debout"
+        type_ticket = "debout"
     try:
         seat_number = ticket.seat_number
     except Exception:
