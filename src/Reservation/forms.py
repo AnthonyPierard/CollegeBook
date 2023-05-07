@@ -20,7 +20,7 @@ class ReservationForm(forms.ModelForm):
                   'note': 'Commentaire', 'drink_number': 'Tickets boissons', 'food_number': 'Tickets nourriture'}
         widgets = {'drink_number': forms.NumberInput(attrs = {'min' : '0'}), 'food_number': forms.NumberInput(attrs={'min': '0'})}
         field_options = {'note': {'required': False}}
-    selectedseat = forms.CharField(label='Place Selectionner', max_length=50, required=True)
+    selectedseat = forms.CharField(label='Place Selectionner', required=True)
 
     def save(self, representation_id, commit=True):
         reservation = super(ReservationForm, self).save(commit=False)
@@ -33,15 +33,11 @@ class ReservationForm(forms.ModelForm):
                 FoodTicket.create(reservation_id=reservation.id)
 
             selected_seats = self.cleaned_data["selectedseat"]
-            selected_seats = selected_seats.split(",")
-            for element in selected_seats:
-                if element == "debout":
-                    place = Place.objects.get(type="debout",
-                                              configuration_id=reservation.representation.event.configuration_id)
-                    StandingTicket.create(type_id=place.id, reservation_id=reservation.id)
-                else:
-                    # TODO changer le debout
-                    place = Place.objects.get(type="classic",
-                                              configuration_id=reservation.representation.event.configuration_id)
-                    SeatingTicket.create(seat_number=element, type_id=place.id, reservation_id=reservation.id)
-        return reservation
+            selected_seats_dic = eval(selected_seats)
+            # selected_seats = selected_seats.split(",")
+            for element in selected_seats_dic.keys():
+                type_siege = selected_seats_dic[element].split()[1]
+                place = Place.objects.get(type= type_siege,
+                                            configuration_id=reservation.representation.event.configuration_id)
+                SeatingTicket.create(seat_number=element, type_id=place.id, reservation_id=reservation.id)
+        return reservation 

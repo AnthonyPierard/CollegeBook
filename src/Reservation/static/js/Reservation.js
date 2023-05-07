@@ -3,8 +3,8 @@ let configType;
 let csrfToken = getCookie('csrftoken');
 const lockedTypes = ["seat sold", "seat selected", "space"];
 
-//TODO: sieges en bord de seat-none
 //TODO: Récupérer standing-zone créé
+//TODO: TIMEOUT
 function changeStatus(seatID){
     let seat = document.getElementById(seatID);
     if(seatTypes.includes(seat.className.baseVal)){
