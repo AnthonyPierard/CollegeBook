@@ -250,6 +250,12 @@ function create_rect_svg(parent, x, y, width, height) {
     parent.appendChild(rect)
 }
 
+function fill_types(seats) {
+    const seat_types = seats[0].seat_types;
+    seatTypeTagify.removeAllTags();
+    seatTypeTagify.addTags(seat_types);
+}
+
 function is_class_in_json(class_name, json) {
     for (const element of json) {
         if (Object.values(element).includes(class_name)){
@@ -368,6 +374,7 @@ async function prepare_json(url) {
         const response = await fetch(request);
         const seat = await response.json();
 
+        fill_types(seat);
         fill_seat(seat);
     }
 
@@ -375,8 +382,14 @@ async function prepare_json(url) {
 
 //création du json de la page HTML
 function tmp_create(){
+    let types = [];
+    //Charge les éléments du tagify
+    for (const tag of seatTypeTagify.value) {
+        types.push(tag.value)
+    }
+    console.log(types);
     let new_json = [];
-    new_json.push({"nom" : document.querySelector('#id_name').value, "class" : "none"})
+    new_json.push({"nom" : document.querySelector('#id_name').value, "class" : "none", "seat_types": types})
     const seat_area = document.querySelector('.seat-area');
     let row = seat_area.childNodes;
     for (let i=0; i<row.length; i++) {
@@ -470,57 +483,6 @@ function get_config(){
     return selectedValue;
 
 }
-/* Pour plus tard créer les checkbox via cette fonction
-function create_checkbox(place){
-    const checkboxList = document.getElementById('checkboxList');
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.name = "choice";
-    checkbox.value = place;
-    checkboxList.appendChild(checkbox);
-
-    const label = document.createElement('label');
-    label.appendChild(document.createTextNode(place));
-    checkboxList.appendChild(label);
-
-    checkbox.addEventListener('click', () => {
-    const checkboxes = document.querySelectorAll('input[name=choice]');
-    checkboxes.forEach((cb) => {
-      if (cb !== checkbox) {
-        cb.checked = false;
-      }
-    });
-}*/
-
-//recevoir les types depuis le json
-function get_file_types(){
-    const current_config = get_config().replaceAll("/", "_");
-    const xhr = new XMLHttpRequest();
-
-    // Configurez la requête avec la méthode GET et l'URL de la vue Django
-    xhr.open('GET', `get_place_types/${current_config}`);
-
-    // Définissez l'en-tête de la requête pour spécifier que nous voulons recevoir des données JSON
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    // Attachez une fonction de rappel pour traiter la réponse lorsque la requête est terminée
-    xhr.onload = function() {
-        // Vérifiez que la requête s'est terminée avec succès
-        if (xhr.status === 200) {
-          // Parsez la réponse JSON en un objet JavaScript
-          const djangoModel = JSON.parse(xhr.responseText);
-          // Utilisez l'objet DjangoModel ici comme vous le souhaitez
-          console.log(djangoModel);
-        } else {
-        console.log(xhr.status)
-        console.log('Erreur lors de la récupération de l\'objet Django.');
-        }
-    };
-
-    // Envoyez la requête
-    xhr.send();
-}
-
 /* Pour plus tard créer les checkbox via cette fonction
 function create_checkbox(place){
     const checkboxList = document.getElementById('checkboxList');
@@ -684,7 +646,6 @@ function set_checkbox_color() {
         const labelValue = label.textContent.toLowerCase().replace(" ", "");
         if (seatColors.hasOwnProperty(labelValue)) {
             const color = seatColors[labelValue.replace(" ", "")];
-            console.log(checkbox)
             checkbox.style.color = color;
         }
     });
@@ -697,8 +658,8 @@ const tagify = new Tagify(places);
 tagify.on('remove', (e) =>{
     console.log("quelque chose à été retirer");
 });*/
-document.addEventListener('keydown', function(event) {
-  if (event.ctrlKey) {
-    get_file_types();
-  }
+document.addEventListener('keydown', function (event) {
+    if (event.ctrlKey) {
+
+    }
 });

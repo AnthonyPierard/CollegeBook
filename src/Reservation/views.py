@@ -15,7 +15,7 @@ from .forms import ReservationForm
 
 def seat_selection(request, representation_id):
     representation = Representation.objects.get(pk=representation_id)
-    if representation.date <= timezone.now():
+    if representation.state != 'ACT' or representation.date <= timezone.now():
         return redirect('Event:display')
     eventID = representation.event_id
     event = Event.objects.get(pk=eventID)
@@ -63,9 +63,7 @@ def reserve_seats(request,representation_id):
 
     if roomType == "seat" :
         for seatID in selectedSeatsIDs:
-            rowOffset = 0
             rowID = findRowId(seatID[0])
-            rowID = rowID + rowOffset
             columnID = int(seatID[1:])
             i = 0
             while data[i]["class"] != "seat-row":
@@ -134,7 +132,7 @@ def reserve_seats(request,representation_id):
 
 def representation_reservation(request, representation_id):
     representation = Representation.objects.get(pk=representation_id)
-    if representation.date <= timezone.now():
+    if representation.state != 'ACT' or representation.date <= timezone.now():
         return redirect('Event:display')
     if request.method == 'POST':
         form = ReservationForm(request.POST)
