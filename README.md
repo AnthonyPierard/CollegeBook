@@ -25,9 +25,8 @@ To launch the project :
 python -m venv env
 ./env/Scripts/activate
 pip install -r requirements.txt
-sh restore_BD.sh 
-python ./src/manage.py runserver
 ```
+Then, run restore_BD.sh under 
 
 ## LINUX
 To launch the project : 
