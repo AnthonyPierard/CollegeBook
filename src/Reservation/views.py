@@ -98,9 +98,7 @@ def representation_reservation(request, representation_id):
         return redirect('Event:display')
     if request.method == 'POST':
         form = ReservationForm(request.POST)
-        print("\n\n\n",form.is_valid())
         if form.is_valid():
-            print("salut")
             form.save(representation_id)
 
             return redirect('Payment:landing', form.instance.pk)
