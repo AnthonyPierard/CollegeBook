@@ -381,7 +381,7 @@ function tmp_create(){
     let row = seat_area.childNodes;
     for (let i=0; i<row.length; i++) {
         if(row[i].classList[0] == "standing-zone"){
-            const nbr_place = document.querySelector("#value_place").value;
+            const nbr_place = document.querySelector("#id_standing_number").value;
             new_json.push({"class" : "standing-zone", "nbr_place" : nbr_place});
         }
         else if(row[i].classList[0] == "seat-row"){
@@ -425,7 +425,7 @@ function tmp_create(){
 
 //création de la requête et envoi à la fonction python du json
 document.querySelector("#create_json").addEventListener("click", event => {
-    //envoie le nouveu json créer au python pour créer un nouveau fichier json dans le dossier static
+    //envoie le nouveau json créé au python pour créer un nouveau fichier json dans le dossier static
     //pour la nouvelle configuration
     if (document.querySelector('#option').value == "nothing") {
         let new_json = tmp_create();
@@ -435,9 +435,9 @@ document.querySelector("#create_json").addEventListener("click", event => {
             headers: {'X-CSRFToken': csrfTokenValue, 'Content-Type': 'application/json'},
             body: JSON.stringify(new_json),
         });
-
+        
         fetch(request)
-            .then(response => response.json())
+        .then(response => response.json())
     }
 })
 

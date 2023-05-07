@@ -3,7 +3,6 @@ let configType;
 let csrfToken = getCookie('csrftoken');
 const lockedTypes = ["seat sold", "seat selected", "space"];
 
-//TODO: Récupérer standing-zone créé
 //TODO: TIMEOUT
 function changeStatus(seatID){
     let seat = document.getElementById(seatID);
@@ -151,13 +150,16 @@ function checkBeforeSubmit() {
 }
 function checkSeats() {
     seatSelected = true;
+    console.log(selectedSeatsIDs)
     return new Promise(function(resolve, reject) {
         // Votre code de vérification ici
         if (configType != "standing-zone"){
             for(seatID in selectedSeatsIDs){
-                if (!canBeSelected(seatID)) {
-                    seatSelected = false
-                    reject("Vous ne pouvez pas laissez de place vide entre deux places vendues.\n Vérifier les sièges aux alentours de la place "+ seatID);
+                if (!seatID.includes("Debout")){
+                    if (!canBeSelected(seatID)) {
+                        seatSelected = false
+                        reject("Vous ne pouvez pas laissez de place vide entre deux places vendues.\n Vérifier les sièges aux alentours de la place "+ seatID);
+                    }
                 }
             }
         }
@@ -203,11 +205,20 @@ function getCookie(name) {
         const request = new Request(requestURL);
         const response = await fetch(request);
         const seat = await response.json();
-        configType = seat[0]["class"]
-        if (configType != "standing-zone"){
+        if (seat[0]["class"] == "standing-zone" && seat[1]["class"] == "undefined" || (seat[1]["class"] == "standing-zone" && seat[2]["class"] == "undefined")){
+            configType = "standing-zone"
+        }
+        else if((seat[0]["class"] == "standing-zone" && seat[1]["class"] != "undefined") || (seat[1]["class"] == "standing-zone" && seat[2]["class"] != "undefined") ){
+            configType = "standing-zone+seat"
+        }
+        else{
+            configType = "seat"
+        }
+        if (configType != "standing-zone" && configType!="standing-zone+seat"){
             fill_seat(seat);
         }
         else{
+            console.log(configType)
             fill_page(seat)
         }
     }
@@ -258,6 +269,7 @@ function fill_seat(json_dictionnary){
 function fill_page(json_dictionnary) {
     let inputLabelText = "Cette représentation ne propose que des places debouts. Veuillez séléctionner le nombre de place que vous souhaitez réserver"
     let keys = [];
+    let remainingSeats;
     if(json_dictionnary[1] != undefined){
         inputLabelText = "Cette représentation propose aussi des places debouts. Si vous souhaitez réserver des places debouts, entrez directement le nombre dans le champs ci-dessous";
         fill_seat(json_dictionnary)
@@ -280,7 +292,6 @@ function fill_page(json_dictionnary) {
     inputBox.value = "0";
     inputBox.addEventListener('input', function() {
         if(json_dictionnary[1] != undefined){
-            console.log("pas undefined")
             keys = []
             for(let key in selectedSeatsIDs){
                 if (selectedSeatsIDs[key]=="seat debout"){
@@ -290,7 +301,6 @@ function fill_page(json_dictionnary) {
             }
         }
         else {
-            console.log("undefined")
             keys = Object.keys(selectedSeatsIDs);
         }
         if (inputBox.value > keys.length){
@@ -312,7 +322,12 @@ function fill_page(json_dictionnary) {
         updatePrice();
     });
 
-    const remainingSeats = document.createTextNode("Il reste actuellement "+ json_dictionnary[0]["nbr_place"] + " places disponnibles") 
+    if(json_dictionnary[0]["class"] == "standing-zone"){
+        remainingSeats = document.createTextNode("Il reste actuellement "+ json_dictionnary[0]["nbr_place"] + " places disponnibles") 
+    }
+    else if (json_dictionnary[0]["class"] == "none"){
+        remainingSeats = document.createTextNode("Il reste actuellement "+ json_dictionnary[1]["nbr_place"] + " places disponnibles") 
+    }
     
 
 

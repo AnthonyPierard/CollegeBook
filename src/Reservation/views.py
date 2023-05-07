@@ -61,15 +61,16 @@ def reserve_seats(request,representation_id):
     with open(src_file,'r') as f:
         data = json.load(f)
 
-    if roomType != "standing-zone" :
-        rowOffset = 0
+    if roomType == "seat" :
         for seatID in selectedSeatsIDs:
+            rowOffset = 0
             rowID = findRowId(seatID[0])
             rowID = rowID + rowOffset
             columnID = int(seatID[1:])
-            while data[rowID]["class"] != "seat-row":
+            i = 0
+            while data[i]["class"] != "seat-row":
                 rowID +=1
-                rowOffset += 1
+                i+=1
             jsonID = findJsonID(data[rowID]["seat"], columnID)
             if data[rowID]["seat"][jsonID] == "seat sold":
                 seatsReserved = False
@@ -77,14 +78,53 @@ def reserve_seats(request,representation_id):
             else:
                 data[rowID]["seat"][jsonID] = "seat sold"
     
-    else:
-        remainingPlaces = data[0]["nbr_place"]
+    elif roomType == "standing-zone":
+        if ("nbr_place" in data[0]):
+            remainingPlaces = int(data[0]["nbr_place"])
+        elif("nbr_place" in data[1]):
+            remainingPlaces = int(data[1]["nbr_place"])
+
         for i in range(len(selectedSeatsIDs)):
             remainingPlaces -= 1
             if remainingPlaces == -1:
                 seatsReserved = False
                 return(JsonResponse({'seatsReserved': seatsReserved}))
-        data[0]["nbr_place"] = remainingPlaces
+        if ("nbr_place" in data[0]):
+            data[0]["nbr_place"] = remainingPlaces
+        elif("nbr_place" in data[1]):
+            data[1]["nbr_place"] = remainingPlaces
+    
+    elif roomType == "standing-zone+seat":
+        print("\n\n\nsalutlesnazes")
+        if ("nbr_place" in data[0]):
+            remainingPlaces = int(data[0]["nbr_place"])
+        elif("nbr_place" in data[1]):
+            remainingPlaces = int(data[1]["nbr_place"])
+
+        for seatID in selectedSeatsIDs:
+            if "Debout" not in seatID :
+                rowID = findRowId(seatID[0])
+                columnID = int(seatID[1:])
+                i = 0
+                while data[i]["class"] != "seat-row":
+                    rowID +=1
+                    i+=1
+                jsonID = findJsonID(data[rowID]["seat"], columnID)
+                print("\n\n\n",rowID,json)
+                if data[rowID]["seat"][jsonID] == "seat sold":
+                    seatsReserved = False
+                    return(JsonResponse({'seatsReserved': seatsReserved}))
+                else:
+                    data[rowID]["seat"][jsonID] = "seat sold"
+            else:
+                remainingPlaces -= 1
+                if remainingPlaces == -1:
+                    seatsReserved = False
+                    return(JsonResponse({'seatsReserved': seatsReserved}))
+        if ("nbr_place" in data[0]):
+            data[0]["nbr_place"] = remainingPlaces
+        elif("nbr_place" in data[1]):
+            data[1]["nbr_place"] = remainingPlaces
 
     with open(src_file,'w') as f:
         json.dump(data,f)

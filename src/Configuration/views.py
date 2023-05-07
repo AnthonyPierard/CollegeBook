@@ -1,4 +1,5 @@
 import json
+from unidecode import unidecode
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -7,6 +8,7 @@ from django.shortcuts import render, redirect
 from CollegeBook.utils import configCreator
 from .forms import ConfigForm
 from .models import Config, Place
+
 
 
 def add_default_configuration(userId):
@@ -59,10 +61,11 @@ def create_json(request):
     :return: area_configuration
     """
     if request.method == 'POST':
+        print("\n\n\n SALUT \n\n\n")
         data = json.loads(request.body)
         goodName = data[0]['nom'].replace(" ", "_")
+        goodName = unidecode(goodName)
         path_file = 'Configuration/static/json/' + goodName + '.json'
-        print(path_file)
         with open(path_file, 'w') as fi:
             json.dump(data, fi)
 
