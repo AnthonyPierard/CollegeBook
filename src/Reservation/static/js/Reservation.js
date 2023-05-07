@@ -21,8 +21,7 @@ function changeStatus(seatID){
         alert("Ce siège a déjà été vendu");
     }
 
-    console.log(Object.keys(selectedSeatsIDs))
-    sessionStorage.setItem("selectedSeatsIDs", JSON.stringify(Object.keys(selectedSeatsIDs)));
+    sessionStorage.setItem("selectedSeatsIDs", JSON.stringify(selectedSeatsIDs));
 }
 
 function canBeSelected(seatID){
@@ -309,7 +308,7 @@ function fill_page(json_dictionnary) {
                 delete selectedSeatsIDs[key];
             }
         }
-        console.log(selectedSeatsIDs)
+        sessionStorage.setItem("selectedSeatsIDs", JSON.stringify(selectedSeatsIDs));
         updatePrice();
     });
 
