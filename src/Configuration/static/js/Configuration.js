@@ -394,7 +394,7 @@ function tmp_create(){
     let row = seat_area.childNodes;
     for (let i=0; i<row.length; i++) {
         if(row[i].classList[0] == "standing-zone"){
-            const nbr_place = document.querySelector("#value_place").value;
+            const nbr_place = document.querySelector("#id_standing_number").value;
             new_json.push({"class" : "standing-zone", "nbr_place" : nbr_place});
         }
         else if(row[i].classList[0] == "seat-row"){
