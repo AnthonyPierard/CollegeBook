@@ -23,7 +23,7 @@ function changeStatus(seatID){
     }
 
 
-    sessionStorage.setItem("selectedSeatsIDs", JSON.stringify(selectedSeatsIDs));
+    sessionStorage.setItem("selectedSeatsIDs", JSON.stringify(Object.keys(selectedSeatsIDs)));
 }
 
 function canBeSelected(seatID){
