@@ -212,7 +212,6 @@ function getCookie(name) {
             fill_seat(seat);
         }
         else{
-            console.log(configType)
             fill_page(seat)
         }
     }
@@ -263,7 +262,8 @@ function fill_seat(json_dictionnary){
 function fill_page(json_dictionnary) {
     let inputLabelText = "Cette représentation ne propose que des places debouts. Veuillez séléctionner le nombre de place que vous souhaitez réserver"
     let keys = [];
-    let remainingSeats;
+    let remainingSeatsText;
+    let remainingSeats
     if(json_dictionnary[1] != undefined){
         inputLabelText = "Cette représentation propose aussi des places debouts. Si vous souhaitez réserver des places debouts, entrez directement le nombre dans le champs ci-dessous";
         fill_seat(json_dictionnary)
@@ -284,12 +284,23 @@ function fill_page(json_dictionnary) {
     inputBox.required = true;
     inputBox.step ="1";
     inputBox.value = "0";
+
+    if(json_dictionnary[0]["class"] == "standing-zone"){
+        remainingSeatsText = document.createTextNode("Il reste actuellement "+ json_dictionnary[0]["nbr_place"] + " places disponnibles");
+        remainingSeats=json_dictionnary[0]["nbr_place"];
+        inputBox.max=remainingSeats
+    }
+    else if (json_dictionnary[0]["class"] == "none"){
+        remainingSeatsText = document.createTextNode("Il reste actuellement "+ json_dictionnary[1]["nbr_place"] + " places disponnibles")
+        remainingSeats=json_dictionnary[1]["nbr_place"]; 
+        inputBox.max=remainingSeats
+    }
+
     inputBox.addEventListener('input', function() {
-        if(json_dictionnary[1] != undefined){
+        if(json_dictionnary[1] != undefined || (json_dictionnary[0]["name"] != "undefined" && json_dictionnary[2] != undefined)){
             keys = []
             for(let key in selectedSeatsIDs){
                 if (selectedSeatsIDs[key]=="seat debout"){
-                    console.log(key)
                     keys.push(key)
                 }
             }
@@ -297,15 +308,18 @@ function fill_page(json_dictionnary) {
         else {
             keys = Object.keys(selectedSeatsIDs);
         }
+        if(inputBox.value>remainingSeats){
+            console.log("salut")
+            inputBox.value = remainingSeats
+            alert("Vous ne pouvez pas demander plus de places debout qu'il n'y en a de disponibles")
+        }
         if (inputBox.value > keys.length){
-            console.log("plus petit", inputBox.value, keys.length)
             const seatsOffset = inputBox.value - keys.length;
             for (let i = 0; i < seatsOffset; i++){
                 selectedSeatsIDs["Debout"+(keys.length+i)] = "seat debout";
             }
         }
         else if (inputBox.value < keys.length){
-            console.log("plus grand", inputBox.value, keys.length)
             const seatsOffset = keys.length - inputBox.value;
             for (let i = keys.length-1 ; i >= keys.length - seatsOffset; i--){
                 const key = keys[i];
@@ -316,18 +330,14 @@ function fill_page(json_dictionnary) {
         updatePrice();
     });
 
-    if(json_dictionnary[0]["class"] == "standing-zone"){
-        remainingSeats = document.createTextNode("Il reste actuellement "+ json_dictionnary[0]["nbr_place"] + " places disponnibles") 
-    }
-    else if (json_dictionnary[0]["class"] == "none"){
-        remainingSeats = document.createTextNode("Il reste actuellement "+ json_dictionnary[1]["nbr_place"] + " places disponnibles") 
-    }
+
+ 
     
 
 
     selectDiv.appendChild(inputLabel)
     selectDiv.appendChild(inputBox)
-    selectDiv.appendChild(remainingSeats)
+    selectDiv.appendChild(remainingSeatsText)
 
 }
 
