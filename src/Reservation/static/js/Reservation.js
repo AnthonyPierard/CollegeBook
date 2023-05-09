@@ -96,17 +96,17 @@ function getAdjacentSeats(seatID) {
     }
     const previousSeat = clickedSeat.previousSibling;
     const nextSeat = clickedSeat.nextSibling;
-    if (previousSeat != null) {
+    if (previousSeat !== null) {
         leftSeats.push(previousSeat);
         const previousSeatBis = previousSeat.previousSibling;
-        if (previousSeatBis != null) {
+        if (previousSeatBis !== null) {
             leftSeats.push(previousSeatBis);
         }
     }
-    if (nextSeat != null) {
+    if (nextSeat !== null) {
         rightSeats.push(nextSeat);
         const nextSeatBis = nextSeat.nextSibling;
-        if (nextSeatBis != null) {
+        if (nextSeatBis !== null) {
             rightSeats.push(nextSeatBis);
         }
     }
@@ -165,7 +165,7 @@ function checkBeforeSubmit() {
 function checkSeats() {
     seatSelected = true;
     return new Promise(function (resolve, reject) {
-        if (configType != 'standing-zone') {
+        if (configType !== 'standing-zone') {
             for (seatID in selectedSeatsIDs) {
                 if (!seatID.includes('Debout')) {
                     if (!canBeSelected(seatID)) {
@@ -217,7 +217,7 @@ async function prepare_json(url) {
             .getElementById('validateButton')
             .addEventListener('click', checkBeforeSubmit);
     });
-    if (url.value != 'nothing') {
+    if (url.value !== 'nothing') {
         const seat_area = document.querySelector('.seat-area');
         seat_area.remove();
         // on va chercher ce qu'il y a dans le json
@@ -233,16 +233,16 @@ async function prepare_json(url) {
             configType = 'standing-zone';
         } else if (
             (seat[0].class === 'standing-zone' &&
-                seat[1].class != 'undefined') ||
-            (seat[1].class === 'standing-zone' && seat[2].class != 'undefined')
+                seat[1].class !== 'undefined') ||
+            (seat[1].class === 'standing-zone' && seat[2].class !== 'undefined')
         ) {
             configType = 'standing-zone+seat';
         } else {
             configType = 'seat';
         }
         if (
-            configType != 'standing-zone' &&
-            configType != 'standing-zone+seat'
+            configType !== 'standing-zone' &&
+            configType !== 'standing-zone+seat'
         ) {
             fill_seat(seat);
         } else {
@@ -261,12 +261,12 @@ function fill_seat(json_dictionnary) {
     theatre.appendChild(seat_area);
     // va regarder dans le json les seats
     for (const index in json_dictionnary) {
-        if (json_dictionnary[index].class != 'none') {
+        if (json_dictionnary[index].class !== 'none') {
             const row = document.createElement('div');
             row.classList.add(json_dictionnary[index].class);
             seat_area.appendChild(row);
 
-            if (json_dictionnary[index].seat != null) {
+            if (json_dictionnary[index].seat !== null) {
                 let placeNumber = 1;
                 const all_seat = json_dictionnary[index].seat;
 
@@ -298,7 +298,7 @@ function fill_page(json_dictionnary) {
         'Cette représentation ne propose que des places debouts. Veuillez séléctionner le nombre de place que vous souhaitez réserver';
     let keys = [];
     let remainingSeats;
-    if (json_dictionnary[1] != undefined) {
+    if (json_dictionnary[1] !== undefined) {
         inputLabelText =
             'Cette représentation propose aussi des places debouts. Si vous souhaitez réserver des places debouts, entrez directement le nombre dans le champs ci-dessous';
         fill_seat(json_dictionnary);
@@ -321,7 +321,7 @@ function fill_page(json_dictionnary) {
     inputBox.step = '1';
     inputBox.value = '0';
     inputBox.addEventListener('input', function () {
-        if (json_dictionnary[1] != undefined) {
+        if (json_dictionnary[1] !== undefined) {
             keys = [];
             for (const key in selectedSeatsIDs) {
                 if (selectedSeatsIDs[key] === 'seat debout') {

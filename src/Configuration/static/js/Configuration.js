@@ -315,7 +315,7 @@ function fill_seat(json_dictionnary) {
     theatre.appendChild(seat_area);
     // va regarder dans le json les seats
     for (const index in json_dictionnary) {
-        if (json_dictionnary[index].class != 'none') {
+        if (json_dictionnary[index].class !== 'none') {
             const row = document.createElement('div');
             row.classList.add(json_dictionnary[index].class);
             seat_area.appendChild(row);
@@ -345,7 +345,7 @@ function fill_seat(json_dictionnary) {
                 row.appendChild(select_row);
             }
 
-            if (json_dictionnary[index].seat != null) {
+            if (json_dictionnary[index].seat !== null) {
                 const all_seat = json_dictionnary[index].seat;
 
                 for (const seat of all_seat) {
@@ -405,7 +405,7 @@ function fill_seat(json_dictionnary) {
 // fonction pour choisir le json
 async function prepare_json(url) {
     // on retire ce qu'il y avait dans le seat-area
-    if (url.value != 'nothing') {
+    if (url.value !== 'nothing') {
         const seat_area = document.querySelector('.seat-area');
         seat_area.remove();
         // on va chercher ce qu'il y a dans le json
@@ -447,11 +447,11 @@ function tmp_create() {
             const array_seat = [];
             seats.forEach(function (seat) {
                 if (seat.classList.length === 1) {
-                    if (seat.classList[0] != 'select-row') {
+                    if (seat.classList[0] !== 'select-row') {
                         array_seat.push(seat.classList[0]);
                     }
                 } else {
-                    if (seat.classList[0] != 'select-row') {
+                    if (seat.classList[0] !== 'select-row') {
                         let tmp_seat = '';
                         let i = 0;
                         seat.classList.forEach(function (clas) {
@@ -581,7 +581,7 @@ function get_place_types() {
     //     }
     // }
     nbr_cat_now = seatTypeTagify.value.length;
-    if (nbr_cat != nbr_cat_now) {
+    if (nbr_cat !== nbr_cat_now) {
         const checkboxList = document.getElementById('checkboxList');
 
         while (checkboxList.firstChild) {
@@ -626,7 +626,7 @@ function set_place_type(seat) {
             seat.classList.remove(seat_class);
         }
     });
-    if (selected_type != '') {
+    if (selected_type !== '') {
         if (!seat.classList.contains(selected_type)) {
             seat.classList.add(selected_type);
 
