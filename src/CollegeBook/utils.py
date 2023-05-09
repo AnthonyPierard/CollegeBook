@@ -33,9 +33,7 @@ def configCreator(config_name, json_url, user_id, seats):
         seat.save()
 
 def clean_tagify_string(data):
-    tempList = data.replace("{", "").replace("}", "").replace("[", "").replace("]", "")
-    tempList = tempList.replace('"value":', "").replace('"value":', "")
-    tempList = tempList.split(",")
+    tempList = data.replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace('"value":', "").split(",")
     for index, element in enumerate(tempList):
         if element[0] == " ":
             tempList[index] = element[1:]
@@ -78,17 +76,17 @@ def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name,
 
     data = 'http://localhost:8000/validation/scan_ticket/%s' % code
     img = qrcode.make(data)
-    if type_ticket == "Nourriture" or type_ticket == "Boisson" or type_ticket == "Boisson":
+    if type_ticket == "Nourriture" or type_ticket == "Boisson": # or type_ticket =="debout" ?
         ticket_name = f'{date}_{first_name}_{last_name}_Ticket_{type_ticket}.png'
     else:
-        ticket_name = f'{date}_{first_name}_{last_name}_Ticket_{type_ticket}.png'
+        ticket_name = f'{date}_{first_name}_{last_name}_Ticket_{type_ticket}.png' # Error here @Theo (same as in if)
     img.save(qr_path / ticket_name)
     print(f"{qr_path}/{ticket_name}")
     image = cv2.imread(f"{qr_path}/{ticket_name}")
     image_resize = cv2.resize(image, (300, 300))
     img_reshape = image_resize[30:270, 30:270]
 
-    y = 770
+    y = 770 # unused y while having 770 value
     x = 50
 
     pdf.setFillColorRGB(0.85, 0.85, 0.85)
