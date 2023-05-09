@@ -4,6 +4,9 @@ module.exports = {
         es2021: true,
         jquery: true,
     },
+    globals: {
+        seatTypes: true,
+    },
     extends: 'standard',
     overrides: [],
     parserOptions: {
