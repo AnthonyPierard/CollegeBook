@@ -112,7 +112,7 @@ function updatePrice(){
             const price = response.total_price;
             const places = response.selected_seats;
             $("#price").text("Prix total : " + price + " €");
-            $("#places").text("Siège(s) sélectionné(s) : " + places);
+            $("#places").text(places);
         }
     });
 }
@@ -270,10 +270,11 @@ function fill_page(json_dictionnary) {
     }
 
     const selectDiv = document.createElement('div');
-    selectDiv.classList.add("input-box") 
+    selectDiv.classList.add("input-box");
+    selectDiv.setAttribute('id', 'standing-seats');
 
-    const theatre = document.querySelector('.theatre');
-    theatre.appendChild(selectDiv)
+    const content = document.querySelector('.details');
+    content.appendChild(selectDiv)
 
     const inputLabel = document.createTextNode(inputLabelText);
     

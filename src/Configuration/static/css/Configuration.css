@@ -120,12 +120,6 @@
 
 }
 
-.details {
-    flex: 1;
-    border: 5px solid #268085;
-    padding: 50px;
-}
-
 .select-row {
     height: 0;
     display: flex;

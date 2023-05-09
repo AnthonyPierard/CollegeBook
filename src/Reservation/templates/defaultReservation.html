@@ -1,0 +1,12 @@
+{% extends "defaultConfiguration.html" %}
+
+{% load static %}
+
+{%  block head %}
+    <link rel="stylesheet" href= {% static "css/Configuration.css" %} >
+    <link rel="stylesheet" href= {% static "css/Reservation.css" %} >
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'js/Reservation.js' %}"></script>
+{% endblock %}

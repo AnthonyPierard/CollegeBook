@@ -1,32 +1,41 @@
-{% extends 'defaultConfiguration.html' %}
+{% extends 'defaultReservation.html' %}
 {% load static %}
 
-{% block body %}
-    <h1>Choisissez vos places</h1>
-    <div class="full-area">
-        <div class="theatre">
-            <div class="seat-area">
-            </div>
 
-        </div>
-        <script src="{% static 'js/Reservation.js' %}"></script>
-        <script>
-            const url = "{{url}}";
-            const reservationURL = "{% url 'Reservation:representation_reservation' representation.id %}";
-            let seatTypes = JSON.parse('{{ seatTypes|safe}}');
-            for (let i = 0; i< seatTypes.length;i++){
-                seatTypes[i] = "seat "+seatTypes[i].toLowerCase()
-            }
-            window.addEventListener("load", prepare_json(url));
-        </script>
-        <div class = "details">
-            <div class="detailstext">
-                <h2>Détails de la réservation:</h2>
-                <p id = "price">Prix : </p>
-                <p id = "places">Places : </p>
+{% block body %}
+    <h1 class="title">Choisissez vos places</h1>
+    <div class="select-page">
+        <div class="full-area">
+            <div class="theatre">
+                <div class="seat-area">
+                </div>
+
             </div>
+        </div>
+        <div class="details">
+            <div class="details-content">
+                <div class="details-text">
+                    <h2>Détails de la réservation:</h2>
+                    <p id="price">Prix total: </p>
+                    <p id="seat-title">Siège(s) sélectionné(s) : </p>
+                    <p id="places"> </p>
+                </div>
                 <a class="button" id="validateButton">Valider</a>
+            </div>
         </div>
     </div>
+
 {% endblock %}
 
+{% block script %}
+    <script src="{% static 'js/Reservation.js' %}"></script>
+    <script>
+        const url = "{{url}}";
+        const reservationURL = "{% url 'Reservation:representation_reservation' representation.id %}";
+        let seatTypes = JSON.parse('{{ seatTypes|safe}}');
+        for (let i = 0; i< seatTypes.length;i++){
+            seatTypes[i] = "seat "+seatTypes[i].toLowerCase()
+        }
+        window.addEventListener("load", prepare_json(url));
+    </script>
+{% endblock %}
