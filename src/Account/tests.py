@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 from CollegeBook.tests import BaseTest
+from .forms import *
 from .models import User
 
 
@@ -36,6 +37,28 @@ class AccountTest(StaticLiveServerTestCase):
         box_email.send_keys('user@test.com')
         box_pwd.send_keys('testpassword')
         box_submit.send_keys(Keys.RETURN)
+
+    def test_user_form_ok(self):
+        form = UserForm(data={
+            "first_name":"John",
+            "last_name":"Doe",
+            "email":"johndoe@gmail.com",
+            "password":"password",
+            "is_staff":True,
+            "confirm_password":"password"
+        })
+        assert form.is_valid() == True
+
+    # def test_user_form_empty(self):
+    #     form = UserForm(data={
+    #         "first_name": None,
+    #         "last_name":"Doe",
+    #         "email":"johndoe@gmail.com",
+    #         "password":"password",
+    #         "is_staff":True,
+    #         "confirm_password":"password"
+    #     })
+    #     assert form.is_valid() == False
 
     def test_login_superuser(self):
         driver = BaseTest.init(self)
