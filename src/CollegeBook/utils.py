@@ -57,7 +57,7 @@ def empty_folder(folder_path):
             else:
                 os.remove(file_path)
     else:
-        print(f"Le dossier {folder_path} n'existe pas.")
+
 
 def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name, date):
     # pdf = canvas.Canvas('test.pdf')
@@ -70,7 +70,7 @@ def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name,
     date_pdf = date + timedelta(hours=2)
 
     date_pdf = date_pdf.strftime("%d/%m/%Y %H:%M")
-    print(date_pdf)
+
     date = str(date).split(' ')[0]
 
     y = 770
@@ -83,7 +83,7 @@ def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name,
     else:
         ticket_name = f'{date}_{first_name}_{last_name}_Ticket_{type_ticket}.png'
     img.save(qr_path / ticket_name)
-    print(f"{qr_path}/{ticket_name}")
+
     image = cv2.imread(f"{qr_path}/{ticket_name}")
     image_resize = cv2.resize(image, (300, 300))
     img_reshape = image_resize[30:270, 30:270]
@@ -135,7 +135,7 @@ def findRowId(char):
 
 def findJsonID(seatList,column):
     seatCounter = 0
-    print("\n\n\n",seatList)
+
     for i in range(len(seatList)):
         if "seat" in seatList[i]:
             seatCounter += 1

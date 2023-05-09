@@ -40,12 +40,12 @@ class EventForm(forms.ModelForm):
         name = self.cleaned_data.get("name")
         codes = CodePromo.objects.all()
         for code in codes:
-            print(code)
+
         try:
             event = Event.objects.get(name=name)
             codes = codes.exclude(event_id=event.id)
             for code in codes:
-                print(code)
+
         except Exception:
             pass
 
@@ -56,7 +56,7 @@ class EventForm(forms.ModelForm):
         if codes:
             for code in codes:
                 if code.code in form_codes:
-                    print("erreur")
+
                     raise forms.ValidationError(f"Le code promo {code.code} exitse déjà")
         return data
     def clean_artiste(self):
