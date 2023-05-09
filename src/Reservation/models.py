@@ -42,6 +42,9 @@ class AbstractTicket(PolymorphicModel):
 
         return instance
 
+    @property
+    def ticket_type(self) -> str:
+        return "debout"
 
 class Ticket(AbstractTicket):
     type = models.ForeignKey(Place, on_delete=models.CASCADE)
@@ -54,14 +57,21 @@ class StandingTicket(Ticket):
 class SeatingTicket(Ticket):
     seat_number = models.CharField("Trigramme du siège", max_length=3)
 
+    @property
+    def ticket_type(self) -> str:
+        return "Assis"
 
 class ExtraTicket(AbstractTicket):
     pass
 
 
 class FoodTicket(ExtraTicket):
-    pass
+    @property
+    def ticket_type(self) -> str:
+        return "Nourriture"
 
 
 class DrinkTicket(ExtraTicket):
-    pass
+    @property
+    def ticket_type(self) -> str:
+        return "Boisson"

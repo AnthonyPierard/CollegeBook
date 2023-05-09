@@ -18,16 +18,7 @@ def scan_ticket(request, code):
     if ticket.qrcode_is_validated:
         error = "Le ticket à déjà été utilisé"
         return render(request, 'ticket_error.html', {'error_str': error})
-    type_ticket = ticket.get_real_concrete_instance_class()
-    print(type_ticket)
-    if type_ticket == DrinkTicket:
-        type_ticket = 'Boisson'
-    elif type_ticket == FoodTicket:
-        type_ticket = 'Nourriture'
-    elif type_ticket == SeatingTicket:
-        type_ticket = "Assis"
-    else:
-        type_ticket = "debout"
+    type_ticket = ticket.ticket_type
     try:
         seat_number = ticket.seat_number
     except Exception:
