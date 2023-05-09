@@ -20,7 +20,7 @@ def seat_selection(request, representation_id):
     eventID = representation.event_id
     event = Event.objects.get(pk=eventID)
     configurationID = event.configuration_id
-    configuration = Config.objects.get(pk=configurationID)
+    configuration = Config.objects.get(pk=configurationID) # Unused configuration variable
     url = "/static/json/" + unidecode(event.name) + "/" + str(representation.id) + ".json"
 
 

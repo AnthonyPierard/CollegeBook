@@ -83,12 +83,11 @@ def user_events_display(request, user_id):
     user_representations = list()
     user_representations_archived = list()
     for event in user_events:
-        representations = Representation.objects.filter(event=event.id, state='ACT')
-        for representation in representations:
+        representations_ACT = Representation.objects.filter(event=event.id, state='ACT')
+        representations_ARC = Representation.objects.filter(event=event.id, state='ARC')
+        for representation in representations_ACT:
             user_representations.append(representation)
-    for event in user_events:
-        representations = Representation.objects.filter(event=event.id, state='ARC')
-        for representation in representations:
+        for representation in representations_ARC:
             user_representations_archived.append(representation)
     return render(request, 'user_events_display.html', {'user_representations': user_representations,
                                                         'user_events_draft': user_events_draft,
