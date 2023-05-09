@@ -34,5 +34,6 @@ module.exports = {
             },
         ],
         'prefer-const': 'error',
+        camelcase: 'warn',
     },
 };
