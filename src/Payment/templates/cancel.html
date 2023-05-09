@@ -1,13 +1,9 @@
-<html>
+{% extends "defaultPayment.html" %}
 
-<head>
-    <title>Checkout canceled</title>
-</head>
-
-<body>
-    <section>
-        <p>Forgot to add something to your cart? <a href="{% url 'Event:display' %}">Try again</a></p>
-    </section>
-</body>
-
-</html>
+{% block body %}
+    <div class="centered">
+        <h1>Souhaitez-vous recommencer votre réservation?</h1>
+        <p> </p>
+        <a href="{% url 'Event:display' %}" class="button">Retour aux événements</a>
+    </div>
+{% endblock %}
