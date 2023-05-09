@@ -1,10 +1,9 @@
-const searchBar = document.querySelector("#search-input");
+const searchBar = document.querySelector('#search-input');
 
-const tagifies = document.querySelectorAll(".tagify__input");
-    for (const tagify of tagifies) {
-        tagify.setAttribute("data-placeholder", "");
-    }
-
+const tagifies = document.querySelectorAll('.tagify__input');
+for (const tagify of tagifies) {
+    tagify.setAttribute('data-placeholder', '');
+}
 
 // searchBar.addEventListener('input', function() {
 //     filterItems(this.value);
@@ -29,87 +28,86 @@ const tagifies = document.querySelectorAll(".tagify__input");
 //     });
 // }
 
-//Tagify for artists
-const artist = document.querySelector("#artist");
-const artistInput = artist.querySelector("input[name='artiste']")
-const artistDiv = artist.querySelector("#artist-div");
+// Tagify for artists
+const artist = document.querySelector('#artist');
+const artistInput = artist.querySelector("input[name='artiste']");
+const artistDiv = artist.querySelector('#artist-div');
 const artistTagify = new Tagify(artistInput);
-const artistTagInput = artist.querySelector("span");
-artistTagInput.removeAttribute("contenteditable")
-artistTagInput.setAttribute("readonly", true)
+const artistTagInput = artist.querySelector('span');
+artistTagInput.removeAttribute('contenteditable');
+artistTagInput.setAttribute('readonly', true);
 
-const artistText = artist.querySelector("#text");
-const artistAddButton = artist.querySelector("#add-button");
+const artistText = artist.querySelector('#text');
+const artistAddButton = artist.querySelector('#add-button');
 
 function addArtist() {
     artistTagify.addTags([artistText.value]);
-    artistText.value = "";
-    artistText.focus()
+    artistText.value = '';
+    artistText.focus();
 }
 
 artistAddButton.addEventListener('click', () => {
     addArtist();
 });
 
-artistText.addEventListener('keydown', function(event) {
-    if (event.key === "Enter") {
+artistText.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
         event.preventDefault();
         addArtist();
     }
 });
 
-
-const artistDeleteButton = artist.querySelector("#del-button");
+const artistDeleteButton = artist.querySelector('#del-button');
 artistDeleteButton.addEventListener('click', () => {
     artistTagify.removeAllTags();
     artistText.focus();
 });
 
-//Gestion des inputs radio
+// Gestion des inputs radio
 
-const radioMontant = document.querySelector("#promo_type1")
-const radioPourcentage = document.querySelector("#promo_type2")
+const radioMontant = document.querySelector('#promo_type1');
+const radioPourcentage = document.querySelector('#promo_type2');
 
-const divMontant = document.querySelector("#montant-zone")
-const divPourcentage = document.querySelector("#pourcentage-zone")
+const divMontant = document.querySelector('#montant-zone');
+const divPourcentage = document.querySelector('#pourcentage-zone');
 radioMontant.addEventListener('change', () => {
-    divMontant.classList.remove("undisplayed");
-    divPourcentage.classList.add("undisplayed");
-})
+    divMontant.classList.remove('undisplayed');
+    divPourcentage.classList.add('undisplayed');
+});
 
 radioPourcentage.addEventListener('change', () => {
-    divMontant.classList.add("undisplayed");
-    divPourcentage.classList.remove("undisplayed");
-})
+    divMontant.classList.add('undisplayed');
+    divPourcentage.classList.remove('undisplayed');
+});
 
-//Tagify for promo codes
-const promo = document.querySelector("#promo");
+// Tagify for promo codes
+const promo = document.querySelector('#promo');
 const promoInput = promo.querySelector("input[name='promo_codes']");
-const promoDiv = promo.querySelector("#promo-div");
+const promoDiv = promo.querySelector('#promo-div');
 const promoTagify = new Tagify(promoInput);
-const promoTagInput = promo.querySelector("span");
-promoTagInput.removeAttribute("contenteditable");
-promoTagInput.setAttribute("readonly", true);
+const promoTagInput = promo.querySelector('span');
+promoTagInput.removeAttribute('contenteditable');
+promoTagInput.setAttribute('readonly', true);
 
-const promoText = promo.querySelector("#nom");
-const promoMontant = promo.querySelector("#montant");
-const promoPourcentage = promo.querySelector("#pourcentage");
-const promoAddButton = promo.querySelector("#add-button");
+const promoText = promo.querySelector('#nom');
+const promoMontant = promo.querySelector('#montant');
+const promoPourcentage = promo.querySelector('#pourcentage');
+const promoAddButton = promo.querySelector('#add-button');
 
 function addPromoCode() {
     if (radioMontant.checked) {
-        promoTagify.addTags([promoText.value + " : " + promoMontant.value + "€"]);
-        promoMontant.value = "";
+        promoTagify.addTags([promoText.value + ' : ' + promoMontant.value + '€']);
+        promoMontant.value = '';
     } else if (radioPourcentage.checked) {
-        promoTagify.addTags([promoText.value + " : " + promoPourcentage.value + "%"]);
-        promoPourcentage.value = "";
+        promoTagify.addTags([promoText.value + ' : ' + promoPourcentage.value + '%']);
+        promoPourcentage.value = '';
     }
-    promoText.value = "";
-    promoText.focus()
+    promoText.value = '';
+    promoText.focus();
 }
 
 function arePromoInputsFilled() {
-    return promoText.value && (radioMontant.checked && promoMontant.value) || (radioPourcentage.checked && promoPourcentage.value)
+    return promoText.value && (radioMontant.checked && promoMontant.value) || (radioPourcentage.checked && promoPourcentage.value);
 }
 promoAddButton.addEventListener('click', () => {
     if (arePromoInputsFilled()) {
@@ -117,8 +115,8 @@ promoAddButton.addEventListener('click', () => {
     }
 });
 
-promoMontant.addEventListener('keydown', function(event) {
-    if (event.key === "Enter") {
+promoMontant.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
         if (arePromoInputsFilled()) {
             event.preventDefault();
             addPromoCode();
@@ -126,8 +124,8 @@ promoMontant.addEventListener('keydown', function(event) {
     }
 });
 
-promoPourcentage.addEventListener('keydown', function(event) {
-    if (event.key === "Enter") {
+promoPourcentage.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
         if (arePromoInputsFilled()) {
             event.preventDefault();
             addPromoCode();
@@ -135,13 +133,10 @@ promoPourcentage.addEventListener('keydown', function(event) {
     }
 });
 
-
-const promoDeleteButton = promo.querySelector("#del-button");
+const promoDeleteButton = promo.querySelector('#del-button');
 promoDeleteButton.addEventListener('click', () => {
     promoTagify.removeAllTags();
     promoText.focus();
 });
 
-new MultiSelectTag('id_user')
-
-
+new MultiSelectTag('id_user');

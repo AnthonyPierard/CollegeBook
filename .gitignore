@@ -12,3 +12,4 @@ src/Event/static/json/
 venv/
 env/
 *.pyc
+node_modules/
