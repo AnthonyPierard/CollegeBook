@@ -14,11 +14,11 @@ class UserForm(forms.ModelForm):
             'password',
             'is_staff',
         ]
-        labels = {'first_name': 'Prénom', 'last_name': 'Nom', 'email': 'Email', 'password': 'Password',
+        labels = {'first_name': 'Prénom', 'last_name': 'Nom', 'email': 'Email', 'password': 'Mot de passe',
                   'is_staff': 'Super Admin'}
         widgets = {'password': forms.PasswordInput}
 
-    confirm_password = forms.CharField(label='Confirm Password', max_length=50, required=True,
+    confirm_password = forms.CharField(label='Confirmer le mot de passe', max_length=50, required=True,
                                        widget=forms.PasswordInput)
 
     def clean_confirm_password(self):
@@ -35,7 +35,7 @@ class UserForm(forms.ModelForm):
 
 class LoginUserForm(forms.Form):
     email = forms.CharField(label='Email', max_length=50, required=True)
-    password = forms.CharField(label='Password', max_length=50, required=True, widget=forms.PasswordInput)
+    password = forms.CharField(label='Mot de passe', max_length=50, required=True, widget=forms.PasswordInput)
 
 
 class UpdateUserForm(forms.ModelForm):

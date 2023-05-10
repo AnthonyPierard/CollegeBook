@@ -48,7 +48,7 @@ def event_creation(request):
     else:
         form = EventForm()
         if not (Config.objects.filter(user=1)):
-            add_default_configuration(request.user)
+            add_default_configuration()
         print(request.user.id)
         if request.user.id == 1:
             configurations = Config.objects.filter(user=1)

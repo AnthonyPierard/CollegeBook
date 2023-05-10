@@ -8,14 +8,16 @@ from django.shortcuts import render, redirect
 from CollegeBook.utils import configCreator
 from .forms import ConfigForm
 from .models import Config, Place
+from Account.models import User
 
 
 
-def add_default_configuration(userId):
+def add_default_configuration():
     """
     :param userId: the id of the current user log
     :return: create de 4 configurations basic and link them to the user
     """
+    userId = User.objects.get(pk=1)
     basicSeats = {"debout": 3.00, "classic": 5.00}
     configCreator(config_name="only Seat", json_url="/static/json/onlySeat.json", user_id=userId, seats=basicSeats)
     configCreator(config_name="all Seat", json_url="/static/json/allSeat.json", user_id=userId, seats=basicSeats)
@@ -43,7 +45,7 @@ def area_configuration(request):
 
     else:
         if not (Config.objects.filter(user=1)):
-            add_default_configuration(request.user)
+            add_default_configuration()
         if request.user.id==1:
             configurations = Config.objects.filter(user=1)
         else :
