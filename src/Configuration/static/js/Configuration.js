@@ -77,45 +77,57 @@ async function prepare_json(url) {
 }
 
 //création du json de la page HTML
-function tmp_create(){
-    let new_json = [];
-    new_json.push({"nom" : document.querySelector('#id_nom').value})
+function create_json_from_html(){
+    let json = [];
+    json.push({"nom" : document.querySelector('#id_nom').value});
+    
     const seat_area = document.querySelector('.seat-area');
-    let row = seat_area.childNodes;
-    for (let i=0; i<row.length; i++) {
-        if(row[i].classList[0] == "standing-zone"){
-            new_json.push({"class" : "standing-zone"});
-        }
-        else if(row[i].classList[0] == "seat-row"){
-            let tmp_json = {"class" : "seat-row"};
-            let seats = row[i].childNodes;
-            let array_seat = [];
-            seats.forEach(function (seat){
-                if(seat.classList.length==1){
-                    if(seat.classList[0]!="select-row"){
-                        array_seat.push(seat.classList[0]);
-                    }
-                }
-                else{
-                    if(seat.classList[0]!="select-row"){
-                        let tmp_seat= seat.classList[0];
-                        seat.classList.forEach(function (clas){
-                            tmp_seat = tmp_seat + " " + clas;
-                        })
-                        array_seat.push(tmp_seat);
-                    }
-                }
-            })
-            tmp_json["seat"] = array_seat;
-            new_json.push(tmp_json);
-        }
-        else if(row[i].classList[0] == "none-row"){
-            new_json.push({"class" : "none-row"});
-        }
+    
+    const rows = seat_area.childNodes;
+    rows.forEach(row => {
+        const row_class = row.classList[0];
 
+        if (row_class === "standing-zone") {
+            json.push({"class" : "standing-zone"});
+        } else if (row_class === "seat-row") {
+            const row_json = create_seat_row_json(row);
+            json.push(row_json);
+        } else if (row_class === "none-row") {
+            json.push({"class" : "none-row"});
+        }
+    });
+    
+    return json;
+}
 
+function create_seat_row_json(row) {
+    const row_json = {"class" : 'seat-row'};
+    const seats = row.childNodes;
+    const row_seats = [];
+
+    seats.forEach(seat => {
+        const seat_class = seat.ClassList[0];
+
+        if (seat_class !== "select-row") {
+            const seat_json = create_seat_json(seat);
+            row_seats.push(seat_json);
+        }
+    });
+
+    row_json["seat"] = row_seats;
+    
+    return row_json;
+}
+
+function create_seat_json(seat) {
+    const seat_class = seat.ClassList;
+    let seat_json = seat_class[0];
+
+    if (seat_class.length > 1) {
+        seat_json = seat_class.join(" ")
     }
-    return new_json;
+
+    return seat_json;
 }
 
 //création de la requête et envoi à la fonction python
@@ -124,7 +136,7 @@ document.querySelector("#create_json").addEventListener("click", event => {
     //pour la nouvelle configuration
     if (document.querySelector('#option').classList.length == 0) {
 
-        let new_json = tmp_create();
+        let new_json = create_json_from_html();
         let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
         var request = new Request('/configuration/create_json/', {
             method: 'POST',
