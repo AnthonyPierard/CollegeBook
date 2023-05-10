@@ -24,7 +24,7 @@ class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
         reservation = Reservation.objects.get(id=self.kwargs["representation_id"])
         if reservation.paid:
-            return redirect('Payment:paid')
+            return redirect('Payment:paid', reservation.id)
         event_name = unidecode(reservation.representation.event.name)
         tickets = Ticket.objects.filter(reservation_id=reservation.id)
         tickets_quantity = dict()
@@ -58,7 +58,7 @@ class CreateCheckoutSessionView(View):
                 line_items=line_items,
                 mode='payment',
                 allow_promotion_codes=True,
-                success_url=settings.DOMAIN + 'payment/success/',
+                success_url=settings.DOMAIN + f'payment/success/{reservation.id}',
                 cancel_url=settings.DOMAIN + 'payment/cancel/',
             )
             reservation.checkout_session = checkout_session.id
@@ -70,7 +70,7 @@ class CreateCheckoutSessionView(View):
         if checkout_session.status == "open":
             return redirect(checkout_session.url)
         elif checkout_session.status == "complete":
-            return render(request, 'paid.html')
+            return redirect('Payment:paid', reservation.id)
         else:
             return render(request, '404.html')
 
@@ -79,19 +79,21 @@ def cancel(request):
     return render(request, 'cancel.html')
 
 
-def success(request):
-    return render(request, 'success.html')
+def success(request, reservation_id):
+    email = Reservation.objects.get(id=reservation_id).email
+    return render(request, 'success.html', {'email':email})
 
 
-def paid(request):
-    return render(request, 'paid.html')
+def paid(request, reservation_id):
+    email = Reservation.objects.get(id=reservation_id).email
+    return render(request, 'paid.html', {'email':email})
 
 
 def landing(request, representation_id):
     reservation = Reservation.objects.get(id=representation_id)
 
     if reservation.paid:
-        return redirect('Payment:paid')
+        return redirect('Payment:paid', reservation.id)
 
     standing_tickets = StandingTicket.objects.filter(reservation_id=reservation.id)
     standing_list = [{"type": ticket.type.type, "price": ticket.type.price} for ticket in standing_tickets]

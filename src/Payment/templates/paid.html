@@ -2,8 +2,8 @@
 
 {% block body %}
     <div class="centered">
-        <h1>Cette réservation a déjà été payée</h1>
-        <p>Vos tickets ont été envoyés à l'adresse <a>{{ request.user.email }}</a></p>
+        <h1 class="title">Cette réservation a déjà été payée</h1>
+        <p>Vos tickets ont été envoyés à l'adresse <a>{{ email }}</a></p>
         <a href="{% url 'Event:display' %}" class="button">Retour aux événements</a>
     </div>
 {% endblock %}
