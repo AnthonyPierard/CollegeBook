@@ -68,7 +68,6 @@ function defineColors() {
             }
         }
     }
-    console.log(seatColors)
 }
 
 function setColor(placeType) {
@@ -535,12 +534,6 @@ let nbr_cat = 0;
 
 //récuperer les types de places dans le tagify
 function get_place_types(){
-    // if (seatTypeTagify.value) {
-    //     for(const tag of seatTypeTagify.value){
-    //         const type= tag.value.split(":")[0].replace(" ", "").toLowerCase();
-    //         setColor(type)
-    //     }
-    // }
     nbr_cat_now = seatTypeTagify.value.length
     if(nbr_cat!=nbr_cat_now){
         const checkboxList = document.getElementById('checkboxList');
@@ -619,24 +612,6 @@ function set_place_type(seat) {
     }
 }
 
-// function set_checkbox_color() {
-//     const checkboxes = document.querySelectorAll('#checkboxList input[type="checkbox"]');
-//
-//     checkboxes.forEach((checkbox) => {
-//         const label = checkbox.nextElementSibling;
-//         const labelValue = label.textContent.toLowerCase();
-//         if (seatColors.hasOwnProperty(labelValue)) {
-//             const color = seatColors[labelValue];
-//             label.style.color = color;
-//         } else {
-//             console.log(seatColors);
-//             console.log(labelValue);
-//             console.log(seatColors[labelValue]);
-//         }
-//     });
-// }
-
-
 setInterval(set_checkbox_color, 2000);
 
 function set_checkbox_color() {
@@ -650,16 +625,3 @@ function set_checkbox_color() {
         }
     });
 }
-
-//event listener qui regarde si un tag part alors les seat redeviennent classic
-/*const places = document.querySelector(".tagify");
-const places1 = document.getElementsByName("place_types");
-const tagify = new Tagify(places);
-tagify.on('remove', (e) =>{
-    console.log("quelque chose à été retirer");
-});*/
-document.addEventListener('keydown', function (event) {
-    if (event.ctrlKey) {
-
-    }
-});

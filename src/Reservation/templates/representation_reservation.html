@@ -56,15 +56,14 @@
         var selectedSeatsJSON = sessionStorage.getItem("selectedSeatsIDs"); // Lire la chaîne JSON depuis la mémoire de session
         var selectedSeatsDict = JSON.parse(selectedSeatsJSON); // Convertir la chaîne JSON en dictionnaire JavaScript
         console.log(selectedSeatsDict)
-        var selectedSeatsStr = "{" ;
+        var selectedSeatsStr = "";
 
         for (let i = 0; i<Object.keys(selectedSeatsDict).length;i++){
-            selectedSeatsStr += "\""+ Object.keys(selectedSeatsDict)[i]+ "\"" + ": " + "\""+selectedSeatsDict[Object.keys(selectedSeatsDict)[i]]+"\"" + ", ";
+            selectedSeatsStr += Object.keys(selectedSeatsDict)[i]+ ": " + "\""+selectedSeatsDict[Object.keys(selectedSeatsDict)[i]]+"\"" + ", ";
 
         }
         // Convertir le dictionnaire en chaîne de caractères
         selectedSeatsStr = selectedSeatsStr.slice(0, -2); // Supprimer la dernière virgule et l'espace
-        selectedSeatsStr += "}";
         // Insérer la chaîne de caractères dans le champ de formulaire
         document.getElementById("id_selectedseat").value = selectedSeatsStr;
     </script>

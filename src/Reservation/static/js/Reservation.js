@@ -2,7 +2,7 @@ let selectedSeatsIDs = {};
 let configType;
 let csrfToken = getCookie('csrftoken');
 const lockedTypes = ["seat sold", "seat selected", "space"];
-
+const seatColors = {};
 //TODO: TIMEOUT
 function changeStatus(seatID){
     let seat = document.getElementById(seatID);
@@ -215,6 +215,7 @@ function getCookie(name) {
             console.log(configType)
             fill_page(seat)
         }
+        defineColors();
     }
   
   }
@@ -340,6 +341,8 @@ function create_seat_svg() {
     create_rect_svg(svg, 9, 19, 14, 10)
     create_rect_svg(svg, 9, 9, 14, 10)
     create_path_svg(svg, "M6,14V7.8C6,5.7,7.7,4,9.8,4h12.3C24.3,4,26,5.7,26,7.8V14");
+    svg.setAttribute('height', '32');
+    svg.setAttribute('width', '32');
     return svg
 }
 
@@ -358,4 +361,85 @@ function create_rect_svg(parent, x, y, width, height) {
     rect.setAttribute("height", height);
     rect.classList.add("seat-style");
     parent.appendChild(rect)
+}
+
+function defineColors() {
+    const caption = document.getElementById('caption');
+    const sold = document.createElement('div');
+    const selected = document.createElement('div');
+    const labelSold = document.createElement('p');
+    const labelSelected = document.createElement('p');
+    const soldSeat = create_seat_svg();
+    const selectedSeat = create_seat_svg();
+    sold.classList.add("seat-caption")
+    selected.classList.add("seat-caption")
+    sold.style.color = "#fc8c0f";
+    selected.style.color = "#268085";
+    labelSold.textContent= "Vendu";
+    labelSelected.textContent= "Sélectionné";
+    sold.appendChild(labelSold);
+    sold.appendChild(soldSeat);
+    selected.appendChild(labelSelected);
+    selected.appendChild(selectedSeat);
+    caption.appendChild(sold);
+    caption.appendChild(selected);
+
+    seatTypes.forEach( (type) => {
+        if (type !== 'seat debout') {
+            const cleanedType = type.replace('seat ', '');
+            setColor(cleanedType);
+            const seatType = document.createElement('div');
+            seatType.classList.add("seat-caption")
+            seatType.style.color = seatColors[cleanedType];
+            const label = document.createElement('p');
+            label.textContent= cleanedType;
+            const seat = create_seat_svg();
+            seatType.appendChild(label);
+            seatType.appendChild(seat);
+            caption.appendChild(seatType);
+        }
+    })
+}
+
+function setColor(placeType) {
+  let color = seatColors[placeType];
+  let styleTag = document.querySelector('style');
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    document.head.appendChild(styleTag);
+  }
+  const styleSheet = styleTag.sheet;
+  const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${placeType}`);
+  if (!color) {
+    color = getDistinctColor();
+    seatColors[placeType] = color;
+    if (!rule) {
+      styleSheet.insertRule(`.seat.${placeType} { color: ${color}; }`, styleSheet.cssRules.length);
+    } else {
+      rule.style.color = color;
+    }
+  }
+}
+
+function getDistinctColor() {
+  let color;
+  do {
+    color = random_color();
+  } while (Object.values(seatColors).some(c => colorDiff(c, color) < 200));
+  return color;
+}
+
+function random_color(){
+    const hex = Math.floor(Math.random() * 16777215).toString(16);
+    return '#' + ('000000' + hex).slice(-6);
+}
+
+function colorDiff(c1, c2) {
+  const r1 = parseInt(c1.substr(1, 2), 16);
+  const g1 = parseInt(c1.substr(3, 2), 16);
+  const b1 = parseInt(c1.substr(5, 2), 16);
+  const r2 = parseInt(c2.substr(1, 2), 16);
+  const g2 = parseInt(c2.substr(3, 2), 16);
+  const b2 = parseInt(c2.substr(5, 2), 16);
+  return Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
 }

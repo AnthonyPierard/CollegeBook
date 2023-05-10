@@ -44,6 +44,22 @@
     word-wrap: break-word;
 }
 
+#caption {
+    display: flex;
+    justify-content: center;
+    gap: 5%;
+}
+
+.seat-caption {
+    display: flex;
+    align-items: center;
+    gap: 2%;
+}
+
+.seat-caption p{
+    margin: 0;
+}
+
 @media screen and (max-width: 1400px) {
     .full-area {
         width: 100%;

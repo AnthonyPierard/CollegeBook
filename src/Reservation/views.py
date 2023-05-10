@@ -38,12 +38,21 @@ def process_price(request, representation_id):
                                 .get(pk=Representation.objects.
                                      get(pk=representation_id).event.id).configuration.id)
     total_price = 0
+    total_standing = 0
+    seats_list = []
     for seatIDS in selected_seats:
         seatType = selected_seats[seatIDS].split()[1]
         price = Place.objects.get(configuration_id=config, type=seatType).price
         total_price += price
+        if "Debout" not in seatIDS:
+            seats_list.append(seatIDS)
+        else :
+            total_standing += 1
 
-    return JsonResponse({'total_price': total_price, 'selected_seats': sorted(list(selected_seats.keys()))})
+    seats_list = sorted(seats_list)
+    if total_standing > 0 :
+        seats_list.append("Debout x"+str(total_standing))
+    return JsonResponse({'total_price': total_price, 'selected_seats': seats_list})
 
 def reserve_seats(request,representation_id):
     selectedSeatsIDsSTR = request.POST.get("selectedSeatsIDs")
