@@ -38,8 +38,10 @@ def send_remainders_mail():
         reservations = Reservation.objects.filter(representation=representationIT)
         for reservation in reservations:
             reservation.email
+            date_pdf = reservation.representation.date + timedelta(hours=2)
+            date_pdf = date_pdf.strftime("%d/%m/%Y %H:%M")
             mail_content = "N'oubliez pas ! La representation de %s est prévue le %s " % (
-            reservation.representation.event.name, reservation.representation.date)
+            reservation.representation.event.name, date_pdf)
             html = render_to_string('email.html',
                                     {'name': "monsieur/madame %s" % reservation.last_name,
                                      'email': reservation.email,
@@ -63,8 +65,10 @@ def send_thanks_mail():
     for representationIT in representations:
         reservations = Reservation.objects.filter(representation=representationIT)
         for reservation in reservations:
+            date_pdf = reservation.representation.date + timedelta(hours=2)
+            date_pdf = date_pdf.strftime("%d/%m/%Y %H:%M")
             mail_content = "Nous vous remerciont chaleureusement d'avoir été présent à la representation de %s,  le %s " % (
-            reservation.representation.event.name, reservation.representation.date)
+            reservation.representation.event.name, date_pdf)
             html = render_to_string('email.html',
                                     {'name': "monsieur/madame %s" % reservation.last_name,
                                      'email': reservation.email,

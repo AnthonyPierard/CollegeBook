@@ -70,7 +70,6 @@ def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name,
     date_pdf = date + timedelta(hours=2)
 
     date_pdf = date_pdf.strftime("%d/%m/%Y %H:%M")
-    print(date_pdf)
     date = str(date).split(' ')[0]
 
     y = 770
@@ -113,8 +112,8 @@ def create_ticket_pdf(pdf, type_ticket, code, first_name, last_name, event_name,
     pdf.drawString(x, 760, "Date: %s" % date_pdf)
     pdf.drawString(x, 740, "Reservation au nom de %s %s" % (first_name, last_name))
     pdf.setFont("Helvetica", 12)
-    pdf.drawString(x, 390, "Contact: ladancedescanard@gmail.com")
-    pdf.drawString(x, 375, "Adresse: College Saint-Pierre à uccle")
+    pdf.drawString(x, 390, "Contact: reservations@cspu.be")
+    pdf.drawString(x, 375, "Adresse:  Avenue Coghen 205, 1180 Uccle")
 
     y = 460
     pdf.setLineWidth(2)

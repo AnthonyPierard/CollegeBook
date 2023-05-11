@@ -1,6 +1,6 @@
 from datetime import datetime
 from pathlib import Path
-
+from datetime import datetime, timedelta
 import stripe
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -75,8 +75,10 @@ def delete_representation(request, representation_id):
             if choice == "1":
                 reservations = Reservation.objects.filter(representation=representation)
                 for reservation in reservations:
-                    mail_content = "La representation de l'evenement %s,  le %s à malheureusement été annulée, vous pouvez contacter l'adresse @ pour plus d'information " % (
-                    reservation.representation.event.name, reservation.representation.date)
+                    date_pdf = reservation.representation.date + timedelta(hours=2)
+                    date_pdf = date_pdf.strftime("%d/%m/%Y %H:%M")
+                    mail_content = "Nous somme au regret de vous annoncer que la representation de l'evenement %s,  le %s à malheureusement été annulée, vous pouvez contacter l'adresse reservations@cspu.be pour plus d'information " % (
+                    reservation.representation.event.name, date_pdf)
                     html = render_to_string('email.html',
                                             {'name': "monsieur/madame %s" % reservation.last_name,
                                              'email': reservation.email,
