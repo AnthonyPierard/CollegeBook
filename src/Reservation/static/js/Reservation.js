@@ -2,7 +2,7 @@ let selectedSeatsIDs = {};
 let configType;
 let csrfToken = getCookie('csrftoken');
 const lockedTypes = ["seat sold", "seat selected", "space"];
-const seatColors = {};
+const seatColors = {'sold': '#fc8c0f', 'selected': '#268085','classic': '#555555', 'vip': '#ef18a7'};
 //TODO: TIMEOUT
 function changeStatus(seatID){
     let seat = document.getElementById(seatID);
@@ -402,23 +402,23 @@ function defineColors() {
 }
 
 function setColor(placeType) {
-  let color = seatColors[placeType];
-  let styleTag = document.querySelector('style');
-  if (!styleTag) {
-    styleTag = document.createElement('style');
-    document.head.appendChild(styleTag);
-  }
-  const styleSheet = styleTag.sheet;
-  const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${placeType}`);
-  if (!color) {
-    color = getDistinctColor();
-    seatColors[placeType] = color;
-    if (!rule) {
-      styleSheet.insertRule(`.seat.${placeType} { color: ${color}; }`, styleSheet.cssRules.length);
-    } else {
-      rule.style.color = color;
+    let color = seatColors[placeType];
+    let styleTag = document.querySelector('style');
+    if (!styleTag) {
+        styleTag = document.createElement('style');
+        document.head.appendChild(styleTag);
     }
-  }
+    const styleSheet = styleTag.sheet;
+    const rule = Array.from(styleSheet.cssRules).find((r) => r.selectorText === `.seat.${placeType}`);
+    if (!color) {
+        color = getDistinctColor();
+        seatColors[placeType] = color;
+    }
+    if (!rule) {
+        styleSheet.insertRule(`.seat.${placeType} { color: ${color}; }`, styleSheet.cssRules.length);
+    } else {
+        rule.style.color = color;
+    }
 }
 
 function getDistinctColor() {
